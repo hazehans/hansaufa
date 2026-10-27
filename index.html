@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Hans Adiyatma Putra Aufa — Full-Stack Developer &amp; Data / AI Engineer</title>
+  <meta
+    name="description"
+    id="meta-description"
+    content="Portfolio of Hans Adiyatma Putra Aufa — Informatics graduate (3.78 GPA) specializing in Full-Stack Web Development, Enterprise Systems, Data QA, and Explainable AI."
+  />
+  <meta name="author" content="Hans Adiyatma Putra Aufa" />
+  <meta name="theme-color" id="meta-theme-color" content="#0B0B0B" />
+
+  <!-- OpenGraph / Social Sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Hans Adiyatma Putra Aufa — Full-Stack Developer &amp; Data / AI Engineer" />
+  <meta
+    property="og:description"
+    content="Full-Stack Web Development, Enterprise System Integration (HRIS, ISAPI, Mini ERP), Data QA, and Explainable AI."
+  />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hans Adiyatma Putra Aufa — Portfolio" />
+  <meta
+    name="twitter:description"
+    content="Full-Stack Developer &amp; Data / AI Engineer based in Malang, Indonesia."
+  />
+
+  <!-- Favicon (with dynamic fallback handled in main.js) -->
+  <link rel="icon" id="site-favicon" type="image/svg+xml" href="assets/icons/favicon.svg" />
+
+  <!-- Google Fonts: Space Grotesk (Kinetic Display), Inter (Editorial UI), JetBrains Mono (Indices & Specs) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Prevent Theme Flash (FOUC) Before First Paint -->
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('hans_portfolio_theme');
+        var prefersLight =
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        var activeTheme = savedTheme || (prefersLight ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', activeTheme);
+
+        var savedLang = localStorage.getItem('hans_portfolio_lang');
+        if (savedLang && ['en', 'id', 'fr'].indexOf(savedLang) !== -1) {
+          document.documentElement.setAttribute('lang', savedLang);
+        }
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Interactive Background Layers (<canvas> + Optional Static Image Fallback) -->
+  <div id="bg-image-layer" class="bg-image-layer" aria-hidden="true"></div>
+  <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- Architectural Viewport Frame (Keita Yamada Style) -->
+  <div class="viewport-frame" aria-hidden="true">
+    <div class="frame-mask frame-mask-top"></div>
+    <div class="frame-mask frame-mask-bottom"></div>
+    <div class="frame-mask frame-mask-left"></div>
+    <div class="frame-mask frame-mask-right"></div>
+    <div class="frame-border">
+      <div id="scroll-progress-bar" class="scroll-progress-bar"></div>
+      <span class="frame-corner corner-tl"></span>
+      <span class="frame-corner corner-tr"></span>
+      <span class="frame-corner corner-bl"></span>
+      <span class="frame-corner corner-br"></span>
+    </div>
+  </div>
+
+  <!-- Top Navigation Docked Inside Architectural Frame -->
+  <header class="frame-header" id="site-header">
+    <div class="frame-header-inner">
+      <a href="#hero" class="brand-link" id="brand-link" aria-label="Hans Adiyatma Putra Aufa — Home">
+        <span class="brand-mark" id="brand-mark-slot">HA</span>
+        <span class="brand-text" id="brand-name-slot">HANS AUFA</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary Navigation">
+        <a href="#overview" class="nav-link" data-section="overview">
+          <span class="nav-idx">01</span>
+          <span data-i18n="nav.overview">Overview</span>
+        </a>
+        <a href="#experience" class="nav-link" data-section="experience">
+          <span class="nav-idx">02</span>
+          <span data-i18n="nav.experience">Experience</span>
+        </a>
+        <a href="#projects" class="nav-link" data-section="projects">
+          <span class="nav-idx">03</span>
+          <span data-i18n="nav.projects">Projects</span>
+        </a>
+        <a href="#leadership" class="nav-link" data-section="leadership">
+          <span class="nav-idx">04</span>
+          <span data-i18n="nav.leadership">Leadership</span>
+        </a>
+        <a href="#skills" class="nav-link" data-section="skills">
+          <span class="nav-idx">05</span>
+          <span data-i18n="nav.skills">Capabilities</span>
+        </a>
+        <a href="#contact" class="nav-link" data-section="contact">
+          <span class="nav-idx">06</span>
+          <span data-i18n="nav.contact">Contact</span>
+        </a>
+      </nav>
+
+      <div class="header-controls">
+        <!-- Multi-Language Switcher (EN | ID | FR) -->
+        <div class="lang-switcher" role="group" aria-label="Select language" id="lang-switcher">
+          <button type="button" class="lang-btn is-active" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-btn" data-lang="id" aria-pressed="false">ID</button>
+          <button type="button" class="lang-btn" data-lang="fr" aria-pressed="false">FR</button>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button
+          type="button"
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="Switch color theme"
+          title="Switch color theme"
+        >
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.5"></circle>
+            <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.51 17.51l1.56 1.56M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.51 6.49l1.56-1.56"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+          </svg>
+          <span class="theme-toggle-text" id="theme-toggle-text">Dark</span>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button
+          type="button"
+          id="mobile-menu-toggle"
+          class="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-drawer"
+          aria-label="Toggle navigation menu"
+        >
+          <span class="burger-lines" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </span>
+          <span class="mobile-menu-label" id="mobile-menu-label" data-i18n="nav.menu">Menu</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer (Inside Frame) -->
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-inner">
+      <nav class="mobile-nav-links" aria-label="Mobile Navigation">
+        <a href="#overview" class="mobile-nav-link">
+          <span class="nav-idx">01</span>
+          <span data-i18n="nav.overview">Overview</span>
+        </a>
+        <a href="#experience" class="mobile-nav-link">
+          <span class="nav-idx">02</span>
+          <span data-i18n="nav.experience">Experience</span>
+        </a>
+        <a href="#projects" class="mobile-nav-link">
+          <span class="nav-idx">03</span>
+          <span data-i18n="nav.projects">Projects</span>
+        </a>
+        <a href="#leadership" class="mobile-nav-link">
+          <span class="nav-idx">04</span>
+          <span data-i18n="nav.leadership">Leadership</span>
+        </a>
+        <a href="#skills" class="mobile-nav-link">
+          <span class="nav-idx">05</span>
+          <span data-i18n="nav.skills">Capabilities</span>
+        </a>
+        <a href="#contact" class="mobile-nav-link">
+          <span class="nav-idx">06</span>
+          <span data-i18n="nav.contact">Contact</span>
+        </a>
+      </nav>
+
+      <div class="mobile-drawer-footer">
+        <a href="assets/docs/CV-Hans-Aufa.pdf" id="mobile-cv-link" class="btn btn-primary btn-full" target="_blank" rel="noopener">
+          <span data-i18n="hero.ctaDownloadCv">Download CV</span>
+          <span aria-hidden="true">↓</span>
+        </a>
+        <div class="mobile-socials">
+          <a href="https://github.com/hazehans" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/hans-aufa" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+          <a href="https://wa.me/6281230267897" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Architectural Status Bar (Desktop & Tablet) -->
+  <div class="frame-statusbar" aria-hidden="true">
+    <div class="statusbar-left">
+      <span class="status-dot"></span>
+      <span data-i18n="hero.availability">Available for Full-Stack, System &amp; Data/AI Roles</span>
+    </div>
+    <div class="statusbar-center" id="statusbar-coords">07°58'S 112°37'E</div>
+    <div class="statusbar-right">
+      <span id="live-clock">MALANG, ID — --:-- WIB</span>
+      <span class="statusbar-divider">/</span>
+      <span id="scroll-readout">SCROLL 00%</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content" class="site-main">
+    <!-- ===================================================================
+         HERO SECTION (00)
+         =================================================================== -->
+    <section id="hero" class="section hero-section">
+      <div class="container">
+        <div class="hero-top-meta reveal">
+          <span class="mono-tag" data-i18n="hero.eyebrow">PORTFOLIO ARCHIVE // EDITION 2026</span>
+          <span class="status-pill">
+            <span class="status-dot"></span>
+            <span data-i18n="hero.availability">Available for Full-Stack, System &amp; Data/AI Roles</span>
+          </span>
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-primary">
+            <h1 class="hero-title reveal">
+              <span class="hero-title-solid" id="hero-first-name">HANS ADIYATMA</span>
+              <span class="hero-title-accent" id="hero-last-name">PUTRA AUFA</span>
+            </h1>
+
+            <div class="hero-role-bar reveal">
+              <p class="hero-role" data-i18n="hero.roleTagline">Full-Stack Developer &amp; Data / AI Engineer</p>
+              <div class="hero-submeta">
+                <span class="meta-chip">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span data-i18n="hero.location">Malang, Indonesia</span>
+                </span>
+                <span class="meta-sep">•</span>
+                <span class="meta-chip" data-i18n="hero.almaMater">
+                  University of Muhammadiyah Malang — B.Sc. Informatics (GPA 3.78 / 4.00)
+                </span>
+              </div>
+            </div>
+
+            <p class="hero-summary reveal" data-i18n="hero.summary">
+              Dedicated Informatics (Computer Science) graduate with a 3.78/4.00 GPA, combining strong expertise in Full-Stack Web Development, enterprise system integration, and Data Science / Explainable AI. Proven track record in building production-ready internal platforms (HRIS, Operational Management, Mini ERP), integrating hardware biometric APIs (ISAPI), and designing reliable data pipelines. Demonstrated leadership as former Vice President of the Data Science Club.
+            </p>
+
+            <div class="hero-actions reveal">
+              <a href="#projects" class="btn btn-primary magnetic-btn">
+                <span data-i18n="hero.ctaProjects">View Projects</span>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                  <path d="M7 17L17 7M17 7H8M17 7V16"></path>
+                </svg>
+              </a>
+              <a
+                href="assets/docs/CV-Hans-Aufa.pdf"
+                id="hero-cv-btn"
+                class="btn btn-outline magnetic-btn"
+                target="_blank"
+                rel="noopener"
+              >
+                <span data-i18n="hero.ctaDownloadCv">Download CV</span>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
+                </svg>
+              </a>
+              <a href="mailto:hans141203@gmail.com" id="hero-contact-btn" class="btn btn-ghost magnetic-btn">
+                <span data-i18n="hero.ctaContact">Get in Touch</span>
+              </a>
+            </div>
+
+            <div class="hero-social-strip reveal">
+              <a href="https://github.com/hazehans" id="hero-github-link" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <span class="mono-prefix">GH //</span>
+                <span>github.com/hazehans</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a href="https://www.linkedin.com/in/hans-aufa" id="hero-linkedin-link" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <span class="mono-prefix">IN //</span>
+                <span>linkedin.com/in/hans-aufa</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a href="https://wa.me/6281230267897" id="hero-wa-link" target="_blank" rel="noopener noreferrer" class="social-pill">
+                <span class="mono-prefix">WA //</span>
+                <span>+62 812 3026 7897</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Architectural Portrait Card / Smart Fallback -->
+          <aside class="hero-aside reveal" aria-label="Profile Visual">
+            <div id="profile-media-slot" class="portrait-card"></div>
+          </aside>
+        </div>
+
+        <!-- Swiss Metrics Bar -->
+        <div id="hero-metrics" class="metrics-grid reveal"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         OVERVIEW / CORE ARCHITECTURE SECTION (01)
+         =================================================================== -->
+    <section id="overview" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-index-wrap">
+            <span class="section-index" data-i18n="overview.index">01</span>
+            <span class="section-kicker" data-i18n="overview.kicker">CORE ARCHITECTURE</span>
+          </div>
+          <div class="section-heading-group">
+            <h2 class="section-title" data-i18n="overview.title">
+              Engineering Reliable Systems &amp; Interpretable Intelligence
+            </h2>
+            <p class="section-subtitle" data-i18n="overview.subtitle">
+              Bridging operational software engineering, strict data quality assurance, and transparent machine learning models.
+            </p>
+          </div>
+        </div>
+
+        <div id="overview-pillars" class="pillars-grid"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         WORK EXPERIENCE SECTION (02)
+         =================================================================== -->
+    <section id="experience" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-index-wrap">
+            <span class="section-index" data-i18n="experienceSection.index">02</span>
+            <span class="section-kicker" data-i18n="experienceSection.kicker">CAREER TRAJECTORY</span>
+          </div>
+          <div class="section-heading-group">
+            <h2 class="section-title" data-i18n="experienceSection.title">Work Experience</h2>
+            <p class="section-subtitle" data-i18n="experienceSection.subtitle">
+              Delivering enterprise software, automated pipelines, and verified datasets across private and public institutions.
+            </p>
+          </div>
+        </div>
+
+        <div id="experience-list" class="experience-list"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         FEATURED PROJECTS SECTION (03)
+         =================================================================== -->
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-header section-header-projects reveal">
+          <div>
+            <div class="section-index-wrap">
+              <span class="section-index" data-i18n="projectsSection.index">03</span>
+              <span class="section-kicker" data-i18n="projectsSection.kicker">SELECTED WORKS</span>
+            </div>
+            <h2 class="section-title" data-i18n="projectsSection.title">Featured Projects</h2>
+            <p class="section-subtitle" data-i18n="projectsSection.subtitle">
+              Production systems, relational architectures, and analytical models engineered for reliability and clarity.
+            </p>
+          </div>
+
+          <!-- Category Filter Buttons -->
+          <div id="project-filters" class="filter-bar" role="tablist" aria-label="Filter projects by category"></div>
+        </div>
+
+        <div id="projects-list" class="projects-list"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         EDUCATION & ORGANIZATIONAL LEADERSHIP SECTION (04)
+         =================================================================== -->
+    <section id="leadership" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-index-wrap">
+            <span class="section-index" data-i18n="leadershipSection.index">04</span>
+            <span class="section-kicker" data-i18n="leadershipSection.kicker">ACADEMIC &amp; COMMUNITY</span>
+          </div>
+          <div class="section-heading-group">
+            <h2 class="section-title" data-i18n="leadershipSection.title">Education &amp; Leadership</h2>
+            <p class="section-subtitle" data-i18n="leadershipSection.subtitle">
+              Academic excellence paired with executive leadership in technical student organizations.
+            </p>
+          </div>
+        </div>
+
+        <div class="dual-grid">
+          <div class="dual-col reveal">
+            <h3 class="sub-column-heading">
+              <span class="mono-dot"></span>
+              <span data-i18n="leadershipSection.educationHeading">Academic Foundation</span>
+            </h3>
+            <div id="education-list" class="stack-cards"></div>
+          </div>
+
+          <div class="dual-col reveal">
+            <h3 class="sub-column-heading">
+              <span class="mono-dot"></span>
+              <span data-i18n="leadershipSection.orgHeading">Organizational Leadership</span>
+            </h3>
+            <div id="organization-list" class="org-timeline"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TECHNICAL SKILLS & SPOKEN LANGUAGES SECTION (05)
+         =================================================================== -->
+    <section id="skills" class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-index-wrap">
+            <span class="section-index" data-i18n="skillsSection.index">05</span>
+            <span class="section-kicker" data-i18n="skillsSection.kicker">TECHNICAL MATRIX</span>
+          </div>
+          <div class="section-heading-group">
+            <h2 class="section-title" data-i18n="skillsSection.title">Skills &amp; Languages</h2>
+            <p class="section-subtitle" data-i18n="skillsSection.subtitle">
+              Core languages, frameworks, relational databases, developer tooling, and multilingual communication.
+            </p>
+          </div>
+        </div>
+
+        <div id="skills-grid" class="skills-bento"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         CONTACT SECTION (06)
+         =================================================================== -->
+    <section id="contact" class="section contact-section">
+      <div class="container">
+        <div class="contact-box reveal">
+          <div class="section-index-wrap">
+            <span class="section-index" data-i18n="contactSection.index">06</span>
+            <span class="section-kicker" data-i18n="contactSection.kicker">INITIATE DIALOGUE</span>
+          </div>
+
+          <h2 class="contact-headline" data-i18n="contactSection.title">
+            Let’s Build Resilient Digital Systems Together.
+          </h2>
+          <p class="contact-subtitle" data-i18n="contactSection.subtitle">
+            Open for Full-Stack Engineering, System Analysis, Data Engineering, and AI/ML opportunities — remote or on-site.
+          </p>
+
+          <div class="contact-cards-grid">
+            <!-- Direct Email Card -->
+            <div class="contact-card">
+              <span class="contact-card-label" data-i18n="contactSection.emailLabel">Direct Email</span>
+              <a href="mailto:hans141203@gmail.com" id="contact-email-address" class="contact-card-value">
+                hans141203@gmail.com
+              </a>
+              <div class="contact-card-actions">
+                <a href="mailto:hans141203@gmail.com" id="contact-mailto-btn" class="btn btn-primary btn-sm">
+                  <span data-i18n="contactSection.sendEmail">Send Email</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+                <button type="button" id="copy-email-btn" class="btn btn-outline btn-sm">
+                  <span id="copy-email-text" data-i18n="contactSection.copyEmail">Copy Address</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- WhatsApp / Phone Card -->
+            <div class="contact-card">
+              <span class="contact-card-label" data-i18n="contactSection.whatsappLabel">WhatsApp / Phone</span>
+              <a
+                href="https://wa.me/6281230267897"
+                id="contact-phone-value"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="contact-card-value"
+              >
+                +62 812 3026 7897
+              </a>
+              <div class="contact-card-actions">
+                <a
+                  href="https://wa.me/6281230267897"
+                  id="contact-wa-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-outline btn-sm"
+                >
+                  <span data-i18n="contactSection.chatWhatsapp">Message on WhatsApp</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Download CV Card -->
+            <div class="contact-card">
+              <span class="contact-card-label" data-i18n="contactSection.downloadCvLabel">Curriculum Vitae</span>
+              <span class="contact-card-value">CV-Hans-Aufa.pdf</span>
+              <div class="contact-card-actions">
+                <a
+                  href="assets/docs/CV-Hans-Aufa.pdf"
+                  id="contact-cv-btn"
+                  target="_blank"
+                  rel="noopener"
+                  class="btn btn-outline btn-sm"
+                >
+                  <span data-i18n="contactSection.downloadCvBtn">Download PDF Resume</span>
+                  <span aria-hidden="true">↓</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-social-row">
+            <a href="https://github.com/hazehans" id="footer-github" target="_blank" rel="noopener noreferrer" class="kinetic-social-link">
+              <span>GITHUB</span>
+              <span class="mono-muted">github.com/hazehans</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            <a href="https://www.linkedin.com/in/hans-aufa" id="footer-linkedin" target="_blank" rel="noopener noreferrer" class="kinetic-social-link">
+              <span>LINKEDIN</span>
+              <span class="mono-muted">linkedin.com/in/hans-aufa</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Minimalist Architectural Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-copy">
+        <span>&copy; <span id="footer-year">2026</span> Hans Adiyatma Putra Aufa.</span>
+        <span data-i18n="footer.rights">All rights reserved.</span>
+      </div>
+      <div class="footer-meta" data-i18n="footer.crafted">
+        Minimalist Kinetic Architecture — Hosted on GitHub Pages.
+      </div>
+      <a href="#hero" class="back-to-top" data-i18n="footer.backToTop">Back to Top ↑</a>
+    </div>
+  </footer>
+
+  <!-- Modular Vanilla JS (Works on GitHub Pages, Local Server, and Direct File Open) -->
+  <script defer src="js/data.js"></script>
+  <script defer src="js/canvas.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>
+
