@@ -16,7 +16,16 @@ window.PORTFOLIO_DATA = {
     persistLanguage: false,     // false = setiap buka/refresh selalu kembali ke defaultLang ('en')
     defaultTheme: 'system',     // Pilihan: 'system' | 'dark' | 'light'
     accentPreset: 'azure',      // Pilihan: 'azure' (Opsi A Cyber Azure) | 'cobalt' (Opsi B Royal Cobalt)
-    enableBootIntro: true,      // true = tampilkan Architectural Curtain Intro cepat (~0.65s)
+    enableBootIntro: true,      // true = tampilkan Architectural Curtain Intro dengan quote bergantian
+
+    bootQuotes: [
+      { text: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
+      { text: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
+      { text: 'Good design is as little design as possible.', author: 'Dieter Rams' },
+      { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
+      { text: 'Make it work, make it right, make it fast.', author: 'Kent Beck' },
+      { text: 'Details are not the details. They make the design.', author: 'Charles Eames' }
+    ],
 
     branding: {
       monogram: 'HA',           // Teks fallback logo geometris jika logoImage dikosongkan
@@ -77,8 +86,8 @@ window.PORTFOLIO_DATA = {
    * -------------------------------------------------------------------------- */
   i18n: {
     en: {
-      metaTitle: 'Hans Adiyatma Putra Aufa — Full-Stack Developer & Data / AI Engineer',
-      metaDescription: 'Portfolio of Hans Adiyatma Putra Aufa — Informatics graduate (3.78 GPA) specializing in Full-Stack Web Development, Enterprise Systems, Data QA, and Explainable AI.',
+      metaTitle: 'Hans Aufa',
+      metaDescription: 'Portfolio of Hans Adiyatma Putra Aufa (S.Kom) — Informatics graduate (3.78 GPA) specializing in Full-Stack Web Development, Enterprise Systems, Data QA, and Explainable AI.',
       nav: {
         overview: 'Overview',
         experience: 'Experience',
@@ -106,7 +115,6 @@ window.PORTFOLIO_DATA = {
         canvasNodes: 'NODES',
         toastCopied: 'Email copied to clipboard',
         toastCanvas: 'Canvas mode switched to',
-        toastAccent: 'Accent palette switched to',
         dockCv: 'CV ↓',
         dockTop: 'Top ↑'
       },
@@ -121,8 +129,6 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Open GitHub Profile (@hazehans)',
         openLinkedin: 'Open LinkedIn Profile',
         switchTheme: 'Toggle Dark / Light Theme',
-        accentAzure: 'Accent: Cyber Azure Blue (Option A)',
-        accentCobalt: 'Accent: Royal Electric Cobalt (Option B)',
         canvasDots: 'Canvas: Architectural Dot Matrix',
         canvasWaves: 'Canvas: Kinetic Wave Grid',
         canvasNodes: 'Canvas: Neural Particle Network',
@@ -135,13 +141,13 @@ window.PORTFOLIO_DATA = {
         availability: 'Available for Full-Stack, System & Data/AI Roles',
         roleTagline: 'Full-Stack Developer & Data / AI Engineer',
         location: 'Malang, Indonesia',
-        almaMater: 'University of Muhammadiyah Malang — B.Sc. Informatics (GPA 3.78 / 4.00)',
+        almaMater: 'University of Muhammadiyah Malang — B.Comp.Sc. (S.Kom), Informatics (GPA 3.78 / 4.00)',
         summary: 'Dedicated Informatics (Computer Science) graduate with a 3.78/4.00 GPA, combining strong expertise in Full-Stack Web Development, enterprise system integration, and Data Science / Explainable AI. Proven track record in building production-ready internal platforms (HRIS, Operational Management, Mini ERP), integrating hardware biometric APIs (ISAPI), and designing reliable data architectures. Demonstrated leadership as former Vice President of the Data Science Club.',
         ctaProjects: 'View Projects',
         ctaDownloadCv: 'Download CV',
         ctaContact: 'Get in Touch',
         portraitCaption: 'ARCHITECTURAL PROFILE // SYSTEM & AI ENGINEER',
-        portraitDegree: 'B.Sc. Informatics — UMM',
+        portraitDegree: 'S.Kom (Informatics) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'Cumulative GPA' },
           { value: '08', suffix: 'Systems', label: 'Production & AI Builds' },
@@ -234,8 +240,8 @@ window.PORTFOLIO_DATA = {
     },
 
     id: {
-      metaTitle: 'Hans Adiyatma Putra Aufa — Full-Stack Developer & Data / AI Engineer',
-      metaDescription: 'Portofolio Hans Adiyatma Putra Aufa — Lulusan S1 Informatika (IPK 3.78) dengan spesialisasi Full-Stack Web Development, Integrasi Sistem Enterprise, Data QA, dan Explainable AI.',
+      metaTitle: 'Hans Aufa',
+      metaDescription: 'Portofolio Hans Adiyatma Putra Aufa, S.Kom — Lulusan S1 Informatika (IPK 3.78) dengan spesialisasi Full-Stack Web Development, Integrasi Sistem Enterprise, Data QA, dan Explainable AI.',
       nav: {
         overview: 'Ringkasan',
         experience: 'Pengalaman',
@@ -263,7 +269,6 @@ window.PORTFOLIO_DATA = {
         canvasNodes: 'NODES',
         toastCopied: 'Alamat email berhasil disalin',
         toastCanvas: 'Mode kanvas diubah ke',
-        toastAccent: 'Aksen warna diubah ke',
         dockCv: 'CV ↓',
         dockTop: 'Atas ↑'
       },
@@ -278,8 +283,6 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Buka Profil GitHub (@hazehans)',
         openLinkedin: 'Buka Profil LinkedIn',
         switchTheme: 'Ganti Tema Gelap / Terang',
-        accentAzure: 'Aksen: Cyber Azure Blue (Opsi A)',
-        accentCobalt: 'Aksen: Royal Electric Cobalt (Opsi B)',
         canvasDots: 'Kanvas: Matriks Titik Arsitektural',
         canvasWaves: 'Kanvas: Jaring Gelombang Kinetik',
         canvasNodes: 'Kanvas: Jaringan Partikel Neural',
@@ -292,13 +295,13 @@ window.PORTFOLIO_DATA = {
         availability: 'Terbuka untuk Peluang Kerja Full-Stack, Sistem & Data/AI',
         roleTagline: 'Full-Stack Developer & Data / AI Engineer',
         location: 'Malang, Indonesia',
-        almaMater: 'Universitas Muhammadiyah Malang — S1 Informatika (IPK 3.78 / 4.00)',
-        summary: 'Lulusan S1 Informatika dengan IPK 3.78/4.00 yang memadukan keahlian dalam pengembangan web Full-Stack, integrasi sistem enterprise, serta Data Science dan Explainable AI. Berpengalaman membangun platform internal siap produksi (HRIS, Sistem Manajemen Operasional, Mini ERP), mengintegrasikan API perangkat biometrik (ISAPI), dan merancang arsitektur data relasional yang andal. Memiliki rekam jejak kepemimpinan sebagai Wakil Presiden Data Science Club.',
+        almaMater: 'Universitas Muhammadiyah Malang — Sarjana Komputer (S.Kom), S1 Informatika (IPK 3.78 / 4.00)',
+        summary: 'Lulusan S1 Informatika (S.Kom) dengan IPK 3.78/4.00 yang memadukan keahlian dalam pengembangan web Full-Stack, integrasi sistem enterprise, serta Data Science dan Explainable AI. Berpengalaman membangun platform internal siap produksi (HRIS, Sistem Manajemen Operasional, Mini ERP), mengintegrasikan API perangkat biometrik (ISAPI), dan merancang arsitektur data relasional yang andal. Memiliki rekam jejak kepemimpinan sebagai Wakil Presiden Data Science Club.',
         ctaProjects: 'Lihat Proyek',
         ctaDownloadCv: 'Unduh CV',
         ctaContact: 'Hubungi Saya',
         portraitCaption: 'PROFIL ARSITEKTURAL // ENGINEER SISTEM & AI',
-        portraitDegree: 'S1 Informatika — UMM',
+        portraitDegree: 'S.Kom (S1 Informatika) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'IPK Kumulatif' },
           { value: '08', suffix: 'Sistem', label: 'Sistem Produksi & AI' },
@@ -391,8 +394,8 @@ window.PORTFOLIO_DATA = {
     },
 
     fr: {
-      metaTitle: 'Hans Adiyatma Putra Aufa — Développeur Full-Stack & Ingénieur Data / IA',
-      metaDescription: 'Portfolio de Hans Adiyatma Putra Aufa — Diplômé en Informatique (GPA 3.78) spécialisé en Développement Full-Stack, Systèmes d’Entreprise, Data QA et IA Explicable.',
+      metaTitle: 'Hans Aufa',
+      metaDescription: 'Portfolio de Hans Adiyatma Putra Aufa (S.Kom) — Diplômé en Informatique (GPA 3.78) spécialisé en Développement Full-Stack, Systèmes d’Entreprise, Data QA et IA Explicable.',
       nav: {
         overview: 'Aperçu',
         experience: 'Expérience',
@@ -420,7 +423,6 @@ window.PORTFOLIO_DATA = {
         canvasNodes: 'NODES',
         toastCopied: 'Adresse email copiée',
         toastCanvas: 'Mode canevas changé en',
-        toastAccent: 'Couleur d’accent changée en',
         dockCv: 'CV ↓',
         dockTop: 'Haut ↑'
       },
@@ -435,8 +437,6 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Ouvrir le profil GitHub (@hazehans)',
         openLinkedin: 'Ouvrir le profil LinkedIn',
         switchTheme: 'Basculer le thème Sombre / Clair',
-        accentAzure: 'Accent : Cyber Azure Blue (Option A)',
-        accentCobalt: 'Accent : Royal Electric Cobalt (Option B)',
         canvasDots: 'Canevas : Matrice de Points',
         canvasWaves: 'Canevas : Grille d’Ondes Cinétiques',
         canvasNodes: 'Canevas : Réseau de Particules',
@@ -449,13 +449,13 @@ window.PORTFOLIO_DATA = {
         availability: 'Disponible — Postes Full-Stack, Systèmes & Data/IA',
         roleTagline: 'Développeur Full-Stack & Ingénieur Data / IA',
         location: 'Malang, Indonésie',
-        almaMater: 'Université Muhammadiyah de Malang — Licence d’Informatique (GPA 3.78 / 4.00)',
-        summary: 'Diplômé en Informatique (GPA 3.78/4.00) spécialisé dans le développement Full-Stack, l’intégration de systèmes d’entreprise, la Science des Données et l’IA Explicable (XAI). Expérience avérée dans la conception de plateformes internes en production (SIRH/HRIS, Gestion Opérationnelle, Mini ERP), l’intégration d’API biométriques matérielles (ISAPI) et l’architecture relationnelle de données. Ancien Vice-Président du Data Science Club.',
+        almaMater: 'Université Muhammadiyah de Malang — Licence d’Informatique, S.Kom (GPA 3.78 / 4.00)',
+        summary: 'Diplômé en Informatique (S.Kom, GPA 3.78/4.00) spécialisé dans le développement Full-Stack, l’intégration de systèmes d’entreprise, la Science des Données et l’IA Explicable (XAI). Expérience avérée dans la conception de plateformes internes en production (SIRH/HRIS, Gestion Opérationnelle, Mini ERP), l’intégration d’API biométriques matérielles (ISAPI) et l’architecture relationnelle de données. Ancien Vice-Président du Data Science Club.',
         ctaProjects: 'Voir les Projets',
         ctaDownloadCv: 'Télécharger le CV',
         ctaContact: 'Me Contacter',
         portraitCaption: 'PROFIL ARCHITECTURAL // INGÉNIEUR SYSTÈMES & IA',
-        portraitDegree: 'Licence Informatique — UMM',
+        portraitDegree: 'S.Kom (Informatique) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'GPA Cumulatif' },
           { value: '08', suffix: 'Systèmes', label: 'Plateformes & Modèles IA' },
@@ -1200,7 +1200,7 @@ window.PORTFOLIO_DATA = {
           institution: 'University of Muhammadiyah Malang',
           location: 'Malang, Indonesia',
           period: 'Sept 2021 – Feb 2026',
-          degree: 'Bachelor of Informatics (Computer Science)',
+          degree: 'Bachelor of Computer Science (S.Kom) — Informatics',
           gpaLabel: 'GPA: 3.78 / 4.00',
           coursework: ['Data Science', 'Machine Learning', 'Database Management', 'Backend Development']
         },
@@ -1208,7 +1208,7 @@ window.PORTFOLIO_DATA = {
           institution: 'Universitas Muhammadiyah Malang',
           location: 'Malang, Indonesia',
           period: 'Sept 2021 – Feb 2026',
-          degree: 'Sarjana Informatika (S1)',
+          degree: 'Sarjana Komputer (S.Kom) — S1 Informatika',
           gpaLabel: 'IPK: 3.78 / 4.00',
           coursework: ['Sains Data', 'Machine Learning', 'Manajemen Basis Data', 'Pengembangan Backend']
         },
@@ -1216,7 +1216,7 @@ window.PORTFOLIO_DATA = {
           institution: 'Université Muhammadiyah de Malang',
           location: 'Malang, Indonésie',
           period: 'Sept 2021 – Fév 2026',
-          degree: 'Licence en Informatique (Bachelor of Informatics)',
+          degree: 'Licence d’Informatique (S.Kom — Bachelor of Computer Science)',
           gpaLabel: 'GPA : 3.78 / 4.00',
           coursework: ['Science des Données', 'Machine Learning', 'Gestion de Bases de Données', 'Développement Backend']
         }

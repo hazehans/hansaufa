@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Hans Adiyatma Putra Aufa — Full-Stack Developer &amp; Data / AI Engineer</title>
+  <title>Hans Aufa</title>
   <meta
     name="description"
     id="meta-description"
-    content="Portfolio of Hans Adiyatma Putra Aufa — Informatics graduate (3.78 GPA) specializing in Full-Stack Web Development, Enterprise Systems, Data QA, and Explainable AI."
+    content="Portfolio of Hans Adiyatma Putra Aufa (S.Kom) — Informatics graduate (3.78 GPA) specializing in Full-Stack Web Development, Enterprise Systems, Data QA, and Explainable AI."
   />
   <meta name="author" content="Hans Adiyatma Putra Aufa" />
   <meta name="theme-color" id="meta-theme-color" content="#0B0B0B" />
 
   <!-- OpenGraph / Social Sharing -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Hans Adiyatma Putra Aufa — Full-Stack Developer &amp; Data / AI Engineer" />
+  <meta property="og:title" content="Hans Aufa" />
   <meta
     property="og:description"
     content="Full-Stack Web Development, Enterprise System Integration (HRIS, ISAPI, Mini ERP), Data QA, and Explainable AI."
   />
   <meta property="og:locale" content="en_US" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Hans Adiyatma Putra Aufa — Portfolio" />
+  <meta name="twitter:title" content="Hans Aufa" />
   <meta
     name="twitter:description"
     content="Full-Stack Developer &amp; Data / AI Engineer based in Malang, Indonesia."
@@ -48,12 +48,8 @@
         var activeTheme = savedTheme || (prefersLight ? 'light' : 'dark');
         document.documentElement.setAttribute('data-theme', activeTheme);
 
-        var savedAccent = localStorage.getItem('hans_portfolio_accent');
-        if (savedAccent === 'azure' || savedAccent === 'cobalt') {
-          document.documentElement.setAttribute('data-accent', savedAccent);
-        } else {
-          document.documentElement.setAttribute('data-accent', 'azure');
-        }
+        localStorage.removeItem('hans_portfolio_accent');
+        document.documentElement.setAttribute('data-accent', 'azure');
 
         // Default landing is strictly English ('en') on every fresh load/refresh
         localStorage.removeItem('hans_portfolio_lang');
@@ -70,35 +66,59 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Architectural Curtain Boot Intro (~0.65s, Auto-Skipped on Reduced Motion) -->
+  <!-- Architectural Curtain Boot Intro (Rotating Non-Repeating Quotes on Every Refresh) -->
   <div id="boot-curtain" class="boot-curtain" aria-hidden="true">
     <div class="boot-panel boot-panel-top"></div>
     <div class="boot-panel boot-panel-bottom"></div>
     <div class="boot-hud">
       <div class="boot-brand-row">
-        <span class="boot-logo-box" id="boot-logo-slot">HA</span>
-        <div class="boot-meta">
-          <span class="boot-title">HANS AUFA // ARCHIVE</span>
-          <span class="boot-sub">INITIALIZING KINETIC INTERFACE</span>
-        </div>
+        <span class="boot-logo-box" id="boot-logo-slot">
+          <img src="assets/icons/logo.webp" alt="" class="brand-logo-img" />
+        </span>
+        <span class="boot-title">HANS AUFA</span>
+        <span id="boot-counter" class="boot-counter">00%</span>
       </div>
+      <blockquote class="boot-quote-wrap">
+        <p class="boot-quote-text" id="boot-quote-text">“Simplicity is prerequisite for reliability.”</p>
+        <cite class="boot-quote-author" id="boot-quote-author">— Edsger W. Dijkstra</cite>
+      </blockquote>
       <div class="boot-bar-track">
         <div class="boot-bar-fill" id="boot-bar-fill"></div>
-      </div>
-      <div class="boot-status-row">
-        <span>EN_US // EDITION 2026</span>
-        <span id="boot-counter">00%</span>
       </div>
     </div>
   </div>
   <script>
-    // Fail-safe curtain release so nothing ever blocks interaction
-    setTimeout(function () {
-      var c = document.getElementById('boot-curtain');
-      if (c && !c.classList.contains('is-done')) {
-        c.classList.add('is-done');
-      }
-    }, 1150);
+    (function () {
+      var defaultQuotes = [
+        { text: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
+        { text: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
+        { text: 'Good design is as little design as possible.', author: 'Dieter Rams' },
+        { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
+        { text: 'Make it work, make it right, make it fast.', author: 'Kent Beck' },
+        { text: 'Details are not the details. They make the design.', author: 'Charles Eames' }
+      ];
+      try {
+        var lastIdx = parseInt(sessionStorage.getItem('hans_boot_quote_idx'), 10);
+        var nextIdx = isNaN(lastIdx)
+          ? Math.floor(Math.random() * defaultQuotes.length)
+          : (lastIdx + 1 + Math.floor(Math.random() * (defaultQuotes.length - 1))) % defaultQuotes.length;
+        sessionStorage.setItem('hans_boot_quote_idx', String(nextIdx));
+        window.__BOOT_QUOTE_IDX__ = nextIdx;
+        var q = defaultQuotes[nextIdx];
+        var qt = document.getElementById('boot-quote-text');
+        var qa = document.getElementById('boot-quote-author');
+        if (qt && q) qt.textContent = '“' + q.text + '”';
+        if (qa && q) qa.textContent = '— ' + q.author;
+      } catch (e) {}
+
+      // Fail-safe curtain release so nothing ever blocks interaction
+      setTimeout(function () {
+        var c = document.getElementById('boot-curtain');
+        if (c && !c.classList.contains('is-done')) {
+          c.classList.add('is-done');
+        }
+      }, 1650);
+    })();
   </script>
 
   <!-- Custom Magnetic Dual Cursor (Desktop Fine Pointer Only) -->
@@ -342,7 +362,7 @@
                 </span>
                 <span class="meta-sep">•</span>
                 <span class="meta-chip" data-i18n="hero.almaMater">
-                  University of Muhammadiyah Malang — B.Sc. Informatics (GPA 3.78 / 4.00)
+                  University of Muhammadiyah Malang — B.Comp.Sc. (S.Kom), Informatics (GPA 3.78 / 4.00)
                 </span>
               </div>
             </div>

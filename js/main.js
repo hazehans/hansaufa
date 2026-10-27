@@ -172,12 +172,14 @@
   }
 
   /* --------------------------------------------------------------------------
-   * ARCHITECTURAL CURTAIN BOOT INTRO (~0.6s)
+   * ARCHITECTURAL CURTAIN BOOT INTRO (ROTATING QUOTES)
    * -------------------------------------------------------------------------- */
   function initBootCurtain() {
     const curtain = document.getElementById('boot-curtain');
     const barFill = document.getElementById('boot-bar-fill');
     const counter = document.getElementById('boot-counter');
+    const quoteTextEl = document.getElementById('boot-quote-text');
+    const quoteAuthorEl = document.getElementById('boot-quote-author');
     const data = window.PORTFOLIO_DATA;
     const enableIntro = !(data && data.config && data.config.enableBootIntro === false);
 
@@ -186,18 +188,39 @@
       return;
     }
 
+    // Sync custom bootQuotes from data.js if user customized the array
+    if (
+      data &&
+      data.config &&
+      Array.isArray(data.config.bootQuotes) &&
+      data.config.bootQuotes.length > 0 &&
+      quoteTextEl
+    ) {
+      const quotes = data.config.bootQuotes;
+      const idx =
+        typeof window.__BOOT_QUOTE_IDX__ === 'number'
+          ? window.__BOOT_QUOTE_IDX__ % quotes.length
+          : Math.floor(Math.random() * quotes.length);
+      const chosen = quotes[idx];
+      if (chosen && chosen.text) {
+        quoteTextEl.textContent = `“${chosen.text}”`;
+        if (quoteAuthorEl) {
+          quoteAuthorEl.textContent = chosen.author ? `— ${chosen.author}` : '';
+        }
+      }
+    }
+
     if (!enableIntro || prefersReducedMotion()) {
       curtain.classList.add('is-done');
       triggerHeroBootDecode();
       return;
     }
 
-    const duration = 580;
+    const duration = 900;
     const start = performance.now();
 
     const tick = (now) => {
       const t = Math.min((now - start) / duration, 1);
-      // Cubic ease-out
       const eased = 1 - Math.pow(1 - t, 3);
       const pct = Math.round(eased * 100);
 
@@ -510,11 +533,9 @@
   function initTheme() {
     const data = window.PORTFOLIO_DATA;
     const savedTheme = safeGetStorage(STORAGE_THEME_KEY);
-    const savedAccent = safeGetStorage(STORAGE_ACCENT_KEY);
     const configAccent = (data && data.config && data.config.accentPreset) || 'azure';
-
-    state.accent =
-      savedAccent === 'azure' || savedAccent === 'cobalt' ? savedAccent : configAccent;
+    safeRemoveStorage(STORAGE_ACCENT_KEY);
+    state.accent = configAccent === 'cobalt' ? 'cobalt' : 'azure';
     document.documentElement.setAttribute('data-accent', state.accent);
 
     if (savedTheme === 'dark' || savedTheme === 'light') {
@@ -1615,20 +1636,6 @@
         label: cp.switchTheme || 'Toggle Theme',
         hint: state.theme === 'dark' ? 'Dark → Light' : 'Light → Dark',
         run: () => applyTheme(state.theme === 'dark' ? 'light' : 'dark', true)
-      },
-      {
-        group: cp.groupSystem || 'Interface & Canvas',
-        code: 'HEX',
-        label: cp.accentAzure || 'Accent: Cyber Azure Blue',
-        hint: '#38BDF8',
-        run: () => applyAccentPreset('azure', true)
-      },
-      {
-        group: cp.groupSystem || 'Interface & Canvas',
-        code: 'HEX',
-        label: cp.accentCobalt || 'Accent: Royal Electric Cobalt',
-        hint: '#4F8CFF',
-        run: () => applyAccentPreset('cobalt', true)
       },
       {
         group: cp.groupSystem || 'Interface & Canvas',

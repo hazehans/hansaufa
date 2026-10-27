@@ -85,7 +85,7 @@ background: {
 ```
 
 ### B. Mengubah Ukuran Font & Preset Aksen Biru (`Azure` vs `Cobalt`)
-- **Mengganti Preset Biru Secara Instan**: Di `js/data.js` pada `config.accentPreset`, Anda bisa memilih `'azure'` (**Opsi A — Cyber Azure Blue**, default) atau `'cobalt'` (**Opsi B — Royal Electric Cobalt**), atau langsung mencobanya secara *live* lewat tombol **`Ctrl + K`** di halaman web!
+- **Mengganti Preset Biru Secara Instan**: Di `js/data.js` pada `config.accentPreset`, Anda bisa memilih `'azure'` (**Cyber Azure Blue**, default) atau `'cobalt'` (**Royal Electric Cobalt**).
 - **Ukuran Font Keseluruhan**: Ubah properti `font-size` pada blok `html` di `css/style.css` (`clamp(16.5px, 0.28vw + 15.8px, 18.2px)`).
 - **Kustomisasi Kode Warna Manual**: Ubah variabel `--bg-primary`, `--text-primary`, dan `--accent` di bagian atas `css/style.css`.
 

@@ -2799,15 +2799,15 @@ svg {
 .boot-hud {
   position: relative;
   z-index: 2;
-  width: min(360px, 84vw);
-  padding: 20px 22px;
+  width: min(440px, 88vw);
+  padding: 22px 24px;
   border: 1px solid var(--accent-border);
   border-radius: var(--radius-md);
   background-color: var(--bg-surface);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
   transition: opacity 0.28s ease, transform 0.32s var(--ease-kinetic);
 }
 
@@ -2819,12 +2819,12 @@ svg {
 .boot-brand-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 }
 
 .boot-logo-box {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 7px;
   overflow: hidden;
   border: 1px solid var(--accent-border);
@@ -2833,30 +2833,49 @@ svg {
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--accent);
   flex-shrink: 0;
 }
 
-.boot-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .boot-title {
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--text-primary);
 }
 
-.boot-sub {
+.boot-counter {
+  margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.07em;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.boot-quote-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+}
+
+.boot-quote-text {
+  font-family: var(--font-display);
+  font-size: clamp(0.98rem, 2.2vw, 1.08rem);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.boot-quote-author {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
   color: var(--text-secondary);
 }
 
@@ -2874,20 +2893,6 @@ svg {
   background-color: var(--accent);
   transform: scaleX(0);
   transform-origin: left center;
-}
-
-.boot-status-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-}
-
-#boot-counter {
-  color: var(--accent);
-  font-weight: 600;
 }
 
 /* --------------------------------------------------------------------------
