@@ -1,8 +1,13 @@
 /**
  * ============================================================================
- * MAIN APPLICATION CONTROLLER
- * Handles DOM Rendering, EN/ID/FR i18n, Dark/Light Theme, Smart Fallbacks,
- * Project Category Filtering, Scroll Spy, and Kinetic Micro-Interactions.
+ * MAIN APPLICATION CONTROLLER (UPGRADED AWWWARDS EDITION)
+ * Features:
+ * - Multi-language i18n (EN | ID | FR) + Cyber Text Scramble Decoder
+ * - Dark / Light Theme Switcher with OS preference sync
+ * - Lenis Butter-Smooth Scroll (Desktop) + 120Hz Native Touch (Mobile)
+ * - Custom Magnetic Dual Cursor + 3D Card Tilt & Specular Glare
+ * - Interactive Before / After QC Split Slider & Lightbox Preview Modal
+ * - Smart Asset & SVG Blueprint Fallbacks (Zero Broken Images)
  * ============================================================================
  */
 
@@ -11,13 +16,17 @@
 
   const STORAGE_THEME_KEY = 'hans_portfolio_theme';
   const STORAGE_LANG_KEY = 'hans_portfolio_lang';
+  const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789//_#';
 
   const state = {
     lang: 'en',
     theme: 'dark',
     activeFilter: 'all',
     mobileMenuOpen: false,
-    revealObserver: null
+    lightboxOpen: false,
+    revealObserver: null,
+    lenis: null,
+    initialLoadDone: false
   };
 
   /* --------------------------------------------------------------------------
@@ -42,6 +51,71 @@
     return num < 10 ? `0${num}` : String(num);
   }
 
+  function prefersReducedMotion() {
+    return Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function isFinePointer() {
+    return Boolean(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+  }
+
+  /* --------------------------------------------------------------------------
+   * CYBER / ARCHITECTURAL TEXT SCRAMBLE DECODER
+   * -------------------------------------------------------------------------- */
+  function scrambleElement(el, finalText, durationMs = 420) {
+    if (!el) return;
+    if (prefersReducedMotion() || !finalText) {
+      el.textContent = finalText;
+      return;
+    }
+
+    if (el._scrambleRaf) {
+      cancelAnimationFrame(el._scrambleRaf);
+    }
+
+    const length = finalText.length;
+    const start = performance.now();
+
+    const step = (now) => {
+      const progress = Math.min((now - start) / durationMs, 1);
+      const revealCount = Math.floor(progress * length);
+      let output = '';
+
+      for (let i = 0; i < length; i++) {
+        const ch = finalText[i];
+        if (ch === ' ' || ch === '\n') {
+          output += ch;
+        } else if (i < revealCount) {
+          output += ch;
+        } else {
+          output += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+        }
+      }
+
+      el.textContent = output;
+      if (progress < 1) {
+        el._scrambleRaf = requestAnimationFrame(step);
+      } else {
+        el.textContent = finalText;
+        el._scrambleRaf = null;
+      }
+    };
+
+    el._scrambleRaf = requestAnimationFrame(step);
+  }
+
+  function bindNavScrambleHover() {
+    if (!isFinePointer() || prefersReducedMotion()) return;
+    document.querySelectorAll('[data-scramble-hover]:not([data-scramble-bound])').forEach((el) => {
+      el.setAttribute('data-scramble-bound', 'true');
+      const link = el.closest('a') || el;
+      link.addEventListener('pointerenter', () => {
+        const targetText = el.textContent;
+        scrambleElement(el, targetText, 300);
+      });
+    });
+  }
+
   /* --------------------------------------------------------------------------
    * SMART SVG BLUEPRINT GENERATORS (ZERO BROKEN IMAGES)
    * -------------------------------------------------------------------------- */
@@ -49,6 +123,44 @@
     const text = escapeHtml((monogram || 'HA').slice(0, 3));
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0B0B0B"/><rect x="3" y="3" width="58" height="58" rx="9" fill="none" stroke="#D2FF00" stroke-opacity="0.45" stroke-width="1.5"/><text x="32" y="39" text-anchor="middle" font-family="monospace" font-weight="700" font-size="22" fill="#F4F4F0">${text}</text></svg>`;
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  }
+
+  function createCroppedLogoFavicon(imgElement) {
+    try {
+      const size = 64;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      // Center square crop focused slightly below vertical midpoint (for silhouette head)
+      const sw = imgElement.naturalWidth;
+      const sh = imgElement.naturalHeight;
+      const side = Math.min(sw, sh);
+      const sx = (sw - side) * 0.5;
+      const sy = sh > sw ? Math.min(sh - side, sh * 0.34) : (sh - side) * 0.5;
+
+      // Rounded rect mask
+      const r = 13;
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.lineTo(size - r, 0);
+      ctx.quadraticCurveTo(size, 0, size, r);
+      ctx.lineTo(size, size - r);
+      ctx.quadraticCurveTo(size, size, size - r, size);
+      ctx.lineTo(r, size);
+      ctx.quadraticCurveTo(0, size, 0, size - r);
+      ctx.lineTo(0, r);
+      ctx.quadraticCurveTo(0, 0, r, 0);
+      ctx.closePath();
+      ctx.clip();
+
+      ctx.drawImage(imgElement, sx, sy, side, side, 0, 0, size, size);
+      return canvas.toDataURL('image/png');
+    } catch (e) {
+      return null;
+    }
   }
 
   function buildPortraitFallbackHtml(data, t) {
@@ -96,39 +208,26 @@
   }
 
   function buildProjectSchematicSvg(projectId, indexStr, category) {
-    // Distinct minimalist architectural SVG schematics per project type
     let motif = '';
-    if (projectId === 'hris-attendance') {
+    if (projectId === 'student-achievement-db') {
       motif = `
-        <rect x="24" y="34" width="96" height="68" rx="4" stroke="currentColor" stroke-opacity="0.26" />
-        <line x1="24" y1="50" x2="120" y2="50" stroke="currentColor" stroke-opacity="0.2" />
-        <rect x="34" y="60" width="44" height="8" rx="2" class="svg-accent-fill" fill-opacity="0.85" />
-        <rect x="34" y="75" width="72" height="6" rx="2" fill="currentColor" fill-opacity="0.2" />
-        <rect x="34" y="87" width="56" height="6" rx="2" fill="currentColor" fill-opacity="0.2" />
-        <circle cx="196" cy="68" r="30" class="svg-accent-stroke" stroke-width="1.4" />
-        <circle cx="196" cy="68" r="18" stroke="currentColor" stroke-opacity="0.3" stroke-dasharray="3 3" />
-        <circle cx="196" cy="68" r="5" class="svg-accent-fill" />
-        <path d="M120 68 H166" class="svg-accent-stroke" stroke-dasharray="4 3" />
-      `;
-    } else if (projectId === 'operational-management') {
-      motif = `
-        <rect x="26" y="36" width="60" height="28" rx="4" stroke="currentColor" stroke-opacity="0.3" />
-        <rect x="100" y="36" width="60" height="28" rx="4" class="svg-accent-stroke" stroke-width="1.4" />
-        <rect x="174" y="36" width="60" height="28" rx="4" stroke="currentColor" stroke-opacity="0.3" />
-        <rect x="63" y="84" width="134" height="28" rx="4" stroke="currentColor" stroke-opacity="0.26" />
-        <path d="M56 64 V84 M130 64 V84 M204 64 V84" stroke="currentColor" stroke-opacity="0.28" />
-        <circle cx="130" cy="50" r="4" class="svg-accent-fill" />
-      `;
-    } else if (projectId === 'mini-erp-appsheet') {
-      motif = `
-        <rect x="24" y="34" width="74" height="76" rx="4" stroke="currentColor" stroke-opacity="0.26" />
-        <line x1="24" y1="52" x2="98" y2="52" stroke="currentColor" stroke-opacity="0.2" />
-        <line x1="24" y1="70" x2="98" y2="70" stroke="currentColor" stroke-opacity="0.2" />
-        <line x1="24" y1="88" x2="98" y2="88" stroke="currentColor" stroke-opacity="0.2" />
-        <path d="M98 62 H142" class="svg-accent-stroke" stroke-width="1.4" />
-        <rect x="142" y="34" width="92" height="32" rx="4" class="svg-accent-stroke" stroke-width="1.4" />
-        <rect x="142" y="78" width="92" height="32" rx="4" stroke="currentColor" stroke-opacity="0.28" />
-        <path d="M188 66 V78" class="svg-accent-stroke" />
+        <rect x="24" y="28" width="88" height="82" rx="5" class="svg-accent-stroke" stroke-width="1.4" />
+        <line x1="24" y1="48" x2="112" y2="48" class="svg-accent-stroke" stroke-opacity="0.6" />
+        <text x="34" y="41" fill="currentColor" fill-opacity="0.7" font-family="monospace" font-size="8.5">achievements</text>
+        <rect x="34" y="57" width="56" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.8" />
+        <rect x="34" y="70" width="66" height="6" rx="2" fill="currentColor" fill-opacity="0.22" />
+        <rect x="34" y="83" width="48" height="6" rx="2" fill="currentColor" fill-opacity="0.22" />
+        <rect x="34" y="96" width="60" height="6" rx="2" fill="currentColor" fill-opacity="0.16" />
+
+        <path d="M112 68 H148" class="svg-accent-stroke" stroke-dasharray="4 3" stroke-width="1.3" />
+        <circle cx="148" cy="68" r="3" class="svg-accent-fill" />
+
+        <rect x="148" y="34" width="88" height="68" rx="5" stroke="currentColor" stroke-opacity="0.32" stroke-width="1.2" />
+        <line x1="148" y1="52" x2="236" y2="52" stroke="currentColor" stroke-opacity="0.22" />
+        <text x="158" y="46" fill="currentColor" fill-opacity="0.65" font-family="monospace" font-size="8.5">students_mysql</text>
+        <rect x="158" y="62" width="64" height="6" rx="2" fill="currentColor" fill-opacity="0.25" />
+        <rect x="158" y="75" width="52" height="6" rx="2" fill="currentColor" fill-opacity="0.2" />
+        <rect x="158" y="88" width="42" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.55" />
       `;
     } else if (category === 'data') {
       motif = `
@@ -143,26 +242,26 @@
       `;
     } else {
       motif = `
-        <rect x="28" y="34" width="204" height="74" rx="5" stroke="currentColor" stroke-opacity="0.26" />
+        <rect x="28" y="34" width="204" height="74" rx="5" stroke="currentColor" stroke-opacity="0.28" />
         <line x1="28" y1="52" x2="232" y2="52" stroke="currentColor" stroke-opacity="0.2" />
         <circle cx="42" cy="43" r="2.5" class="svg-accent-fill" />
         <circle cx="52" cy="43" r="2.5" fill="currentColor" fill-opacity="0.3" />
         <rect x="44" y="66" width="76" height="28" rx="3" class="svg-accent-stroke" />
-        <rect x="134" y="66" width="82" height="10" rx="2" fill="currentColor" fill-opacity="0.2" />
-        <rect x="134" y="84" width="58" height="10" rx="2" fill="currentColor" fill-opacity="0.14" />
+        <rect x="134" y="66" width="82" height="10" rx="2" fill="currentColor" fill-opacity="0.22" />
+        <rect x="134" y="84" width="58" height="10" rx="2" fill="currentColor" fill-opacity="0.16" />
       `;
     }
 
     return `
-      <svg class="project-wireframe-svg" viewBox="0 0 260 136" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg class="project-wireframe-svg" viewBox="0 0 260 144" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <pattern id="grid-${escapeHtml(projectId)}" width="16" height="16" patternUnits="userSpaceOnUse">
             <path d="M 16 0 L 0 0 0 16" fill="none" stroke="currentColor" stroke-opacity="0.06" stroke-width="0.75" />
           </pattern>
         </defs>
-        <rect width="260" height="136" fill="url(#grid-${escapeHtml(projectId)})" />
+        <rect width="260" height="144" fill="url(#grid-${escapeHtml(projectId)})" />
         ${motif}
-        <text x="244" y="126" text-anchor="end" class="wireframe-idx-label">${escapeHtml(indexStr)}</text>
+        <text x="244" y="133" text-anchor="end" class="wireframe-idx-label">${escapeHtml(indexStr)} // LARAVEL CRUD</text>
       </svg>
     `;
   }
@@ -176,48 +275,49 @@
 
     const { branding, assets } = data.config;
     const p = data.profile;
-
-    // 1. Smart Favicon with automatic inline SVG fallback
     const faviconEl = document.getElementById('site-favicon');
-    if (faviconEl) {
-      if (branding.faviconPath && branding.faviconPath.trim() !== '') {
-        const probe = new Image();
-        probe.onload = () => {
-          faviconEl.href = branding.faviconPath.trim();
-        };
-        probe.onerror = () => {
-          faviconEl.href = createFaviconDataUri(branding.monogram);
-        };
-        probe.src = branding.faviconPath.trim();
-      } else {
-        faviconEl.href = createFaviconDataUri(branding.monogram);
-      }
-    }
-
-    // 2. Smart Header Logo / Geometric Monogram Fallback
     const brandMarkSlot = document.getElementById('brand-mark-slot');
     const brandNameSlot = document.getElementById('brand-name-slot');
+
     if (brandNameSlot && branding.shortName) {
       brandNameSlot.textContent = branding.shortName;
     }
-    if (brandMarkSlot) {
-      const fallbackText = branding.monogram || 'HA';
-      if (branding.logoImage && branding.logoImage.trim() !== '') {
+
+    const fallbackMonogram = branding.monogram || 'HA';
+
+    // Smart Header Logo + Optional Square-Cropped Favicon
+    if (branding.logoImage && branding.logoImage.trim() !== '') {
+      const logoSrc = branding.logoImage.trim();
+      if (brandMarkSlot) {
         brandMarkSlot.innerHTML = '';
         const img = document.createElement('img');
-        img.src = branding.logoImage.trim();
+        img.src = logoSrc;
         img.alt = p.fullName;
         img.className = 'brand-logo-img';
+        img.onload = () => {
+          if (faviconEl && branding.useLogoAsFavicon) {
+            const croppedUri = createCroppedLogoFavicon(img);
+            if (croppedUri) {
+              faviconEl.type = 'image/png';
+              faviconEl.href = croppedUri;
+            }
+          }
+        };
         img.onerror = () => {
-          brandMarkSlot.textContent = fallbackText;
+          brandMarkSlot.textContent = fallbackMonogram;
+          applyStandardFavicon(faviconEl, branding, fallbackMonogram);
         };
         brandMarkSlot.appendChild(img);
-      } else {
-        brandMarkSlot.textContent = fallbackText;
       }
+      if (!branding.useLogoAsFavicon) {
+        applyStandardFavicon(faviconEl, branding, fallbackMonogram);
+      }
+    } else {
+      if (brandMarkSlot) brandMarkSlot.textContent = fallbackMonogram;
+      applyStandardFavicon(faviconEl, branding, fallbackMonogram);
     }
 
-    // 3. Personal Name & Coordinates
+    // Personal Name & Coordinates
     const firstEl = document.getElementById('hero-first-name');
     const lastEl = document.getElementById('hero-last-name');
     if (firstEl && p.displayFirst) firstEl.textContent = p.displayFirst;
@@ -226,7 +326,7 @@
     const coordsEl = document.getElementById('statusbar-coords');
     if (coordsEl && p.coordinates) coordsEl.textContent = p.coordinates;
 
-    // 4. Sync Contact & CV URLs from single source of truth
+    // Contact & CV URLs
     const cvHref = (assets && assets.cvPdf) || 'assets/docs/CV-Hans-Aufa.pdf';
     ['hero-cv-btn', 'contact-cv-btn', 'mobile-cv-link'].forEach((id) => {
       const el = document.getElementById(id);
@@ -264,6 +364,22 @@
     }
   }
 
+  function applyStandardFavicon(faviconEl, branding, fallbackMonogram) {
+    if (!faviconEl) return;
+    if (branding.faviconPath && branding.faviconPath.trim() !== '') {
+      const probe = new Image();
+      probe.onload = () => {
+        faviconEl.href = branding.faviconPath.trim();
+      };
+      probe.onerror = () => {
+        faviconEl.href = createFaviconDataUri(fallbackMonogram);
+      };
+      probe.src = branding.faviconPath.trim();
+    } else {
+      faviconEl.href = createFaviconDataUri(fallbackMonogram);
+    }
+  }
+
   /* --------------------------------------------------------------------------
    * THEME CONTROLLER (DARK / LIGHT MODE)
    * -------------------------------------------------------------------------- */
@@ -283,7 +399,6 @@
 
     applyTheme(state.theme, false);
 
-    // Listen to OS preference changes if user hasn't manually pinned a theme
     if (window.matchMedia) {
       const mq = window.matchMedia('(prefers-color-scheme: light)');
       const onChange = (e) => {
@@ -340,7 +455,7 @@
   }
 
   /* --------------------------------------------------------------------------
-   * LANGUAGE / i18n CONTROLLER (EN | ID | FR)
+   * LANGUAGE / i18n CONTROLLER (EN | ID | FR) + TEXT SCRAMBLE
    * -------------------------------------------------------------------------- */
   function initLanguage() {
     const data = window.PORTFOLIO_DATA;
@@ -356,15 +471,15 @@
         if (!btn) return;
         const nextLang = btn.getAttribute('data-lang');
         if (nextLang && nextLang !== state.lang) {
-          setLanguage(nextLang, true);
+          setLanguage(nextLang, true, true);
         }
       });
     }
 
-    setLanguage(state.lang, false);
+    setLanguage(state.lang, false, false);
   }
 
-  function setLanguage(lang, persist) {
+  function setLanguage(lang, persist, animateScramble) {
     const data = window.PORTFOLIO_DATA;
     if (!data || !data.i18n || !data.i18n[lang]) return;
 
@@ -375,7 +490,6 @@
       safeSetStorage(STORAGE_LANG_KEY, lang);
     }
 
-    // Update active state on language buttons
     document.querySelectorAll('.lang-btn').forEach((btn) => {
       const isCurrent = btn.getAttribute('data-lang') === lang;
       btn.classList.toggle('is-active', isCurrent);
@@ -384,30 +498,41 @@
 
     const t = data.i18n[lang];
 
-    // Update document title & meta description
     if (t.metaTitle) document.title = t.metaTitle;
     const metaDesc = document.getElementById('meta-description');
     if (metaDesc && t.metaDescription) {
       metaDesc.setAttribute('content', t.metaDescription);
     }
 
-    // Update static elements bearing data-i18n
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');
-      // Keep mobile menu label synced with open/close state
       if (el.id === 'mobile-menu-label') {
         el.textContent = state.mobileMenuOpen ? t.nav.close : t.nav.menu;
         return;
       }
       const val = getNestedValue(t, key);
       if (typeof val === 'string') {
-        el.textContent = val;
+        if (
+          animateScramble &&
+          (el.hasAttribute('data-scramble-lang') ||
+            el.id === 'hero-role-tagline' ||
+            el.id === 'hero-eyebrow')
+        ) {
+          scrambleElement(el, val, 380);
+        } else {
+          el.textContent = val;
+        }
       }
     });
 
     const langGroup = document.getElementById('lang-switcher');
     if (langGroup && t.controls && t.controls.langLabel) {
       langGroup.setAttribute('aria-label', t.controls.langLabel);
+    }
+
+    const lbClose = document.getElementById('lightbox-close');
+    if (lbClose && t.controls && t.controls.closeModal) {
+      lbClose.setAttribute('aria-label', t.controls.closeModal);
     }
 
     updateThemeToggleLabel();
@@ -436,6 +561,8 @@
 
     observeReveals();
     bindMagneticButtons();
+    bindTiltCards();
+    bindNavScrambleHover();
   }
 
   function renderProfilePortrait(data, t) {
@@ -453,13 +580,24 @@
     }
 
     slot.innerHTML = `
-      <div class="portrait-photo-frame">
-        <img
-          src="${escapeHtml(imgPath)}"
-          alt="${escapeHtml(data.profile.fullName)}"
-          class="portrait-photo-img"
-          id="profile-photo-img"
-        />
+      <div
+        class="portrait-photo-frame zoomable-media"
+        role="button"
+        tabindex="0"
+        aria-label="${escapeHtml(t.controls.zoomHint)}"
+        data-zoom-src="${escapeHtml(imgPath)}"
+        data-zoom-title="${escapeHtml(data.profile.fullName)}"
+        data-zoom-badge="PROFILE // ${escapeHtml(data.profile.gpa)}"
+      >
+        <div class="portrait-img-wrap">
+          <img
+            src="${escapeHtml(imgPath)}"
+            alt="${escapeHtml(data.profile.fullName)}"
+            class="portrait-photo-img"
+            id="profile-photo-img"
+          />
+          <span class="zoom-corner-badge" aria-hidden="true">↗</span>
+        </div>
         <div class="portrait-photo-caption">
           <span class="mono-xs">${escapeHtml(t.hero.portraitDegree)}</span>
           <span class="mono-xs accent-text">GPA ${escapeHtml(data.profile.gpa)}</span>
@@ -472,6 +610,11 @@
       imgEl.onerror = () => {
         slot.innerHTML = buildPortraitFallbackHtml(data, t);
       };
+    }
+
+    const trigger = slot.querySelector('.zoomable-media');
+    if (trigger) {
+      bindZoomTrigger(trigger);
     }
   }
 
@@ -502,7 +645,7 @@
     container.innerHTML = t.overview.pillars
       .map(
         (p) => `
-        <article class="pillar-card reveal">
+        <article class="pillar-card tilt-card reveal">
           <div class="pillar-card-top">
             <span class="pillar-num">${escapeHtml(p.num)}</span>
             <span class="pillar-line"></span>
@@ -606,9 +749,55 @@
           renderProjects(data, t, state.lang);
           observeReveals();
           bindMagneticButtons();
+          bindTiltCards();
+          if (state.lenis && typeof state.lenis.resize === 'function') {
+            state.lenis.resize();
+          }
         }
       });
     });
+  }
+
+  function buildBeforeAfterMediaHtml(proj, loc, t, indexStr) {
+    const beforeSrc = escapeHtml(proj.beforeImage.trim());
+    const afterSrc = escapeHtml(proj.afterImage.trim());
+    const surfaceClass = proj.imageSurface === 'light' ? 'is-light-surface' : '';
+
+    return `
+      <div class="project-media qc-compare-card ${surfaceClass}" data-project-id="${escapeHtml(proj.id)}">
+        <div class="qc-toolbar">
+          <div class="qc-tabs" role="group" aria-label="Before and After Quality Control">
+            <button type="button" class="qc-tab is-active" data-qc-mode="split">${escapeHtml(t.projectsSection.splitLabel)}</button>
+            <button type="button" class="qc-tab" data-qc-mode="before">${escapeHtml(t.projectsSection.beforeLabel)}</button>
+            <button type="button" class="qc-tab" data-qc-mode="after">${escapeHtml(t.projectsSection.afterLabel)}</button>
+          </div>
+          <button
+            type="button"
+            class="qc-expand-btn"
+            aria-label="${escapeHtml(t.controls.zoomHint)}"
+            title="${escapeHtml(t.controls.zoomHint)}"
+          >
+            <span>⛶</span>
+          </button>
+        </div>
+
+        <div class="qc-split-stage" data-qc-stage style="--split-pos: 50%;">
+          <img src="${afterSrc}" alt="${escapeHtml(loc.title)} — After QC" class="qc-img qc-img-after" loading="lazy" />
+          <div class="qc-before-clip">
+            <img src="${beforeSrc}" alt="${escapeHtml(loc.title)} — Before QC" class="qc-img qc-img-before" loading="lazy" />
+          </div>
+          <div class="qc-divider" aria-hidden="true">
+            <span class="qc-handle">⇄</span>
+          </div>
+          <span class="qc-pill qc-pill-left">${escapeHtml(t.projectsSection.beforeLabel)}</span>
+          <span class="qc-pill qc-pill-right">${escapeHtml(t.projectsSection.afterLabel)}</span>
+        </div>
+
+        <div class="qc-caption-bar">
+          <span class="mono-xs">${indexStr} // ${escapeHtml(t.projectsSection.confidentialTag)}</span>
+        </div>
+      </div>
+    `;
   }
 
   function renderProjects(data, t, lang) {
@@ -625,7 +814,10 @@
       .map((proj, idx) => {
         const loc = proj.i18n[lang] || proj.i18n.en;
         const indexStr = padIndex(idx + 1);
+        const hasBeforeAfter =
+          proj.beforeImage && proj.beforeImage.trim() !== '' && proj.afterImage && proj.afterImage.trim() !== '';
         const hasImage = proj.image && proj.image.trim() !== '';
+        const surfaceClass = proj.imageSurface === 'light' ? 'is-light-surface' : '';
 
         const highlightsHtml = (loc.highlights || [])
           .map((h) => `<li>${escapeHtml(h)}</li>`)
@@ -640,6 +832,14 @@
             proj.liveUrl
               ? `<a href="${escapeHtml(proj.liveUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-xs magnetic-btn">
                    <span>${escapeHtml(t.projectsSection.viewLive)}</span>
+                   <span aria-hidden="true">↗</span>
+                 </a>`
+              : ''
+          }
+          ${
+            proj.paperUrl
+              ? `<a href="${escapeHtml(proj.paperUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-xs magnetic-btn">
+                   <span>${escapeHtml(t.projectsSection.viewPaper)}</span>
                    <span aria-hidden="true">↗</span>
                  </a>`
               : ''
@@ -664,19 +864,36 @@
           </div>
         `;
 
-        const previewHtml = hasImage
-          ? `
-            <div class="project-media" data-project-id="${escapeHtml(proj.id)}">
-              <img
-                src="${escapeHtml(proj.image.trim())}"
-                alt="${escapeHtml(loc.title)}"
-                loading="lazy"
-                class="project-screenshot"
-              />
+        let previewHtml = '';
+        if (hasBeforeAfter) {
+          previewHtml = buildBeforeAfterMediaHtml(proj, loc, t, indexStr);
+        } else if (hasImage) {
+          previewHtml = `
+            <div
+              class="project-media zoomable-media tilt-card ${surfaceClass}"
+              role="button"
+              tabindex="0"
+              aria-label="${escapeHtml(t.controls.zoomHint)}: ${escapeHtml(loc.title)}"
+              data-zoom-src="${escapeHtml(proj.image.trim())}"
+              data-zoom-title="${escapeHtml(loc.title)}"
+              data-zoom-badge="${indexStr} // ${escapeHtml(loc.categoryLabel)}"
+              data-zoom-light="${proj.imageSurface === 'light' ? 'true' : 'false'}"
+            >
+              <div class="project-screenshot-stage">
+                <img
+                  src="${escapeHtml(proj.image.trim())}"
+                  alt="${escapeHtml(loc.title)}"
+                  loading="lazy"
+                  class="project-screenshot"
+                />
+                <span class="zoom-corner-badge" aria-hidden="true">↗</span>
+              </div>
               <template class="project-fallback-tpl">${fallbackWireframe}</template>
             </div>
-          `
-          : `<div class="project-media">${fallbackWireframe}</div>`;
+          `;
+        } else {
+          previewHtml = `<div class="project-media tilt-card">${fallbackWireframe}</div>`;
+        }
 
         return `
           <article class="project-card reveal">
@@ -714,16 +931,118 @@
       })
       .join('');
 
-    // Attach smart image fallback handler for custom project screenshots
+    // Smart image error fallback
     container.querySelectorAll('.project-screenshot').forEach((img) => {
       img.addEventListener('error', () => {
         const wrapper = img.closest('.project-media');
         const tpl = wrapper && wrapper.querySelector('.project-fallback-tpl');
         if (wrapper && tpl) {
+          wrapper.classList.remove('zoomable-media', 'is-light-surface');
+          wrapper.removeAttribute('role');
+          wrapper.removeAttribute('tabindex');
           wrapper.innerHTML = tpl.innerHTML;
         }
       });
     });
+
+    // Bind zoom triggers
+    container.querySelectorAll('.zoomable-media').forEach((el) => bindZoomTrigger(el));
+
+    // Bind Before / After QC interactive cards
+    container.querySelectorAll('.qc-compare-card').forEach((card) => {
+      const projId = card.getAttribute('data-project-id');
+      const projObj = data.projects.find((p) => p.id === projId);
+      if (projObj) {
+        bindBeforeAfterCard(card, projObj, t, lang);
+      }
+    });
+  }
+
+  function bindBeforeAfterCard(card, proj, t, lang) {
+    const stage = card.querySelector('[data-qc-stage]');
+    const tabs = card.querySelectorAll('.qc-tab');
+    const expandBtn = card.querySelector('.qc-expand-btn');
+    const loc = proj.i18n[lang] || proj.i18n.en;
+    let currentMode = 'split';
+
+    const setMode = (mode) => {
+      currentMode = mode;
+      tabs.forEach((btn) => {
+        btn.classList.toggle('is-active', btn.getAttribute('data-qc-mode') === mode);
+      });
+      stage.setAttribute('data-mode', mode);
+      if (mode === 'before') {
+        stage.style.setProperty('--split-pos', '100%');
+      } else if (mode === 'after') {
+        stage.style.setProperty('--split-pos', '0%');
+      } else {
+        stage.style.setProperty('--split-pos', '50%');
+      }
+    };
+
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        setMode(btn.getAttribute('data-qc-mode') || 'split');
+      });
+    });
+
+    // Interactive pointer drag on split mode (works for mouse & touch!)
+    let dragging = false;
+    const updateSplitFromPointer = (clientX) => {
+      if (currentMode !== 'split') return;
+      const rect = stage.getBoundingClientRect();
+      if (!rect.width) return;
+      const pct = Math.min(Math.max(((clientX - rect.left) / rect.width) * 100, 4), 96);
+      stage.style.setProperty('--split-pos', `${pct.toFixed(1)}%`);
+    };
+
+    stage.addEventListener('pointerdown', (e) => {
+      if (currentMode !== 'split') {
+        openLightbox({
+          src: currentMode === 'before' ? proj.beforeImage : proj.afterImage,
+          title: loc.title,
+          badge: currentMode === 'before' ? t.projectsSection.beforeLabel : t.projectsSection.afterLabel,
+          lightSurface: true,
+          beforeSrc: proj.beforeImage,
+          afterSrc: proj.afterImage,
+          beforeLabel: t.projectsSection.beforeLabel,
+          afterLabel: t.projectsSection.afterLabel,
+          initialSide: currentMode
+        });
+        return;
+      }
+      dragging = true;
+      stage.setPointerCapture(e.pointerId);
+      updateSplitFromPointer(e.clientX);
+    });
+
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      updateSplitFromPointer(e.clientX);
+    });
+
+    const endDrag = () => {
+      dragging = false;
+    };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+
+    if (expandBtn) {
+      expandBtn.addEventListener('click', () => {
+        const startSide = currentMode === 'before' ? 'before' : 'after';
+        openLightbox({
+          src: startSide === 'before' ? proj.beforeImage : proj.afterImage,
+          title: loc.title,
+          badge: startSide === 'before' ? t.projectsSection.beforeLabel : t.projectsSection.afterLabel,
+          lightSurface: true,
+          beforeSrc: proj.beforeImage,
+          afterSrc: proj.afterImage,
+          beforeLabel: t.projectsSection.beforeLabel,
+          afterLabel: t.projectsSection.afterLabel,
+          initialSide: startSide
+        });
+      });
+    }
   }
 
   function renderEducation(data, t, lang) {
@@ -748,7 +1067,7 @@
             : '';
 
         return `
-          <article class="edu-card">
+          <article class="edu-card tilt-card">
             <div class="edu-card-top">
               <span class="mono-xs">${escapeHtml(loc.period)}</span>
               ${loc.gpaLabel ? `<span class="gpa-pill">${escapeHtml(loc.gpaLabel)}</span>` : ''}
@@ -798,7 +1117,7 @@
           .join('');
 
         return `
-          <article class="skill-card reveal">
+          <article class="skill-card tilt-card reveal">
             <div class="skill-card-head">
               <span class="mono-idx">${escapeHtml(g.code)}</span>
               <h3 class="skill-card-title">${escapeHtml(title)}</h3>
@@ -839,13 +1158,256 @@
           <span class="mono-idx">05</span>
           <h3 class="skill-card-title">${escapeHtml(spokenTitle)}</h3>
         </div>
-        <div class="spoken-grid">
+        <div class="spoken-flex">
           ${spokenRows}
         </div>
       </article>
     `;
 
     container.innerHTML = groupsHtml + spokenCardHtml;
+  }
+
+  /* --------------------------------------------------------------------------
+   * ARCHITECTURAL LIGHTBOX PREVIEW MODAL
+   * -------------------------------------------------------------------------- */
+  function bindZoomTrigger(el) {
+    const activate = () => {
+      const src = el.getAttribute('data-zoom-src');
+      if (!src) return;
+      openLightbox({
+        src,
+        title: el.getAttribute('data-zoom-title') || '',
+        badge: el.getAttribute('data-zoom-badge') || 'PREVIEW',
+        lightSurface: el.getAttribute('data-zoom-light') === 'true'
+      });
+    };
+
+    el.addEventListener('click', activate);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activate();
+      }
+    });
+  }
+
+  function openLightbox(opts) {
+    const modal = document.getElementById('lightbox-modal');
+    const img = document.getElementById('lightbox-img');
+    const titleEl = document.getElementById('lightbox-title');
+    const badgeEl = document.getElementById('lightbox-badge');
+    const stageEl = document.getElementById('lightbox-stage');
+    const switcherEl = document.getElementById('lightbox-switcher');
+    if (!modal || !img) return;
+
+    img.src = opts.src;
+    img.alt = opts.title || 'Preview';
+    if (titleEl) titleEl.textContent = opts.title || '';
+    if (badgeEl) badgeEl.textContent = opts.badge || 'PREVIEW';
+    if (stageEl) {
+      stageEl.classList.toggle('is-light-surface', Boolean(opts.lightSurface));
+    }
+
+    if (switcherEl) {
+      if (opts.beforeSrc && opts.afterSrc) {
+        switcherEl.hidden = false;
+        const activeSide = opts.initialSide === 'before' ? 'before' : 'after';
+        switcherEl.innerHTML = `
+          <button type="button" class="qc-tab ${activeSide === 'before' ? 'is-active' : ''}" data-lb-side="before">${escapeHtml(opts.beforeLabel || 'Before')}</button>
+          <button type="button" class="qc-tab ${activeSide === 'after' ? 'is-active' : ''}" data-lb-side="after">${escapeHtml(opts.afterLabel || 'After')}</button>
+        `;
+        switcherEl.querySelectorAll('[data-lb-side]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const side = btn.getAttribute('data-lb-side');
+            switcherEl.querySelectorAll('[data-lb-side]').forEach((b) => b.classList.toggle('is-active', b === btn));
+            img.src = side === 'before' ? opts.beforeSrc : opts.afterSrc;
+            if (badgeEl) {
+              badgeEl.textContent = side === 'before' ? opts.beforeLabel : opts.afterLabel;
+            }
+          });
+        });
+      } else {
+        switcherEl.hidden = true;
+        switcherEl.innerHTML = '';
+      }
+    }
+
+    state.lightboxOpen = true;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-locked');
+    if (state.lenis) state.lenis.stop();
+  }
+
+  function closeLightbox() {
+    const modal = document.getElementById('lightbox-modal');
+    if (!modal || !state.lightboxOpen) return;
+
+    state.lightboxOpen = false;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    if (!state.mobileMenuOpen) {
+      document.body.classList.remove('menu-locked');
+      if (state.lenis) state.lenis.start();
+    }
+  }
+
+  function initLightbox() {
+    const closeBtn = document.getElementById('lightbox-close');
+    const backdrop = document.getElementById('lightbox-backdrop');
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (backdrop) backdrop.addEventListener('click', closeLightbox);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.lightboxOpen) {
+        closeLightbox();
+      }
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+   * LENIS BUTTER-SMOOTH SCROLL (DESKTOP FINE POINTER)
+   * -------------------------------------------------------------------------- */
+  function initLenisScroll() {
+    if (prefersReducedMotion() || !isFinePointer() || typeof window.Lenis !== 'function') {
+      return;
+    }
+
+    try {
+      const lenis = new window.Lenis({
+        lerp: 0.092,
+        smoothWheel: true,
+        wheelMultiplier: 0.96,
+        touchMultiplier: 1
+      });
+
+      state.lenis = lenis;
+      lenis.on('scroll', updateScrollStatus);
+
+      const raf = (time) => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      };
+      requestAnimationFrame(raf);
+
+      // Smooth anchor scrolling via Lenis
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          const hash = anchor.getAttribute('href');
+          if (!hash || hash === '#') return;
+          const target = document.querySelector(hash);
+          if (target) {
+            e.preventDefault();
+            lenis.scrollTo(target, { offset: -84, duration: 1.15 });
+          }
+        });
+      });
+    } catch (e) {
+      state.lenis = null;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+   * CUSTOM MAGNETIC DUAL CURSOR (DESKTOP ONLY)
+   * -------------------------------------------------------------------------- */
+  function initCustomCursor() {
+    if (!isFinePointer() || prefersReducedMotion()) return;
+
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    const label = document.getElementById('cursor-label');
+    if (!dot || !ring) return;
+
+    document.documentElement.classList.add('has-custom-cursor');
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let visible = false;
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+
+        if (!visible) {
+          visible = true;
+          ringX = mouseX;
+          ringY = mouseY;
+          dot.classList.add('is-visible');
+          ring.classList.add('is-visible');
+        }
+
+        const target = e.target;
+        const zoomTarget = target && target.closest('.zoomable-media, .qc-split-stage');
+        const interactiveTarget =
+          target &&
+          target.closest('a, button, [role="button"], .filter-btn, .lang-btn, .skill-chip');
+
+        if (zoomTarget) {
+          ring.classList.add('is-zoom');
+          ring.classList.remove('is-hover');
+          if (label) {
+            label.textContent = zoomTarget.classList.contains('qc-split-stage') ? '⇄' : '+';
+          }
+        } else if (interactiveTarget) {
+          ring.classList.add('is-hover');
+          ring.classList.remove('is-zoom');
+          if (label) label.textContent = '';
+        } else {
+          ring.classList.remove('is-hover', 'is-zoom');
+          if (label) label.textContent = '';
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener('pointerleave', () => {
+      visible = false;
+      dot.classList.remove('is-visible');
+      ring.classList.remove('is-visible');
+    });
+
+    const animateRing = () => {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0)`;
+      requestAnimationFrame(animateRing);
+    };
+    requestAnimationFrame(animateRing);
+  }
+
+  /* --------------------------------------------------------------------------
+   * 3D CARD TILT & SPECULAR GLARE EFFECT (DESKTOP)
+   * -------------------------------------------------------------------------- */
+  function bindTiltCards() {
+    if (!isFinePointer() || prefersReducedMotion()) return;
+
+    document.querySelectorAll('.tilt-card:not([data-tilt-bound])').forEach((card) => {
+      card.setAttribute('data-tilt-bound', 'true');
+
+      card.addEventListener('pointermove', (e) => {
+        const rect = card.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+
+        const rotY = (px - 0.5) * 6;
+        const rotX = (0.5 - py) * 6;
+
+        card.style.setProperty('--glare-x', `${(px * 100).toFixed(1)}%`);
+        card.style.setProperty('--glare-y', `${(py * 100).toFixed(1)}%`);
+        card.style.transform = `perspective(1100px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(0)`;
+      });
+
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    });
   }
 
   /* --------------------------------------------------------------------------
@@ -863,6 +1425,11 @@
       drawer.classList.toggle('is-open', open);
       drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
       document.body.classList.toggle('menu-locked', open);
+
+      if (state.lenis) {
+        if (open) state.lenis.stop();
+        else state.lenis.start();
+      }
 
       const labelEl = document.getElementById('mobile-menu-label');
       const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
@@ -886,7 +1453,7 @@
     window.addEventListener(
       'resize',
       () => {
-        if (window.innerWidth >= 1024 && state.mobileMenuOpen) {
+        if (window.innerWidth >= 1120 && state.mobileMenuOpen) {
           setOpen(false);
         }
       },
@@ -1017,15 +1584,13 @@
   }
 
   /* --------------------------------------------------------------------------
-   * REVEAL ANIMATIONS & MAGNETIC BUTTONS (LANDO NORRIS KINETIC FEEL)
+   * REVEAL ANIMATIONS & MAGNETIC BUTTONS
    * -------------------------------------------------------------------------- */
   function observeReveals() {
     const items = document.querySelectorAll('.reveal:not(.is-visible)');
     if (!items.length) return;
 
-    const reduced =
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced || !('IntersectionObserver' in window)) {
+    if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
       items.forEach((el) => el.classList.add('is-visible'));
       return;
     }
@@ -1040,7 +1605,7 @@
             }
           });
         },
-        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+        { threshold: 0.08, rootMargin: '0px 0px -36px 0px' }
       );
     }
 
@@ -1048,18 +1613,14 @@
   }
 
   function bindMagneticButtons() {
-    const canHover =
-      window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const reduced =
-      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!canHover || reduced) return;
+    if (!isFinePointer() || prefersReducedMotion()) return;
 
     document.querySelectorAll('.magnetic-btn:not([data-magnetic-bound])').forEach((btn) => {
       btn.setAttribute('data-magnetic-bound', 'true');
       btn.addEventListener('pointermove', (e) => {
         const rect = btn.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) * 0.18;
-        const y = (e.clientY - rect.top - rect.height / 2) * 0.22;
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.24;
         btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
       });
       btn.addEventListener('pointerleave', () => {
@@ -1083,7 +1644,7 @@
     try {
       window.localStorage.setItem(key, val);
     } catch (e) {
-      // Ignore private browsing quota errors
+      // Ignore storage errors
     }
   }
 
@@ -1094,16 +1655,29 @@
     initBrandingAndLinks();
     initTheme();
     initMobileMenu();
+    initLightbox();
     initLanguage();
     initCopyEmail();
     initScrollAndSpy();
+    initLenisScroll();
+    initCustomCursor();
 
     if (window.PortfolioCanvas && typeof window.PortfolioCanvas.init === 'function') {
       window.PortfolioCanvas.init();
+    }
+
+    // Initial cyber decode effect on Hero Name & Eyebrow
+    if (!state.initialLoadDone) {
+      state.initialLoadDone = true;
+      const firstEl = document.getElementById('hero-first-name');
+      const lastEl = document.getElementById('hero-last-name');
+      const eyebrowEl = document.getElementById('hero-eyebrow');
+      if (firstEl) scrambleElement(firstEl, firstEl.textContent, 520);
+      if (lastEl) scrambleElement(lastEl, lastEl.textContent, 640);
+      if (eyebrowEl) scrambleElement(eyebrowEl, eyebrowEl.textContent, 480);
     }
 
     updateLiveClock();
     setInterval(updateLiveClock, 15000);
   });
 })();
-

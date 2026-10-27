@@ -27,7 +27,7 @@
     content="Full-Stack Developer &amp; Data / AI Engineer based in Malang, Indonesia."
   />
 
-  <!-- Favicon (with dynamic fallback handled in main.js) -->
+  <!-- Favicon (dynamically upgraded to cropped logo or monogram fallback in main.js) -->
   <link rel="icon" id="site-favicon" type="image/svg+xml" href="assets/icons/favicon.svg" />
 
   <!-- Google Fonts: Space Grotesk (Kinetic Display), Inter (Editorial UI), JetBrains Mono (Indices & Specs) -->
@@ -63,6 +63,12 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
+  <!-- Custom Magnetic Dual Cursor (Desktop Fine Pointer Only) -->
+  <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" class="cursor-ring" aria-hidden="true">
+    <span id="cursor-label" class="cursor-label"></span>
+  </div>
+
   <!-- Interactive Background Layers (<canvas> + Optional Static Image Fallback) -->
   <div id="bg-image-layer" class="bg-image-layer" aria-hidden="true"></div>
   <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
@@ -93,27 +99,27 @@
       <nav class="desktop-nav" aria-label="Primary Navigation">
         <a href="#overview" class="nav-link" data-section="overview">
           <span class="nav-idx">01</span>
-          <span data-i18n="nav.overview">Overview</span>
+          <span data-i18n="nav.overview" data-scramble-hover>Overview</span>
         </a>
         <a href="#experience" class="nav-link" data-section="experience">
           <span class="nav-idx">02</span>
-          <span data-i18n="nav.experience">Experience</span>
+          <span data-i18n="nav.experience" data-scramble-hover>Experience</span>
         </a>
         <a href="#projects" class="nav-link" data-section="projects">
           <span class="nav-idx">03</span>
-          <span data-i18n="nav.projects">Projects</span>
+          <span data-i18n="nav.projects" data-scramble-hover>Projects</span>
         </a>
         <a href="#leadership" class="nav-link" data-section="leadership">
           <span class="nav-idx">04</span>
-          <span data-i18n="nav.leadership">Leadership</span>
+          <span data-i18n="nav.leadership" data-scramble-hover>Leadership</span>
         </a>
         <a href="#skills" class="nav-link" data-section="skills">
           <span class="nav-idx">05</span>
-          <span data-i18n="nav.skills">Capabilities</span>
+          <span data-i18n="nav.skills" data-scramble-hover>Capabilities</span>
         </a>
         <a href="#contact" class="nav-link" data-section="contact">
           <span class="nav-idx">06</span>
-          <span data-i18n="nav.contact">Contact</span>
+          <span data-i18n="nav.contact" data-scramble-hover>Contact</span>
         </a>
       </nav>
 
@@ -228,14 +234,14 @@
     <section id="hero" class="section hero-section">
       <div class="container">
         <div class="hero-top-meta reveal">
-          <span class="mono-tag" data-i18n="hero.eyebrow">PORTFOLIO ARCHIVE // EDITION 2026</span>
+          <span class="mono-tag" id="hero-eyebrow" data-i18n="hero.eyebrow">PORTFOLIO ARCHIVE // EDITION 2026</span>
           <span class="status-pill">
             <span class="status-dot"></span>
             <span data-i18n="hero.availability">Available for Full-Stack, System &amp; Data/AI Roles</span>
           </span>
         </div>
 
-        <div class="hero-grid">
+        <div class="hero-flex-layout">
           <div class="hero-primary">
             <h1 class="hero-title reveal">
               <span class="hero-title-solid" id="hero-first-name">HANS ADIYATMA</span>
@@ -243,10 +249,12 @@
             </h1>
 
             <div class="hero-role-bar reveal">
-              <p class="hero-role" data-i18n="hero.roleTagline">Full-Stack Developer &amp; Data / AI Engineer</p>
+              <p class="hero-role" id="hero-role-tagline" data-i18n="hero.roleTagline">
+                Full-Stack Developer &amp; Data / AI Engineer
+              </p>
               <div class="hero-submeta">
                 <span class="meta-chip">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
@@ -260,13 +268,13 @@
             </div>
 
             <p class="hero-summary reveal" data-i18n="hero.summary">
-              Dedicated Informatics (Computer Science) graduate with a 3.78/4.00 GPA, combining strong expertise in Full-Stack Web Development, enterprise system integration, and Data Science / Explainable AI. Proven track record in building production-ready internal platforms (HRIS, Operational Management, Mini ERP), integrating hardware biometric APIs (ISAPI), and designing reliable data pipelines. Demonstrated leadership as former Vice President of the Data Science Club.
+              Dedicated Informatics (Computer Science) graduate with a 3.78/4.00 GPA, combining strong expertise in Full-Stack Web Development, enterprise system integration, and Data Science / Explainable AI. Proven track record in building production-ready internal platforms (HRIS, Operational Management, Mini ERP), integrating hardware biometric APIs (ISAPI), and designing reliable data architectures. Demonstrated leadership as former Vice President of the Data Science Club.
             </p>
 
             <div class="hero-actions reveal">
               <a href="#projects" class="btn btn-primary magnetic-btn">
                 <span data-i18n="hero.ctaProjects">View Projects</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                   <path d="M7 17L17 7M17 7H8M17 7V16"></path>
                 </svg>
               </a>
@@ -278,7 +286,7 @@
                 rel="noopener"
               >
                 <span data-i18n="hero.ctaDownloadCv">Download CV</span>
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path>
                 </svg>
               </a>
@@ -306,14 +314,14 @@
             </div>
           </div>
 
-          <!-- Architectural Portrait Card / Smart Fallback -->
+          <!-- Architectural Portrait Card / Photo + 3D Tilt -->
           <aside class="hero-aside reveal" aria-label="Profile Visual">
-            <div id="profile-media-slot" class="portrait-card"></div>
+            <div id="profile-media-slot" class="portrait-card tilt-card"></div>
           </aside>
         </div>
 
-        <!-- Swiss Metrics Bar -->
-        <div id="hero-metrics" class="metrics-grid reveal"></div>
+        <!-- Flexible Metrics Bar -->
+        <div id="hero-metrics" class="metrics-flex reveal"></div>
       </div>
     </section>
 
@@ -328,7 +336,7 @@
             <span class="section-kicker" data-i18n="overview.kicker">CORE ARCHITECTURE</span>
           </div>
           <div class="section-heading-group">
-            <h2 class="section-title" data-i18n="overview.title">
+            <h2 class="section-title" data-i18n="overview.title" data-scramble-lang>
               Engineering Reliable Systems &amp; Interpretable Intelligence
             </h2>
             <p class="section-subtitle" data-i18n="overview.subtitle">
@@ -337,7 +345,7 @@
           </div>
         </div>
 
-        <div id="overview-pillars" class="pillars-grid"></div>
+        <div id="overview-pillars" class="pillars-flex"></div>
       </div>
     </section>
 
@@ -352,9 +360,9 @@
             <span class="section-kicker" data-i18n="experienceSection.kicker">CAREER TRAJECTORY</span>
           </div>
           <div class="section-heading-group">
-            <h2 class="section-title" data-i18n="experienceSection.title">Work Experience</h2>
+            <h2 class="section-title" data-i18n="experienceSection.title" data-scramble-lang>Work Experience</h2>
             <p class="section-subtitle" data-i18n="experienceSection.subtitle">
-              Delivering enterprise software, automated pipelines, and verified datasets across private and public institutions.
+              Delivering enterprise software, automated workflows, and verified relational datasets across private and public institutions.
             </p>
           </div>
         </div>
@@ -374,9 +382,9 @@
               <span class="section-index" data-i18n="projectsSection.index">03</span>
               <span class="section-kicker" data-i18n="projectsSection.kicker">SELECTED WORKS</span>
             </div>
-            <h2 class="section-title" data-i18n="projectsSection.title">Featured Projects</h2>
+            <h2 class="section-title" data-i18n="projectsSection.title" data-scramble-lang>Featured Projects</h2>
             <p class="section-subtitle" data-i18n="projectsSection.subtitle">
-              Production systems, relational architectures, and analytical models engineered for reliability and clarity.
+              Production systems, normalized relational architectures, and published AI research engineered for reliability and clarity.
             </p>
           </div>
 
@@ -399,14 +407,14 @@
             <span class="section-kicker" data-i18n="leadershipSection.kicker">ACADEMIC &amp; COMMUNITY</span>
           </div>
           <div class="section-heading-group">
-            <h2 class="section-title" data-i18n="leadershipSection.title">Education &amp; Leadership</h2>
+            <h2 class="section-title" data-i18n="leadershipSection.title" data-scramble-lang>Education &amp; Leadership</h2>
             <p class="section-subtitle" data-i18n="leadershipSection.subtitle">
               Academic excellence paired with executive leadership in technical student organizations.
             </p>
           </div>
         </div>
 
-        <div class="dual-grid">
+        <div class="dual-flex">
           <div class="dual-col reveal">
             <h3 class="sub-column-heading">
               <span class="mono-dot"></span>
@@ -437,14 +445,14 @@
             <span class="section-kicker" data-i18n="skillsSection.kicker">TECHNICAL MATRIX</span>
           </div>
           <div class="section-heading-group">
-            <h2 class="section-title" data-i18n="skillsSection.title">Skills &amp; Languages</h2>
+            <h2 class="section-title" data-i18n="skillsSection.title" data-scramble-lang>Skills &amp; Languages</h2>
             <p class="section-subtitle" data-i18n="skillsSection.subtitle">
               Core languages, frameworks, relational databases, developer tooling, and multilingual communication.
             </p>
           </div>
         </div>
 
-        <div id="skills-grid" class="skills-bento"></div>
+        <div id="skills-grid" class="skills-flex-grid"></div>
       </div>
     </section>
 
@@ -459,14 +467,14 @@
             <span class="section-kicker" data-i18n="contactSection.kicker">INITIATE DIALOGUE</span>
           </div>
 
-          <h2 class="contact-headline" data-i18n="contactSection.title">
+          <h2 class="contact-headline" data-i18n="contactSection.title" data-scramble-lang>
             Let’s Build Resilient Digital Systems Together.
           </h2>
           <p class="contact-subtitle" data-i18n="contactSection.subtitle">
             Open for Full-Stack Engineering, System Analysis, Data Engineering, and AI/ML opportunities — remote or on-site.
           </p>
 
-          <div class="contact-cards-grid">
+          <div class="contact-cards-flex">
             <!-- Direct Email Card -->
             <div class="contact-card">
               <span class="contact-card-label" data-i18n="contactSection.emailLabel">Direct Email</span>
@@ -474,11 +482,11 @@
                 hans141203@gmail.com
               </a>
               <div class="contact-card-actions">
-                <a href="mailto:hans141203@gmail.com" id="contact-mailto-btn" class="btn btn-primary btn-sm">
+                <a href="mailto:hans141203@gmail.com" id="contact-mailto-btn" class="btn btn-primary btn-sm magnetic-btn">
                   <span data-i18n="contactSection.sendEmail">Send Email</span>
                   <span aria-hidden="true">↗</span>
                 </a>
-                <button type="button" id="copy-email-btn" class="btn btn-outline btn-sm">
+                <button type="button" id="copy-email-btn" class="btn btn-outline btn-sm magnetic-btn">
                   <span id="copy-email-text" data-i18n="contactSection.copyEmail">Copy Address</span>
                 </button>
               </div>
@@ -502,7 +510,7 @@
                   id="contact-wa-btn"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="btn btn-outline btn-sm"
+                  class="btn btn-outline btn-sm magnetic-btn"
                 >
                   <span data-i18n="contactSection.chatWhatsapp">Message on WhatsApp</span>
                   <span aria-hidden="true">↗</span>
@@ -520,7 +528,7 @@
                   id="contact-cv-btn"
                   target="_blank"
                   rel="noopener"
-                  class="btn btn-outline btn-sm"
+                  class="btn btn-outline btn-sm magnetic-btn"
                 >
                   <span data-i18n="contactSection.downloadCvBtn">Download PDF Resume</span>
                   <span aria-hidden="true">↓</span>
@@ -556,14 +564,37 @@
       <div class="footer-meta" data-i18n="footer.crafted">
         Minimalist Kinetic Architecture — Hosted on GitHub Pages.
       </div>
-      <a href="#hero" class="back-to-top" data-i18n="footer.backToTop">Back to Top ↑</a>
+      <a href="#hero" class="back-to-top" id="back-to-top-link" data-i18n="footer.backToTop">Back to Top ↑</a>
     </div>
   </footer>
 
-  <!-- Modular Vanilla JS (Works on GitHub Pages, Local Server, and Direct File Open) -->
+  <!-- Full-Screen Architectural Lightbox Modal -->
+  <div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-dialog">
+      <div class="lightbox-header">
+        <div class="lightbox-meta">
+          <span id="lightbox-badge" class="mono-idx">PREVIEW</span>
+          <h3 id="lightbox-title" class="lightbox-title">Project Preview</h3>
+        </div>
+        <button type="button" id="lightbox-close" class="lightbox-close" aria-label="Close preview">
+          <span>ESC</span>
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+      <div id="lightbox-switcher" class="lightbox-switcher" hidden></div>
+      <div class="lightbox-stage" id="lightbox-stage">
+        <img id="lightbox-img" src="" alt="" class="lightbox-img" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Lenis Butter-Smooth Scroll Library (Gracefully falls back if offline) -->
+  <script defer src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+
+  <!-- Modular Vanilla JS -->
   <script defer src="js/data.js"></script>
   <script defer src="js/canvas.js"></script>
   <script defer src="js/main.js"></script>
 </body>
 </html>
-

@@ -1,0 +1,10 @@
+# Raw source documents & uncompressed reference uploads (excluded from GitHub Pages)
+*.docx
+new_necessary_files/
+
+# OS & Editor metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+
