@@ -4,53 +4,77 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. DESIGN TOKENS & THEME PALETTES (DARK DEFAULT + LIGHT EDITORIAL)
+   1. DESIGN TOKENS & THEME PALETTES (CYBER AZURE BLUE DEFAULT + COBALT PRESET)
    -------------------------------------------------------------------------- */
 :root,
 [data-theme="dark"] {
   --bg-primary: #0B0B0B;
-  --bg-elevated: rgba(19, 19, 19, 0.82);
-  --bg-surface: #151515;
-  --bg-header: rgba(11, 11, 11, 0.86);
-  --bg-drawer: rgba(11, 11, 11, 0.98);
+  --bg-elevated: rgba(18, 20, 24, 0.84);
+  --bg-surface: #14171C;
+  --bg-header: rgba(11, 12, 14, 0.88);
+  --bg-drawer: rgba(11, 12, 14, 0.98);
 
-  --text-primary: #F4F4F0;
-  --text-secondary: #A0A09C;
-  --text-muted: #767672;
+  --text-primary: #F4F5F7;
+  --text-secondary: #A1A6B0;
+  --text-muted: #727884;
 
-  --border-color: rgba(255, 255, 255, 0.14);
-  --border-strong: rgba(255, 255, 255, 0.30);
+  --border-color: rgba(255, 255, 255, 0.13);
+  --border-strong: rgba(255, 255, 255, 0.28);
 
-  --accent: #D2FF00;
-  --accent-fg: #0B0B0B;
-  --accent-soft: rgba(210, 255, 0, 0.11);
-  --accent-border: rgba(210, 255, 0, 0.42);
+  /* Option A (Default): Cyber Azure Blue */
+  --accent: #38BDF8;
+  --accent-fg: #06131F;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --accent-border: rgba(56, 189, 248, 0.44);
+  --glare-color: rgba(56, 189, 248, 0.08);
+  --spotlight-border: rgba(56, 189, 248, 0.55);
 
-  --glare-color: rgba(210, 255, 0, 0.07);
-  --shadow-card: 0 20px 44px -20px rgba(0, 0, 0, 0.72);
+  --shadow-card: 0 20px 44px -20px rgba(0, 0, 0, 0.76);
+}
+
+[data-theme="dark"][data-accent="cobalt"] {
+  /* Option B: Royal Electric Cobalt */
+  --accent: #4F8CFF;
+  --accent-fg: #FFFFFF;
+  --accent-soft: rgba(79, 140, 255, 0.13);
+  --accent-border: rgba(79, 140, 255, 0.46);
+  --glare-color: rgba(79, 140, 255, 0.09);
+  --spotlight-border: rgba(79, 140, 255, 0.58);
 }
 
 [data-theme="light"] {
-  --bg-primary: #F5F5F3;
-  --bg-elevated: rgba(255, 255, 255, 0.86);
-  --bg-surface: #EAEAE5;
-  --bg-header: rgba(245, 245, 243, 0.90);
-  --bg-drawer: rgba(245, 245, 243, 0.98);
+  --bg-primary: #F5F6F8;
+  --bg-elevated: rgba(255, 255, 255, 0.88);
+  --bg-surface: #EAECEF;
+  --bg-header: rgba(245, 246, 248, 0.91);
+  --bg-drawer: rgba(245, 246, 248, 0.98);
 
-  --text-primary: #111111;
-  --text-secondary: #4E4E4A;
-  --text-muted: #72726D;
+  --text-primary: #0F141C;
+  --text-secondary: #4B5260;
+  --text-muted: #6E7685;
 
-  --border-color: rgba(17, 17, 17, 0.14);
-  --border-strong: rgba(17, 17, 17, 0.30);
+  --border-color: rgba(15, 20, 28, 0.13);
+  --border-strong: rgba(15, 20, 28, 0.28);
 
-  --accent: #0D765E;
+  /* Option A (Default Light): Architectural Blueprint Azure */
+  --accent: #0284C7;
   --accent-fg: #FFFFFF;
-  --accent-soft: rgba(13, 118, 94, 0.10);
-  --accent-border: rgba(13, 118, 94, 0.38);
+  --accent-soft: rgba(2, 132, 199, 0.10);
+  --accent-border: rgba(2, 132, 199, 0.38);
+  --glare-color: rgba(2, 132, 199, 0.06);
+  --spotlight-border: rgba(2, 132, 199, 0.48);
 
-  --glare-color: rgba(13, 118, 94, 0.06);
-  --shadow-card: 0 18px 40px -20px rgba(17, 17, 17, 0.12);
+  --shadow-card: 0 18px 40px -20px rgba(15, 20, 28, 0.12);
+}
+
+[data-theme="light"][data-accent="cobalt"] {
+  /* Option B (Light): Deep Royal Cobalt */
+  --accent: #1D4ED8;
+  --accent-fg: #FFFFFF;
+  --accent-soft: rgba(29, 78, 216, 0.10);
+  --accent-border: rgba(29, 78, 216, 0.38);
+  --glare-color: rgba(29, 78, 216, 0.06);
+  --spotlight-border: rgba(29, 78, 216, 0.48);
 }
 
 :root {
@@ -781,12 +805,14 @@ svg {
 
 .statusbar-center {
   display: none;
+  align-items: center;
+  gap: 10px;
   color: var(--text-muted);
 }
 
-@media (min-width: 1120px) {
+@media (min-width: 980px) {
   .statusbar-center {
-    display: block;
+    display: flex;
   }
 }
 
@@ -972,6 +998,7 @@ svg {
 
 /* Section Headers */
 .section-header {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -2052,8 +2079,8 @@ svg {
   height: 32px;
   border-radius: 50%;
   background-color: #0B0B0B;
-  color: #D2FF00;
-  border: 2px solid #D2FF00;
+  color: var(--accent);
+  border: 2px solid var(--accent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2428,6 +2455,8 @@ svg {
 }
 
 .contact-box {
+  position: relative;
+  overflow: hidden;
   padding: clamp(24px, 4.5vw, 54px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -2721,6 +2750,603 @@ svg {
   transform: translateY(0);
 }
 
+/* --------------------------------------------------------------------------
+   18. ARCHITECTURAL CURTAIN BOOT INTRO (~0.6s)
+   -------------------------------------------------------------------------- */
+.boot-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: visibility 0.55s ease;
+}
+
+.boot-curtain.is-done {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.boot-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background-color: var(--bg-primary);
+  transition: transform 0.56s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.boot-panel-top {
+  top: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.boot-panel-bottom {
+  bottom: 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.boot-curtain.is-done .boot-panel-top {
+  transform: translateY(-102%);
+}
+
+.boot-curtain.is-done .boot-panel-bottom {
+  transform: translateY(102%);
+}
+
+.boot-hud {
+  position: relative;
+  z-index: 2;
+  width: min(360px, 84vw);
+  padding: 20px 22px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: opacity 0.28s ease, transform 0.32s var(--ease-kinetic);
+}
+
+.boot-curtain.is-done .boot-hud {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.boot-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boot-logo-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid var(--accent-border);
+  background-color: var(--bg-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.boot-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.boot-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.boot-sub {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+}
+
+.boot-bar-track {
+  width: 100%;
+  height: 3px;
+  background-color: var(--border-color);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.boot-bar-fill {
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.boot-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+#boot-counter {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   19. VELOCITY-REACTIVE INFINITE KINETIC TECH TICKER
+   -------------------------------------------------------------------------- */
+.tech-marquee-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-elevated);
+  user-select: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+
+.tech-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 30px);
+  padding-right: clamp(18px, 2.4vw, 30px);
+  font-family: var(--font-display);
+  font-size: clamp(0.86rem, 1.25vw, 0.98rem);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.tech-marquee-wrap:hover .marquee-item {
+  color: var(--text-primary);
+}
+
+.marquee-star {
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+/* --------------------------------------------------------------------------
+   20. LIVE <canvas> MODE SWITCHER IN BOTTOM STATUS BAR
+   -------------------------------------------------------------------------- */
+.canvas-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-surface);
+}
+
+.canvas-mode-btn {
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.canvas-mode-btn:hover {
+  color: var(--text-primary);
+}
+
+.canvas-mode-btn.is-active {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   21. RADIAL BORDER SPOTLIGHT TRACKING (LINEAR / VERCEL GLOW)
+   -------------------------------------------------------------------------- */
+.spotlight-card {
+  position: relative;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spotlight-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      320px circle at var(--spot-x, -999px) var(--spot-y, -999px),
+      var(--spotlight-border),
+      transparent 72%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   22. PARALLAX GIANT OUTLINE SECTION WATERMARKS (01 — 06)
+   -------------------------------------------------------------------------- */
+.section-watermark {
+  position: absolute;
+  right: 0;
+  top: -22px;
+  font-family: var(--font-display);
+  font-size: clamp(4.4rem, 10vw, 8.2rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border-color);
+  opacity: 0.52;
+  pointer-events: none;
+  user-select: none;
+  z-index: -1;
+  will-change: transform;
+}
+
+.section-watermark-contact {
+  right: 24px;
+  top: 14px;
+  z-index: 0;
+  opacity: 0.36;
+}
+
+/* --------------------------------------------------------------------------
+   23. DEVELOPER COMMAND PALETTE (Ctrl+K / Cmd+K) & HEADER TRIGGER
+   -------------------------------------------------------------------------- */
+.cmd-trigger {
+  height: 34px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-surface);
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cmd-trigger:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.cmd-kbd {
+  display: none;
+  padding: 1px 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background-color: var(--bg-primary);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@media (min-width: 720px) {
+  .cmd-kbd {
+    display: inline-block;
+  }
+}
+
+.cmd-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(56px, 11vh, 110px) 16px 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease, visibility 0.22s;
+}
+
+.cmd-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cmd-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(5, 7, 10, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.cmd-dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
+  max-height: 74vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+  transform: translateY(-10px) scale(0.98);
+  transition: transform 0.24s var(--ease-kinetic);
+}
+
+.cmd-modal.is-open .cmd-dialog {
+  transform: translateY(0) scale(1);
+}
+
+.cmd-search-bar {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--accent);
+}
+
+.cmd-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  color: var(--text-primary);
+}
+
+.cmd-input::placeholder {
+  color: var(--text-muted);
+}
+
+.cmd-esc-btn {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.cmd-esc-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.cmd-list {
+  padding: 8px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cmd-group-label {
+  padding: 10px 10px 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cmd-item {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.cmd-item.is-selected {
+  background-color: var(--accent-soft);
+}
+
+.cmd-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cmd-item-code {
+  min-width: 34px;
+  padding: 2px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.cmd-item.is-selected .cmd-item-code {
+  border-color: var(--accent-border);
+  background-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.cmd-item-label {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmd-item-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.cmd-empty {
+  padding: 28px 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   24. FLOATING TOAST NOTIFICATION & MOBILE QUICK-DOCK (FLEXBOX)
+   -------------------------------------------------------------------------- */
+.toast-banner {
+  position: fixed;
+  right: calc(var(--frame-pad) + 16px);
+  bottom: calc(var(--frame-pad) + var(--statusbar-h) + 16px);
+  z-index: 320;
+  padding: 10px 16px;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  background-color: var(--bg-surface);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-primary);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease-kinetic), transform 0.25s var(--ease-kinetic), visibility 0.25s;
+}
+
+.toast-banner.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.toast-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: var(--accent-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Mobile Floating Quick-Dock (< 768px) */
+.mobile-quick-dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  transform: translate(-50%, 24px);
+  z-index: 47;
+  padding: 5px;
+  border: 1px solid var(--accent-border);
+  border-radius: 999px;
+  background-color: var(--bg-header);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100vw - 28px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.28s var(--ease-kinetic), transform 0.28s var(--ease-kinetic), visibility 0.28s;
+}
+
+.mobile-quick-dock.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+@media (min-width: 768px) {
+  .mobile-quick-dock {
+    display: none !important;
+  }
+}
+
+.dock-pill {
+  padding: 7px 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.dock-pill-accent {
+  background-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.dock-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2732,5 +3358,8 @@ svg {
   }
   .status-dot {
     animation: none !important;
+  }
+  .boot-curtain {
+    display: none !important;
   }
 }

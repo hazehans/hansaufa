@@ -12,8 +12,11 @@ window.PORTFOLIO_DATA = {
    * 1. GLOBAL SITE CONFIGURATION & ASSET PATHS
    * -------------------------------------------------------------------------- */
   config: {
-    defaultLang: 'en',          // Pilihan: 'en' | 'id' | 'fr'
+    defaultLang: 'en',          // Pilihan: 'en' | 'id' | 'fr' (Default landing SELALU Bahasa Inggris)
+    persistLanguage: false,     // false = setiap buka/refresh selalu kembali ke defaultLang ('en')
     defaultTheme: 'system',     // Pilihan: 'system' | 'dark' | 'light'
+    accentPreset: 'azure',      // Pilihan: 'azure' (Opsi A Cyber Azure) | 'cobalt' (Opsi B Royal Cobalt)
+    enableBootIntro: true,      // true = tampilkan Architectural Curtain Intro cepat (~0.65s)
 
     branding: {
       monogram: 'HA',           // Teks fallback logo geometris jika logoImage dikosongkan
@@ -30,6 +33,18 @@ window.PORTFOLIO_DATA = {
       imageOpacity: 0.16,
       interactive: true
     },
+
+    marqueeItems: [
+      'LARAVEL 12',
+      'NEXT.JS',
+      'EXPLAINABLE AI (XAI)',
+      'TABULARBERT + PCA',
+      'HIKVISION ISAPI BIOMETRICS',
+      'ENTERPRISE MINI ERP',
+      'RELATIONAL DATA QA',
+      'PUBLISHED DOI RESEARCH',
+      'MYSQL & POSTGRESQL'
+    ],
 
     assets: {
       // Kosongkan "" untuk menampilkan kartu arsitektural monogram "HA" otomatis
@@ -82,7 +97,38 @@ window.PORTFOLIO_DATA = {
         scrollLabel: 'SCROLL',
         localTimeLabel: 'MALANG, ID',
         zoomHint: 'Click to inspect full preview',
-        closeModal: 'Close preview'
+        closeModal: 'Close preview',
+        cmdLabel: 'Quick Command Palette',
+        cmdPlaceholder: 'Type a command or jump to section...',
+        cmdEmpty: 'No matching commands found.',
+        canvasDots: 'DOTS',
+        canvasWaves: 'WAVES',
+        canvasNodes: 'NODES',
+        toastCopied: 'Email copied to clipboard',
+        toastCanvas: 'Canvas mode switched to',
+        toastAccent: 'Accent palette switched to',
+        dockCv: 'CV ↓',
+        dockTop: 'Top ↑'
+      },
+      commandPalette: {
+        groupNav: 'Navigation',
+        groupLinks: 'Featured Links & Assets',
+        groupSystem: 'Interface & Canvas',
+        copyEmail: 'Copy Direct Email Address',
+        downloadCv: 'Download Curriculum Vitae (PDF)',
+        openPaper: 'Read Published XAI Paper (DOI)',
+        openHris: 'Open Live HRIS Platform',
+        openGithub: 'Open GitHub Profile (@hazehans)',
+        openLinkedin: 'Open LinkedIn Profile',
+        switchTheme: 'Toggle Dark / Light Theme',
+        accentAzure: 'Accent: Cyber Azure Blue (Option A)',
+        accentCobalt: 'Accent: Royal Electric Cobalt (Option B)',
+        canvasDots: 'Canvas: Architectural Dot Matrix',
+        canvasWaves: 'Canvas: Kinetic Wave Grid',
+        canvasNodes: 'Canvas: Neural Particle Network',
+        langEn: 'Language: English (EN)',
+        langId: 'Language: Bahasa Indonesia (ID)',
+        langFr: 'Language: Français (FR)'
       },
       hero: {
         eyebrow: 'PORTFOLIO ARCHIVE // EDITION 2026',
@@ -208,7 +254,38 @@ window.PORTFOLIO_DATA = {
         scrollLabel: 'GULIR',
         localTimeLabel: 'MALANG, ID',
         zoomHint: 'Klik untuk memperbesar gambar',
-        closeModal: 'Tutup pratinjau'
+        closeModal: 'Tutup pratinjau',
+        cmdLabel: 'Panel Perintah Cepat',
+        cmdPlaceholder: 'Ketik perintah atau lompat ke bagian...',
+        cmdEmpty: 'Perintah tidak ditemukan.',
+        canvasDots: 'DOTS',
+        canvasWaves: 'WAVES',
+        canvasNodes: 'NODES',
+        toastCopied: 'Alamat email berhasil disalin',
+        toastCanvas: 'Mode kanvas diubah ke',
+        toastAccent: 'Aksen warna diubah ke',
+        dockCv: 'CV ↓',
+        dockTop: 'Atas ↑'
+      },
+      commandPalette: {
+        groupNav: 'Navigasi Halaman',
+        groupLinks: 'Tautan & Dokumen Utama',
+        groupSystem: 'Tampilan & Kanvas',
+        copyEmail: 'Salin Alamat Email Langsung',
+        downloadCv: 'Unduh Curriculum Vitae (PDF)',
+        openPaper: 'Buka Jurnal Publikasi XAI (DOI)',
+        openHris: 'Buka Sistem Live HRIS',
+        openGithub: 'Buka Profil GitHub (@hazehans)',
+        openLinkedin: 'Buka Profil LinkedIn',
+        switchTheme: 'Ganti Tema Gelap / Terang',
+        accentAzure: 'Aksen: Cyber Azure Blue (Opsi A)',
+        accentCobalt: 'Aksen: Royal Electric Cobalt (Opsi B)',
+        canvasDots: 'Kanvas: Matriks Titik Arsitektural',
+        canvasWaves: 'Kanvas: Jaring Gelombang Kinetik',
+        canvasNodes: 'Kanvas: Jaringan Partikel Neural',
+        langEn: 'Bahasa: English (EN)',
+        langId: 'Bahasa: Bahasa Indonesia (ID)',
+        langFr: 'Bahasa: Français (FR)'
       },
       hero: {
         eyebrow: 'ARSIP PORTOFOLIO // EDISI 2026',
@@ -334,7 +411,38 @@ window.PORTFOLIO_DATA = {
         scrollLabel: 'DÉFILER',
         localTimeLabel: 'MALANG, ID',
         zoomHint: 'Cliquer pour agrandir l’aperçu',
-        closeModal: 'Fermer l’aperçu'
+        closeModal: 'Fermer l’aperçu',
+        cmdLabel: 'Palette de commandes',
+        cmdPlaceholder: 'Tapez une commande ou allez à une section...',
+        cmdEmpty: 'Aucune commande correspondante.',
+        canvasDots: 'DOTS',
+        canvasWaves: 'WAVES',
+        canvasNodes: 'NODES',
+        toastCopied: 'Adresse email copiée',
+        toastCanvas: 'Mode canevas changé en',
+        toastAccent: 'Couleur d’accent changée en',
+        dockCv: 'CV ↓',
+        dockTop: 'Haut ↑'
+      },
+      commandPalette: {
+        groupNav: 'Navigation',
+        groupLinks: 'Liens & Documents Clés',
+        groupSystem: 'Interface & Canevas',
+        copyEmail: 'Copier l’adresse email directe',
+        downloadCv: 'Télécharger le Curriculum Vitae (PDF)',
+        openPaper: 'Lire l’article publié XAI (DOI)',
+        openHris: 'Ouvrir le système SIRH/HRIS en ligne',
+        openGithub: 'Ouvrir le profil GitHub (@hazehans)',
+        openLinkedin: 'Ouvrir le profil LinkedIn',
+        switchTheme: 'Basculer le thème Sombre / Clair',
+        accentAzure: 'Accent : Cyber Azure Blue (Option A)',
+        accentCobalt: 'Accent : Royal Electric Cobalt (Option B)',
+        canvasDots: 'Canevas : Matrice de Points',
+        canvasWaves: 'Canevas : Grille d’Ondes Cinétiques',
+        canvasNodes: 'Canevas : Réseau de Particules',
+        langEn: 'Langue : English (EN)',
+        langId: 'Langue : Bahasa Indonesia (ID)',
+        langFr: 'Langue : Français (FR)'
       },
       hero: {
         eyebrow: 'ARCHIVE PORTFOLIO // ÉDITION 2026',

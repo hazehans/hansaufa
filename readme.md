@@ -8,14 +8,14 @@ Menggabungkan estetika *architectural viewport frame* & kanvas interaktif bergay
 
 ## Fitur Utama
 
-- **Architectural Viewport Frame & Responsive Flexbox**: Bingkai *viewport* presisi `1px` dengan tata letak **Flexbox** fleksibel (`column` / `column-reverse` / `flex-wrap`) yang adaptif dari layar ponsel kecil (`320px`) hingga monitor *ultrawide* tanpa *horizontal overflow*.
-- **Lenis Smooth Inertia Scroll**: Scroll sehalus sutra di perangkat desktop dengan fallback *native 120Hz touch scroll* di smartphone.
-- **Interactive `<canvas>` Background**: Animasi latar belakang ringan berbasis HTML5 `<canvas>` (`dot-matrix`, `wave-grid`, atau `particles`) yang merespons gerakan kursor dan otomatis menyesuaikan warna tema.
-- **Magnetic Dual Cursor & 3D Specular Tilt**: Kursor magnetik ganda khusus desktop serta efek pantulan cahaya 3D pada kartu profil & proyek.
-- **Interactive Before / After Split Slider (Project 04)**: Komparator geser (*draggable split-screen*) + tab *Before QC* / *After QC* untuk memperlihatkan proses pembersihan dan validasi sampel database.
-- **Architectural Lightbox Zoom**: Klik foto profil atau *screenshot* proyek mana pun untuk membuka tampilan layar penuh beresolusi tinggi (mendukung tombol `ESC` dan *toggle* Before/After).
-- **Dark / Light Mode Switcher**: Pilihan tema *Deep Obsidian* (`#0B0B0B` + aksen *Electric Lime* `#D2FF00`) dan *Warm Editorial Paper* (`#F5F5F3` + aksen *Deep Emerald* `#0D765E`) yang tersimpan di `localStorage` dan mendeteksi preferensi sistem operasi.
-- **Multi-Bahasa Instan (`EN` | `ID` | `FR`) + Cyber Text Scramble**: Pergantian bahasa *client-side* tanpa *reload* halaman disertai animasi *decoder* teks untuk Bahasa Inggris, Bahasa Indonesia, dan Bahasa Prancis.
+- **Architectural Viewport Frame, Curtain Intro & Responsive Flexbox**: Intro pembuka arsitektural kilat (`~0.6s`) dan bingkai *viewport* presisi `1px` dengan tata letak **Flexbox** fleksibel (`column` / `column-reverse` / `flex-wrap`) serta **Mobile Floating Quick-Dock** khusus smartphone.
+- **Lenis Smooth Inertia Scroll & Velocity-Reactive Tech Marquee**: Scroll sehalus sutra di perangkat desktop disertai pita *infinite marquee* yang bereaksi terhadap kecepatan scroll.
+- **Interactive `<canvas>` Background + Live Mode Switcher (`DOTS` | `WAVES` | `NODES`)**: Animasi latar belakang ringan berbasis HTML5 `<canvas>` yang bisa diganti secara *live* langsung dari *status bar* bawah maupun panel perintah `Ctrl + K`.
+- **Magnetic Dual Cursor, Radial Border Spotlight & 3D Specular Tilt**: Kursor magnetik ganda, cahaya *border spotlight* presisi mengikuti kursor, serta pantulan 3D pada kartu.
+- **Developer Command Palette (`Ctrl + K` / `⌘K`) & Floating Toast**: Panel navigasi cepat untuk melompat ke bagian tertentu, membuka jurnal DOI/GitHub, menyalin email dengan notifikasi *toast*, atau mengganti tema/aksen warna secara instan.
+- **Interactive Before / After Split Slider (Project 04) & Lightbox Zoom**: Komparator geser (*draggable split-screen*) untuk validasi sampel database serta pratinjau layar penuh beresolusi tinggi.
+- **Cyber Azure Blue & Dual Theme Switcher**: Tema *Dark Mode* (`#0B0B0B` + aksen **Cyber Azure Blue** `#38BDF8`) dan *Light Mode* (`#F5F6F8` + aksen **Blueprint Azure** `#0284C7`), lengkap dengan preset alternatif **Royal Electric Cobalt** (`#4F8CFF`).
+- **Default Landing Bahasa Inggris (`EN`) + Multi-Bahasa (`EN` | `ID` | `FR`)**: Halaman selalu mendarat secara konsisten dalam Bahasa Inggris (`EN`) setiap kali dibuka/di-*refresh*, dengan tombol pindah instan ke Bahasa Indonesia & Prancis.
 - **Smart Asset Fallbacks (Zero Broken Images)**: Proyek tanpa foto (seperti Project 08) otomatis merender ilustrasi skema *blueprint* SVG presisi.
 
 ---
@@ -84,10 +84,10 @@ background: {
 }
 ```
 
-### B. Mengubah Ukuran Font & Warna Tema Dark / Light Mode
-Buka file `css/style.css` pada bagian paling atas:
-- **Ukuran Font Keseluruhan**: Ubah variabel `--font-size-base` pada blok `html` (saat ini sudah diperbesar ke `clamp(16.5px, 0.28vw + 15.8px, 18.2px)` agar nyaman dibaca di laptop maupun HP).
-- **Warna Tema**: Ubah variabel `--bg-primary`, `--text-primary`, dan `--accent` di `:root, [data-theme="dark"]` atau `[data-theme="light"]`.
+### B. Mengubah Ukuran Font & Preset Aksen Biru (`Azure` vs `Cobalt`)
+- **Mengganti Preset Biru Secara Instan**: Di `js/data.js` pada `config.accentPreset`, Anda bisa memilih `'azure'` (**Opsi A — Cyber Azure Blue**, default) atau `'cobalt'` (**Opsi B — Royal Electric Cobalt**), atau langsung mencobanya secara *live* lewat tombol **`Ctrl + K`** di halaman web!
+- **Ukuran Font Keseluruhan**: Ubah properti `font-size` pada blok `html` di `css/style.css` (`clamp(16.5px, 0.28vw + 15.8px, 18.2px)`).
+- **Kustomisasi Kode Warna Manual**: Ubah variabel `--bg-primary`, `--text-primary`, dan `--accent` di bagian atas `css/style.css`.
 
 ---
 

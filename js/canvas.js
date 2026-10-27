@@ -2,6 +2,7 @@
  * ============================================================================
  * INTERACTIVE ARCHITECTURAL BACKGROUND ENGINE (<canvas> + Smart Image Fallback)
  * Inspired by Keita Yamada (p5aholic.me) minimalist generative aesthetics.
+ * Supports live runtime switching: 'dot-matrix' | 'wave-grid' | 'particles'
  * ============================================================================
  */
 
@@ -18,13 +19,14 @@
     dpr: 1,
     time: 0,
     isRunning: false,
+    eventsBound: false,
     reducedMotion: false,
     style: 'dot-matrix',
     interactive: true,
     palette: {
-      dotBase: 'rgba(244, 244, 240, 0.16)',
-      dotActive: 'rgba(210, 255, 0, 0.85)',
-      lineActive: 'rgba(210, 255, 0, 0.16)',
+      dotBase: 'rgba(244, 244, 240, 0.15)',
+      dotActive: 'rgba(56, 189, 248, 0.92)',
+      lineActive: 'rgba(56, 189, 248, 0.20)',
       gridStroke: 'rgba(244, 244, 240, 0.08)'
     },
     pointer: {
@@ -63,6 +65,27 @@
       }
     },
 
+    getStyle() {
+      return this.style;
+    },
+
+    setStyle(nextStyle) {
+      if (!['dot-matrix', 'wave-grid', 'particles'].includes(nextStyle)) return;
+      this.style = nextStyle;
+      if (this.imageLayer) {
+        this.imageLayer.classList.remove('is-visible');
+      }
+      if (this.canvas) {
+        this.canvas.style.display = 'block';
+      }
+      this.buildScene();
+      if (this.reducedMotion) {
+        this.renderStaticFrame();
+      } else if (!this.isRunning) {
+        this.start();
+      }
+    },
+
     tryStaticImage(path, opacity) {
       const probe = new Image();
       probe.onload = () => {
@@ -98,20 +121,42 @@
 
     updatePalette() {
       const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const accent = document.documentElement.getAttribute('data-accent') || 'azure';
+
       if (theme === 'light') {
-        this.palette = {
-          dotBase: 'rgba(17, 17, 17, 0.16)',
-          dotActive: 'rgba(13, 118, 94, 0.88)',
-          lineActive: 'rgba(13, 118, 94, 0.16)',
-          gridStroke: 'rgba(17, 17, 17, 0.08)'
-        };
+        if (accent === 'cobalt') {
+          this.palette = {
+            dotBase: 'rgba(17, 17, 17, 0.16)',
+            dotActive: 'rgba(29, 78, 216, 0.90)',
+            lineActive: 'rgba(29, 78, 216, 0.18)',
+            gridStroke: 'rgba(17, 17, 17, 0.08)'
+          };
+        } else {
+          // Option A: Cyber Azure Blueprint (Light Mode)
+          this.palette = {
+            dotBase: 'rgba(17, 17, 17, 0.16)',
+            dotActive: 'rgba(2, 132, 199, 0.90)',
+            lineActive: 'rgba(2, 132, 199, 0.18)',
+            gridStroke: 'rgba(17, 17, 17, 0.08)'
+          };
+        }
       } else {
-        this.palette = {
-          dotBase: 'rgba(244, 244, 240, 0.15)',
-          dotActive: 'rgba(210, 255, 0, 0.88)',
-          lineActive: 'rgba(210, 255, 0, 0.15)',
-          gridStroke: 'rgba(244, 244, 240, 0.07)'
-        };
+        if (accent === 'cobalt') {
+          this.palette = {
+            dotBase: 'rgba(244, 244, 240, 0.14)',
+            dotActive: 'rgba(79, 140, 255, 0.92)',
+            lineActive: 'rgba(79, 140, 255, 0.22)',
+            gridStroke: 'rgba(244, 244, 240, 0.07)'
+          };
+        } else {
+          // Option A: Cyber Azure Blue (Dark Mode Default)
+          this.palette = {
+            dotBase: 'rgba(244, 244, 240, 0.14)',
+            dotActive: 'rgba(56, 189, 248, 0.92)',
+            lineActive: 'rgba(56, 189, 248, 0.20)',
+            gridStroke: 'rgba(244, 244, 240, 0.07)'
+          };
+        }
       }
 
       if (this.reducedMotion && this.ctx) {
@@ -143,18 +188,19 @@
     },
 
     buildScene() {
+      if (!this.width || !this.height) return;
       const isMobile = this.width < 768;
 
       if (this.style === 'particles') {
-        const count = isMobile ? 28 : 58;
+        const count = isMobile ? 30 : 64;
         this.particles = [];
         for (let i = 0; i < count; i++) {
           this.particles.push({
             x: Math.random() * this.width,
             y: Math.random() * this.height,
-            vx: (Math.random() - 0.5) * 0.32,
-            vy: (Math.random() - 0.5) * 0.32,
-            r: Math.random() * 1.3 + 0.8
+            vx: (Math.random() - 0.5) * 0.36,
+            vy: (Math.random() - 0.5) * 0.36,
+            r: Math.random() * 1.4 + 0.9
           });
         }
         return;
@@ -188,6 +234,9 @@
     },
 
     bindEvents() {
+      if (this.eventsBound) return;
+      this.eventsBound = true;
+
       let resizeTimer = null;
       window.addEventListener(
         'resize',
@@ -252,11 +301,20 @@
       if (!this.ctx) return;
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.fillStyle = this.palette.dotBase;
-      for (let i = 0; i < this.dots.length; i++) {
-        const d = this.dots[i];
-        this.ctx.beginPath();
-        this.ctx.arc(d.ox, d.oy, 1, 0, Math.PI * 2);
-        this.ctx.fill();
+      if (this.style === 'particles') {
+        for (let i = 0; i < this.particles.length; i++) {
+          const p = this.particles[i];
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+      } else {
+        for (let i = 0; i < this.dots.length; i++) {
+          const d = this.dots[i];
+          this.ctx.beginPath();
+          this.ctx.arc(d.ox, d.oy, 1, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
       }
     },
 
@@ -299,7 +357,6 @@
 
       for (let i = 0; i < this.dots.length; i++) {
         const d = this.dots[i];
-        // Subtle harmonic architectural breath
         const waveX = Math.sin(this.time + d.oy * 0.012) * 1.6;
         const waveY = Math.cos(this.time * 0.85 + d.ox * 0.012) * 1.6;
 
@@ -329,10 +386,9 @@
         }
       }
 
-      // Render focal accent nodes and subtle geometric micro-links near pointer
       if (activeNodes.length > 0) {
         ctx.strokeStyle = this.palette.lineActive;
-        ctx.lineWidth = 0.75;
+        ctx.lineWidth = 0.8;
         ctx.beginPath();
         for (let i = 0; i < activeNodes.length; i++) {
           const a = activeNodes[i];
@@ -351,7 +407,7 @@
         ctx.fillStyle = this.palette.dotActive;
         for (let i = 0; i < activeNodes.length; i++) {
           const n = activeNodes[i];
-          const size = 1.7 + n.influence * 2.1;
+          const size = 1.8 + n.influence * 2.2;
           ctx.fillRect(n.x - size * 0.5, n.y - size * 0.5, size, size);
         }
       }
@@ -362,7 +418,8 @@
       const rows = this.gridRows;
       const px = this.pointer.x;
       const py = this.pointer.y;
-      const radius = 170;
+      const radius = 185;
+      const crestPoints = [];
 
       ctx.strokeStyle = this.palette.gridStroke;
       ctx.lineWidth = 1;
@@ -371,23 +428,35 @@
         ctx.beginPath();
         for (let c = 0; c < cols; c++) {
           const d = this.dots[r * cols + c];
-          const wave = Math.sin(this.time * 1.3 + c * 0.28 + r * 0.18) * 5;
+          const wave = Math.sin(this.time * 1.35 + c * 0.28 + r * 0.18) * 5.2;
           let y = d.oy + wave;
           const dx = d.ox - px;
           const dy = y - py;
           const dist = Math.hypot(dx, dy);
           if (dist < radius) {
-            y += Math.sin((1 - dist / radius) * Math.PI) * 14;
+            const boost = Math.sin((1 - dist / radius) * Math.PI) * 15;
+            y -= boost;
+            if (dist < radius * 0.65 && (c + r) % 2 === 0) {
+              crestPoints.push({ x: d.ox, y });
+            }
           }
           if (c === 0) ctx.moveTo(d.ox, y);
           else ctx.lineTo(d.ox, y);
         }
         ctx.stroke();
       }
+
+      if (crestPoints.length > 0) {
+        ctx.fillStyle = this.palette.dotActive;
+        for (let i = 0; i < crestPoints.length; i++) {
+          const pt = crestPoints[i];
+          ctx.fillRect(pt.x - 1.4, pt.y - 1.4, 2.8, 2.8);
+        }
+      }
     },
 
     drawParticles(ctx) {
-      const linkDistSq = 125 * 125;
+      const linkDistSq = 128 * 128;
       const px = this.pointer.x;
       const py = this.pointer.y;
 
@@ -404,11 +473,11 @@
         const dx = p.x - px;
         const dy = p.y - py;
         const dSq = dx * dx + dy * dy;
-        const nearCursor = dSq < 160 * 160;
+        const nearCursor = dSq < 165 * 165;
 
         ctx.fillStyle = nearCursor ? this.palette.dotActive : this.palette.dotBase;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, nearCursor ? p.r + 0.9 : p.r, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, nearCursor ? p.r + 1.0 : p.r, 0, Math.PI * 2);
         ctx.fill();
 
         for (let j = i + 1; j < this.particles.length; j++) {
@@ -417,7 +486,7 @@
           const ldy = p.y - q.y;
           if (ldx * ldx + ldy * ldy < linkDistSq) {
             ctx.strokeStyle = nearCursor ? this.palette.lineActive : this.palette.gridStroke;
-            ctx.lineWidth = 0.7;
+            ctx.lineWidth = nearCursor ? 0.9 : 0.7;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
@@ -430,4 +499,3 @@
 
   window.PortfolioCanvas = CanvasEngine;
 })();
-

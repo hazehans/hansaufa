@@ -1,13 +1,17 @@
 /**
  * ============================================================================
- * MAIN APPLICATION CONTROLLER (UPGRADED AWWWARDS EDITION)
+ * MAIN APPLICATION CONTROLLER (CYBER AZURE AWWWARDS EDITION)
  * Features:
- * - Multi-language i18n (EN | ID | FR) + Cyber Text Scramble Decoder
- * - Dark / Light Theme Switcher with OS preference sync
- * - Lenis Butter-Smooth Scroll (Desktop) + 120Hz Native Touch (Mobile)
- * - Custom Magnetic Dual Cursor + 3D Card Tilt & Specular Glare
- * - Interactive Before / After QC Split Slider & Lightbox Preview Modal
- * - Smart Asset & SVG Blueprint Fallbacks (Zero Broken Images)
+ * - Guaranteed English ('en') Default Landing + Instant EN | ID | FR Switcher
+ * - Clean Non-Scrambled Top Navigation + Hardened Section Heading Decoder
+ * - Cyber Azure Blue (Option A) & Royal Cobalt (Option B) Dual-Theme Palettes
+ * - Architectural Curtain Boot Intro (~0.6s, Fail-Safe & Reduced-Motion Safe)
+ * - Velocity-Reactive Infinite Kinetic Tech Ticker (Lenis Scroll Synced)
+ * - Live <canvas> Mode Switcher (DOTS | WAVES | NODES) in Status Bar
+ * - Radial Border Spotlight Tracking + 3D Specular Card Tilt
+ * - Parallax Giant Outline Section Watermarks (01 — 06)
+ * - Developer Command Palette (Ctrl+K / Cmd+K) + Floating Toast Notifications
+ * - Mobile Floating Flexbox Quick-Dock + Interactive Before/After QC Slider
  * ============================================================================
  */
 
@@ -16,17 +20,25 @@
 
   const STORAGE_THEME_KEY = 'hans_portfolio_theme';
   const STORAGE_LANG_KEY = 'hans_portfolio_lang';
+  const STORAGE_ACCENT_KEY = 'hans_portfolio_accent';
   const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789//_#';
 
   const state = {
     lang: 'en',
     theme: 'dark',
+    accent: 'azure',
+    canvasStyle: 'dot-matrix',
     activeFilter: 'all',
     mobileMenuOpen: false,
     lightboxOpen: false,
+    cmdOpen: false,
+    cmdActiveIndex: 0,
+    cmdFilteredItems: [],
     revealObserver: null,
     lenis: null,
-    initialLoadDone: false
+    toastTimer: null,
+    scrollVelocity: 0,
+    lastScrollY: 0
   };
 
   /* --------------------------------------------------------------------------
@@ -59,30 +71,62 @@
     return Boolean(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
   }
 
-  /* --------------------------------------------------------------------------
-   * CYBER / ARCHITECTURAL TEXT SCRAMBLE DECODER
-   * -------------------------------------------------------------------------- */
-  function scrambleElement(el, finalText, durationMs = 420) {
-    if (!el) return;
-    if (prefersReducedMotion() || !finalText) {
-      el.textContent = finalText;
-      return;
+  function safeGetStorage(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      return null;
     }
+  }
+
+  function safeSetStorage(key, val) {
+    try {
+      window.localStorage.setItem(key, val);
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }
+
+  function safeRemoveStorage(key) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {
+      // Ignore storage errors
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+   * HARDENED TEXT SCRAMBLE DECODER (ZERO RACE-CONDITION GUARANTEE)
+   * Used ONLY on Section Headings during language switch & Hero boot reveal.
+   * Never attached to Top Navigation Bar.
+   * -------------------------------------------------------------------------- */
+  function scrambleElement(el, finalText, durationMs = 380) {
+    if (!el) return;
+    const cleanTarget = String(finalText || '');
+    el.setAttribute('data-true-text', cleanTarget);
 
     if (el._scrambleRaf) {
       cancelAnimationFrame(el._scrambleRaf);
+      el._scrambleRaf = null;
     }
 
-    const length = finalText.length;
+    if (prefersReducedMotion() || !cleanTarget) {
+      el.textContent = cleanTarget;
+      return;
+    }
+
+    const length = cleanTarget.length;
     const start = performance.now();
 
     const step = (now) => {
+      // Always read locked data-true-text so rapid switches never corrupt text
+      const lockedText = el.getAttribute('data-true-text') || cleanTarget;
       const progress = Math.min((now - start) / durationMs, 1);
-      const revealCount = Math.floor(progress * length);
+      const revealCount = Math.floor(progress * lockedText.length);
       let output = '';
 
-      for (let i = 0; i < length; i++) {
-        const ch = finalText[i];
+      for (let i = 0; i < lockedText.length; i++) {
+        const ch = lockedText[i];
         if (ch === ' ' || ch === '\n') {
           output += ch;
         } else if (i < revealCount) {
@@ -93,10 +137,10 @@
       }
 
       el.textContent = output;
-      if (progress < 1) {
+      if (progress < 1 && iSafe(length)) {
         el._scrambleRaf = requestAnimationFrame(step);
       } else {
-        el.textContent = finalText;
+        el.textContent = lockedText;
         el._scrambleRaf = null;
       }
     };
@@ -104,16 +148,80 @@
     el._scrambleRaf = requestAnimationFrame(step);
   }
 
-  function bindNavScrambleHover() {
-    if (!isFinePointer() || prefersReducedMotion()) return;
-    document.querySelectorAll('[data-scramble-hover]:not([data-scramble-bound])').forEach((el) => {
-      el.setAttribute('data-scramble-bound', 'true');
-      const link = el.closest('a') || el;
-      link.addEventListener('pointerenter', () => {
-        const targetText = el.textContent;
-        scrambleElement(el, targetText, 300);
-      });
-    });
+  function iSafe(len) {
+    return len > 0;
+  }
+
+  /* --------------------------------------------------------------------------
+   * FLOATING TOAST NOTIFICATION
+   * -------------------------------------------------------------------------- */
+  function showToast(message) {
+    const banner = document.getElementById('toast-banner');
+    const textEl = document.getElementById('toast-text');
+    if (!banner || !textEl || !message) return;
+
+    textEl.textContent = message;
+    banner.classList.add('is-visible');
+    banner.setAttribute('aria-hidden', 'false');
+
+    clearTimeout(state.toastTimer);
+    state.toastTimer = setTimeout(() => {
+      banner.classList.remove('is-visible');
+      banner.setAttribute('aria-hidden', 'true');
+    }, 2400);
+  }
+
+  /* --------------------------------------------------------------------------
+   * ARCHITECTURAL CURTAIN BOOT INTRO (~0.6s)
+   * -------------------------------------------------------------------------- */
+  function initBootCurtain() {
+    const curtain = document.getElementById('boot-curtain');
+    const barFill = document.getElementById('boot-bar-fill');
+    const counter = document.getElementById('boot-counter');
+    const data = window.PORTFOLIO_DATA;
+    const enableIntro = !(data && data.config && data.config.enableBootIntro === false);
+
+    if (!curtain) {
+      triggerHeroBootDecode();
+      return;
+    }
+
+    if (!enableIntro || prefersReducedMotion()) {
+      curtain.classList.add('is-done');
+      triggerHeroBootDecode();
+      return;
+    }
+
+    const duration = 580;
+    const start = performance.now();
+
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      // Cubic ease-out
+      const eased = 1 - Math.pow(1 - t, 3);
+      const pct = Math.round(eased * 100);
+
+      if (barFill) barFill.style.transform = `scaleX(${eased.toFixed(3)})`;
+      if (counter) counter.textContent = `${padIndex(pct)}%`;
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        curtain.classList.add('is-done');
+        triggerHeroBootDecode();
+      }
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  function triggerHeroBootDecode() {
+    const firstEl = document.getElementById('hero-first-name');
+    const lastEl = document.getElementById('hero-last-name');
+    const eyebrowEl = document.getElementById('hero-eyebrow');
+    if (firstEl) scrambleElement(firstEl, firstEl.getAttribute('data-true-text') || firstEl.textContent, 460);
+    if (lastEl) scrambleElement(lastEl, lastEl.getAttribute('data-true-text') || lastEl.textContent, 560);
+    if (eyebrowEl) scrambleElement(eyebrowEl, eyebrowEl.getAttribute('data-true-text') || eyebrowEl.textContent, 420);
   }
 
   /* --------------------------------------------------------------------------
@@ -121,7 +229,7 @@
    * -------------------------------------------------------------------------- */
   function createFaviconDataUri(monogram) {
     const text = escapeHtml((monogram || 'HA').slice(0, 3));
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0B0B0B"/><rect x="3" y="3" width="58" height="58" rx="9" fill="none" stroke="#D2FF00" stroke-opacity="0.45" stroke-width="1.5"/><text x="32" y="39" text-anchor="middle" font-family="monospace" font-weight="700" font-size="22" fill="#F4F4F0">${text}</text></svg>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0B0B0B"/><rect x="3" y="3" width="58" height="58" rx="9" fill="none" stroke="#38BDF8" stroke-opacity="0.55" stroke-width="1.6"/><text x="32" y="39" text-anchor="middle" font-family="monospace" font-weight="700" font-size="22" fill="#F4F4F0">${text}</text></svg>`;
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
   }
 
@@ -134,14 +242,12 @@
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
 
-      // Center square crop focused slightly below vertical midpoint (for silhouette head)
       const sw = imgElement.naturalWidth;
       const sh = imgElement.naturalHeight;
       const side = Math.min(sw, sh);
       const sx = (sw - side) * 0.5;
       const sy = sh > sw ? Math.min(sh - side, sh * 0.34) : (sh - side) * 0.5;
 
-      // Rounded rect mask
       const r = 13;
       ctx.beginPath();
       ctx.moveTo(r, 0);
@@ -278,6 +384,7 @@
     const faviconEl = document.getElementById('site-favicon');
     const brandMarkSlot = document.getElementById('brand-mark-slot');
     const brandNameSlot = document.getElementById('brand-name-slot');
+    const bootLogoSlot = document.getElementById('boot-logo-slot');
 
     if (brandNameSlot && branding.shortName) {
       brandNameSlot.textContent = branding.shortName;
@@ -285,9 +392,13 @@
 
     const fallbackMonogram = branding.monogram || 'HA';
 
-    // Smart Header Logo + Optional Square-Cropped Favicon
     if (branding.logoImage && branding.logoImage.trim() !== '') {
       const logoSrc = branding.logoImage.trim();
+
+      if (bootLogoSlot) {
+        bootLogoSlot.innerHTML = `<img src="${escapeHtml(logoSrc)}" alt="" class="brand-logo-img" />`;
+      }
+
       if (brandMarkSlot) {
         brandMarkSlot.innerHTML = '';
         const img = document.createElement('img');
@@ -305,6 +416,7 @@
         };
         img.onerror = () => {
           brandMarkSlot.textContent = fallbackMonogram;
+          if (bootLogoSlot) bootLogoSlot.textContent = fallbackMonogram;
           applyStandardFavicon(faviconEl, branding, fallbackMonogram);
         };
         brandMarkSlot.appendChild(img);
@@ -314,21 +426,26 @@
       }
     } else {
       if (brandMarkSlot) brandMarkSlot.textContent = fallbackMonogram;
+      if (bootLogoSlot) bootLogoSlot.textContent = fallbackMonogram;
       applyStandardFavicon(faviconEl, branding, fallbackMonogram);
     }
 
-    // Personal Name & Coordinates
     const firstEl = document.getElementById('hero-first-name');
     const lastEl = document.getElementById('hero-last-name');
-    if (firstEl && p.displayFirst) firstEl.textContent = p.displayFirst;
-    if (lastEl && p.displayLast) lastEl.textContent = p.displayLast;
+    if (firstEl && p.displayFirst) {
+      firstEl.textContent = p.displayFirst;
+      firstEl.setAttribute('data-true-text', p.displayFirst);
+    }
+    if (lastEl && p.displayLast) {
+      lastEl.textContent = p.displayLast;
+      lastEl.setAttribute('data-true-text', p.displayLast);
+    }
 
     const coordsEl = document.getElementById('statusbar-coords');
     if (coordsEl && p.coordinates) coordsEl.textContent = p.coordinates;
 
-    // Contact & CV URLs
     const cvHref = (assets && assets.cvPdf) || 'assets/docs/CV-Hans-Aufa.pdf';
-    ['hero-cv-btn', 'contact-cv-btn', 'mobile-cv-link'].forEach((id) => {
+    ['hero-cv-btn', 'contact-cv-btn', 'mobile-cv-link', 'dock-cv-link'].forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.setAttribute('href', cvHref);
     });
@@ -362,6 +479,13 @@
     if (yearEl) {
       yearEl.textContent = String(new Date().getFullYear());
     }
+
+    // Set platform shortcut hint on Command Palette trigger
+    const kbdEl = document.querySelector('#cmd-trigger .cmd-kbd');
+    if (kbdEl) {
+      const isMac = /Mac|iPhone|iPad|iPod/i.test(navigator.platform || '');
+      kbdEl.textContent = isMac ? '⌘K' : 'Ctrl K';
+    }
   }
 
   function applyStandardFavicon(faviconEl, branding, fallbackMonogram) {
@@ -381,15 +505,25 @@
   }
 
   /* --------------------------------------------------------------------------
-   * THEME CONTROLLER (DARK / LIGHT MODE)
+   * THEME & ACCENT CONTROLLER (CYBER AZURE DEFAULT + ROYAL COBALT OPTION)
    * -------------------------------------------------------------------------- */
   function initTheme() {
     const data = window.PORTFOLIO_DATA;
-    const saved = safeGetStorage(STORAGE_THEME_KEY);
+    const savedTheme = safeGetStorage(STORAGE_THEME_KEY);
+    const savedAccent = safeGetStorage(STORAGE_ACCENT_KEY);
+    const configAccent = (data && data.config && data.config.accentPreset) || 'azure';
 
-    if (saved === 'dark' || saved === 'light') {
-      state.theme = saved;
-    } else if (data && data.config && (data.config.defaultTheme === 'dark' || data.config.defaultTheme === 'light')) {
+    state.accent =
+      savedAccent === 'azure' || savedAccent === 'cobalt' ? savedAccent : configAccent;
+    document.documentElement.setAttribute('data-accent', state.accent);
+
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      state.theme = savedTheme;
+    } else if (
+      data &&
+      data.config &&
+      (data.config.defaultTheme === 'dark' || data.config.defaultTheme === 'light')
+    ) {
       state.theme = data.config.defaultTheme;
     } else {
       const prefersLight =
@@ -438,6 +572,24 @@
     }
   }
 
+  function applyAccentPreset(preset, notify) {
+    if (preset !== 'azure' && preset !== 'cobalt') return;
+    state.accent = preset;
+    document.documentElement.setAttribute('data-accent', preset);
+    safeSetStorage(STORAGE_ACCENT_KEY, preset);
+
+    if (window.PortfolioCanvas && typeof window.PortfolioCanvas.refreshTheme === 'function') {
+      window.PortfolioCanvas.refreshTheme();
+    }
+
+    if (notify) {
+      const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
+      const prefix = (t && t.controls && t.controls.toastAccent) || 'Accent switched to';
+      const label = preset === 'azure' ? 'Cyber Azure Blue' : 'Royal Electric Cobalt';
+      showToast(`${prefix} ${label}`);
+    }
+  }
+
   function updateThemeToggleLabel() {
     const data = window.PORTFOLIO_DATA;
     const t = data && data.i18n && data.i18n[state.lang];
@@ -455,14 +607,20 @@
   }
 
   /* --------------------------------------------------------------------------
-   * LANGUAGE / i18n CONTROLLER (EN | ID | FR) + TEXT SCRAMBLE
+   * LANGUAGE / i18n CONTROLLER — GUARANTEED ENGLISH ('en') DEFAULT LANDING
    * -------------------------------------------------------------------------- */
   function initLanguage() {
     const data = window.PORTFOLIO_DATA;
-    const saved = safeGetStorage(STORAGE_LANG_KEY);
-    const fallback = (data && data.config && data.config.defaultLang) || 'en';
+    const persistLang = Boolean(data && data.config && data.config.persistLanguage === true);
+    const defaultLang = (data && data.config && data.config.defaultLang) || 'en';
 
-    state.lang = saved && ['en', 'id', 'fr'].includes(saved) ? saved : fallback;
+    if (persistLang) {
+      const saved = safeGetStorage(STORAGE_LANG_KEY);
+      state.lang = saved && ['en', 'id', 'fr'].includes(saved) ? saved : defaultLang;
+    } else {
+      safeRemoveStorage(STORAGE_LANG_KEY);
+      state.lang = defaultLang;
+    }
 
     const switcher = document.getElementById('lang-switcher');
     if (switcher) {
@@ -471,7 +629,7 @@
         if (!btn) return;
         const nextLang = btn.getAttribute('data-lang');
         if (nextLang && nextLang !== state.lang) {
-          setLanguage(nextLang, true, true);
+          setLanguage(nextLang, persistLang, true);
         }
       });
     }
@@ -512,14 +670,19 @@
       }
       const val = getNestedValue(t, key);
       if (typeof val === 'string') {
+        el.setAttribute('data-true-text', val);
         if (
           animateScramble &&
           (el.hasAttribute('data-scramble-lang') ||
             el.id === 'hero-role-tagline' ||
             el.id === 'hero-eyebrow')
         ) {
-          scrambleElement(el, val, 380);
+          scrambleElement(el, val, 360);
         } else {
+          if (el._scrambleRaf) {
+            cancelAnimationFrame(el._scrambleRaf);
+            el._scrambleRaf = null;
+          }
           el.textContent = val;
         }
       }
@@ -528,6 +691,17 @@
     const langGroup = document.getElementById('lang-switcher');
     if (langGroup && t.controls && t.controls.langLabel) {
       langGroup.setAttribute('aria-label', t.controls.langLabel);
+    }
+
+    const cmdTrigger = document.getElementById('cmd-trigger');
+    if (cmdTrigger && t.controls && t.controls.cmdLabel) {
+      cmdTrigger.setAttribute('aria-label', t.controls.cmdLabel);
+      cmdTrigger.setAttribute('title', `${t.controls.cmdLabel} (Ctrl+K)`);
+    }
+
+    const cmdInput = document.getElementById('cmd-input');
+    if (cmdInput && t.controls && t.controls.cmdPlaceholder) {
+      cmdInput.setAttribute('placeholder', t.controls.cmdPlaceholder);
     }
 
     const lbClose = document.getElementById('lightbox-close');
@@ -539,6 +713,183 @@
     renderAllDynamicSections();
     updateScrollStatus();
     updateLiveClock();
+    if (state.cmdOpen) {
+      renderCommandList(cmdInput ? cmdInput.value : '');
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+   * VELOCITY-REACTIVE INFINITE KINETIC TECH TICKER
+   * -------------------------------------------------------------------------- */
+  function initTechMarquee() {
+    const wrap = document.getElementById('tech-marquee-wrap');
+    const track = document.getElementById('tech-marquee-track');
+    if (!wrap || !track) return;
+
+    const data = window.PORTFOLIO_DATA;
+    const items =
+      (data && data.config && Array.isArray(data.config.marqueeItems) && data.config.marqueeItems) || [
+        'LARAVEL 12',
+        'NEXT.JS',
+        'EXPLAINABLE AI',
+        'ISAPI BIOMETRICS',
+        'ENTERPRISE MINI ERP',
+        'DATA QA'
+      ];
+
+    const buildGroupHtml = () =>
+      items
+        .map(
+          (item) => `
+          <span class="marquee-item">
+            <span class="marquee-text">${escapeHtml(item)}</span>
+            <span class="marquee-star" aria-hidden="true">✦</span>
+          </span>
+        `
+        )
+        .join('');
+
+    // Render 3 identical groups for seamless infinite loop on ultrawide monitors
+    track.innerHTML = `
+      <div class="marquee-group">${buildGroupHtml()}</div>
+      <div class="marquee-group" aria-hidden="true">${buildGroupHtml()}</div>
+      <div class="marquee-group" aria-hidden="true">${buildGroupHtml()}</div>
+    `;
+
+    if (prefersReducedMotion()) return;
+
+    let offset = 0;
+    let direction = -1;
+    let hovered = false;
+
+    wrap.addEventListener('pointerenter', () => {
+      hovered = true;
+    });
+    wrap.addEventListener('pointerleave', () => {
+      hovered = false;
+    });
+
+    const animateMarquee = () => {
+      const firstGroup = track.firstElementChild;
+      const groupWidth = firstGroup ? firstGroup.offsetWidth : 0;
+
+      if (groupWidth > 0) {
+        // Decay scroll velocity smoothly
+        state.scrollVelocity *= 0.9;
+        if (Math.abs(state.scrollVelocity) > 0.35) {
+          direction = state.scrollVelocity > 0 ? -1 : 1;
+        }
+
+        const baseSpeed = hovered ? 0.25 : 0.68;
+        const boost = Math.min(Math.abs(state.scrollVelocity) * 0.16, 4.2);
+        offset += direction * (baseSpeed + boost);
+
+        if (offset <= -groupWidth) {
+          offset += groupWidth;
+        } else if (offset > 0) {
+          offset -= groupWidth;
+        }
+
+        track.style.transform = `translate3d(${offset.toFixed(2)}px, 0, 0)`;
+      }
+
+      requestAnimationFrame(animateMarquee);
+    };
+
+    requestAnimationFrame(animateMarquee);
+  }
+
+  /* --------------------------------------------------------------------------
+   * LIVE <canvas> MODE SWITCHER (STATUS BAR + COMMAND PALETTE)
+   * -------------------------------------------------------------------------- */
+  function initCanvasSwitcher() {
+    const switcher = document.getElementById('canvas-switcher');
+    const data = window.PORTFOLIO_DATA;
+    state.canvasStyle =
+      (data && data.config && data.config.background && data.config.background.canvasStyle) ||
+      'dot-matrix';
+
+    syncCanvasButtons();
+
+    if (!switcher) return;
+    switcher.addEventListener('click', (e) => {
+      const btn = e.target.closest('.canvas-mode-btn');
+      if (!btn) return;
+      const nextStyle = btn.getAttribute('data-canvas-style');
+      if (nextStyle) {
+        switchCanvasMode(nextStyle, true);
+      }
+    });
+  }
+
+  function switchCanvasMode(style, notify) {
+    if (!['dot-matrix', 'wave-grid', 'particles'].includes(style)) return;
+    state.canvasStyle = style;
+    syncCanvasButtons();
+
+    if (window.PortfolioCanvas && typeof window.PortfolioCanvas.setStyle === 'function') {
+      window.PortfolioCanvas.setStyle(style);
+    }
+
+    if (notify) {
+      const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
+      const prefix = (t && t.controls && t.controls.toastCanvas) || 'Canvas mode switched to';
+      const labelMap = {
+        'dot-matrix': 'DOTS',
+        'wave-grid': 'WAVES',
+        particles: 'NODES'
+      };
+      showToast(`${prefix} ${labelMap[style] || style}`);
+    }
+  }
+
+  function syncCanvasButtons() {
+    document.querySelectorAll('.canvas-mode-btn').forEach((btn) => {
+      const active = btn.getAttribute('data-canvas-style') === state.canvasStyle;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+   * RADIAL BORDER SPOTLIGHT TRACKING (LINEAR / VERCEL PRECISION GLOW)
+   * -------------------------------------------------------------------------- */
+  function initSpotlightTracking() {
+    if (!isFinePointer() || prefersReducedMotion()) return;
+
+    let pointerX = -9999;
+    let pointerY = -9999;
+    let rafPending = false;
+
+    const updateCards = () => {
+      rafPending = false;
+      const cards = document.querySelectorAll('.spotlight-card');
+      const vh = window.innerHeight;
+
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom < -80 || rect.top > vh + 80) continue;
+
+        const x = pointerX - rect.left;
+        const y = pointerY - rect.top;
+        card.style.setProperty('--spot-x', `${x.toFixed(0)}px`);
+        card.style.setProperty('--spot-y', `${y.toFixed(0)}px`);
+      }
+    };
+
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        pointerX = e.clientX;
+        pointerY = e.clientY;
+        if (!rafPending) {
+          rafPending = true;
+          requestAnimationFrame(updateCards);
+        }
+      },
+      { passive: true }
+    );
   }
 
   /* --------------------------------------------------------------------------
@@ -562,7 +913,6 @@
     observeReveals();
     bindMagneticButtons();
     bindTiltCards();
-    bindNavScrambleHover();
   }
 
   function renderProfilePortrait(data, t) {
@@ -625,7 +975,7 @@
     container.innerHTML = t.hero.metrics
       .map(
         (m, idx) => `
-        <div class="metric-cell">
+        <div class="metric-cell spotlight-card">
           <span class="metric-idx">0${idx + 1}</span>
           <div class="metric-value-row">
             <span class="metric-value">${escapeHtml(m.value)}</span>
@@ -645,7 +995,7 @@
     container.innerHTML = t.overview.pillars
       .map(
         (p) => `
-        <article class="pillar-card tilt-card reveal">
+        <article class="pillar-card tilt-card spotlight-card reveal">
           <div class="pillar-card-top">
             <span class="pillar-num">${escapeHtml(p.num)}</span>
             <span class="pillar-line"></span>
@@ -896,7 +1246,7 @@
         }
 
         return `
-          <article class="project-card reveal">
+          <article class="project-card spotlight-card reveal">
             <div class="project-card-main">
               <div class="project-top-bar">
                 <span class="project-idx">${indexStr}</span>
@@ -931,7 +1281,6 @@
       })
       .join('');
 
-    // Smart image error fallback
     container.querySelectorAll('.project-screenshot').forEach((img) => {
       img.addEventListener('error', () => {
         const wrapper = img.closest('.project-media');
@@ -945,10 +1294,8 @@
       });
     });
 
-    // Bind zoom triggers
     container.querySelectorAll('.zoomable-media').forEach((el) => bindZoomTrigger(el));
 
-    // Bind Before / After QC interactive cards
     container.querySelectorAll('.qc-compare-card').forEach((card) => {
       const projId = card.getAttribute('data-project-id');
       const projObj = data.projects.find((p) => p.id === projId);
@@ -986,7 +1333,6 @@
       });
     });
 
-    // Interactive pointer drag on split mode (works for mouse & touch!)
     let dragging = false;
     const updateSplitFromPointer = (clientX) => {
       if (currentMode !== 'split') return;
@@ -1067,7 +1413,7 @@
             : '';
 
         return `
-          <article class="edu-card tilt-card">
+          <article class="edu-card tilt-card spotlight-card">
             <div class="edu-card-top">
               <span class="mono-xs">${escapeHtml(loc.period)}</span>
               ${loc.gpaLabel ? `<span class="gpa-pill">${escapeHtml(loc.gpaLabel)}</span>` : ''}
@@ -1117,7 +1463,7 @@
           .join('');
 
         return `
-          <article class="skill-card tilt-card reveal">
+          <article class="skill-card tilt-card spotlight-card reveal">
             <div class="skill-card-head">
               <span class="mono-idx">${escapeHtml(g.code)}</span>
               <h3 class="skill-card-title">${escapeHtml(title)}</h3>
@@ -1153,7 +1499,7 @@
       .join('');
 
     const spokenCardHtml = `
-      <article class="skill-card skill-card-wide reveal">
+      <article class="skill-card skill-card-wide spotlight-card reveal">
         <div class="skill-card-head">
           <span class="mono-idx">05</span>
           <h3 class="skill-card-title">${escapeHtml(spokenTitle)}</h3>
@@ -1165,6 +1511,366 @@
     `;
 
     container.innerHTML = groupsHtml + spokenCardHtml;
+  }
+
+  /* --------------------------------------------------------------------------
+   * DEVELOPER QUICK COMMAND PALETTE (Ctrl+K / Cmd+K)
+   * -------------------------------------------------------------------------- */
+  function getCommandItems() {
+    const data = window.PORTFOLIO_DATA;
+    if (!data) return [];
+    const t = data.i18n[state.lang] || data.i18n.en;
+    const cp = t.commandPalette || {};
+    const p = data.profile;
+    const cvHref = (data.config.assets && data.config.assets.cvPdf) || 'assets/docs/CV-Hans-Aufa.pdf';
+
+    return [
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '01',
+        label: t.nav.overview,
+        hint: '#overview',
+        run: () => scrollToSection('#overview')
+      },
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '02',
+        label: t.nav.experience,
+        hint: '#experience',
+        run: () => scrollToSection('#experience')
+      },
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '03',
+        label: t.nav.projects,
+        hint: '#projects',
+        run: () => scrollToSection('#projects')
+      },
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '04',
+        label: t.nav.leadership,
+        hint: '#leadership',
+        run: () => scrollToSection('#leadership')
+      },
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '05',
+        label: t.nav.skills,
+        hint: '#skills',
+        run: () => scrollToSection('#skills')
+      },
+      {
+        group: cp.groupNav || 'Navigation',
+        code: '06',
+        label: t.nav.contact,
+        hint: '#contact',
+        run: () => scrollToSection('#contact')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: '@',
+        label: cp.copyEmail || 'Copy Email',
+        hint: p.email,
+        run: () => copyEmailToClipboard()
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'PDF',
+        label: cp.downloadCv || 'Download CV',
+        hint: 'CV-Hans-Aufa.pdf',
+        run: () => window.open(cvHref, '_blank', 'noopener')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'DOI',
+        label: cp.openPaper || 'Published XAI Paper',
+        hint: '10.33364/algoritma',
+        run: () => window.open('https://doi.org/10.33364/algoritma/v.22-2.2925', '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'LIVE',
+        label: cp.openHris || 'Open Live HRIS',
+        hint: 'hris.omahvisual.com',
+        run: () => window.open('https://hris.omahvisual.com', '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'GH',
+        label: cp.openGithub || 'Open GitHub',
+        hint: p.githubHandle,
+        run: () => window.open(p.githubUrl, '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'IN',
+        label: cp.openLinkedin || 'Open LinkedIn',
+        hint: p.linkedinHandle,
+        run: () => window.open(p.linkedinUrl, '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'UI',
+        label: cp.switchTheme || 'Toggle Theme',
+        hint: state.theme === 'dark' ? 'Dark → Light' : 'Light → Dark',
+        run: () => applyTheme(state.theme === 'dark' ? 'light' : 'dark', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'HEX',
+        label: cp.accentAzure || 'Accent: Cyber Azure Blue',
+        hint: '#38BDF8',
+        run: () => applyAccentPreset('azure', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'HEX',
+        label: cp.accentCobalt || 'Accent: Royal Electric Cobalt',
+        hint: '#4F8CFF',
+        run: () => applyAccentPreset('cobalt', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'BG',
+        label: cp.canvasDots || 'Canvas: Dots',
+        hint: 'DOTS',
+        run: () => switchCanvasMode('dot-matrix', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'BG',
+        label: cp.canvasWaves || 'Canvas: Waves',
+        hint: 'WAVES',
+        run: () => switchCanvasMode('wave-grid', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'BG',
+        label: cp.canvasNodes || 'Canvas: Nodes',
+        hint: 'NODES',
+        run: () => switchCanvasMode('particles', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'EN',
+        label: cp.langEn || 'English',
+        hint: 'EN',
+        run: () => setLanguage('en', false, true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'ID',
+        label: cp.langId || 'Bahasa Indonesia',
+        hint: 'ID',
+        run: () => setLanguage('id', false, true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'FR',
+        label: cp.langFr || 'Français',
+        hint: 'FR',
+        run: () => setLanguage('fr', false, true)
+      }
+    ];
+  }
+
+  function renderCommandList(query) {
+    const listEl = document.getElementById('cmd-list');
+    if (!listEl) return;
+
+    const q = String(query || '').trim().toLowerCase();
+    const allItems = getCommandItems();
+    state.cmdFilteredItems = q
+      ? allItems.filter(
+          (item) =>
+            item.label.toLowerCase().includes(q) ||
+            item.group.toLowerCase().includes(q) ||
+            item.hint.toLowerCase().includes(q) ||
+            item.code.toLowerCase().includes(q)
+        )
+      : allItems;
+
+    if (state.cmdActiveIndex >= state.cmdFilteredItems.length) {
+      state.cmdActiveIndex = 0;
+    }
+
+    if (state.cmdFilteredItems.length === 0) {
+      const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
+      const emptyMsg = (t && t.controls && t.controls.cmdEmpty) || 'No matching commands found.';
+      listEl.innerHTML = `<div class="cmd-empty">${escapeHtml(emptyMsg)}</div>`;
+      return;
+    }
+
+    let currentGroup = '';
+    let html = '';
+
+    state.cmdFilteredItems.forEach((item, idx) => {
+      if (item.group !== currentGroup) {
+        currentGroup = item.group;
+        html += `<div class="cmd-group-label">${escapeHtml(currentGroup)}</div>`;
+      }
+      const isSelected = idx === state.cmdActiveIndex;
+      html += `
+        <button
+          type="button"
+          role="option"
+          aria-selected="${isSelected ? 'true' : 'false'}"
+          class="cmd-item ${isSelected ? 'is-selected' : ''}"
+          data-cmd-idx="${idx}"
+        >
+          <span class="cmd-item-left">
+            <span class="cmd-item-code">${escapeHtml(item.code)}</span>
+            <span class="cmd-item-label">${escapeHtml(item.label)}</span>
+          </span>
+          <span class="cmd-item-hint">${escapeHtml(item.hint)}</span>
+        </button>
+      `;
+    });
+
+    listEl.innerHTML = html;
+
+    listEl.querySelectorAll('.cmd-item').forEach((btn) => {
+      btn.addEventListener('pointerenter', () => {
+        const idx = Number(btn.getAttribute('data-cmd-idx'));
+        if (!Number.isNaN(idx)) {
+          state.cmdActiveIndex = idx;
+          listEl.querySelectorAll('.cmd-item').forEach((b, i) => {
+            b.classList.toggle('is-selected', i === idx);
+            b.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+          });
+        }
+      });
+
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.getAttribute('data-cmd-idx'));
+        const chosen = state.cmdFilteredItems[idx];
+        closeCommandPalette();
+        if (chosen && typeof chosen.run === 'function') {
+          chosen.run();
+        }
+      });
+    });
+  }
+
+  function openCommandPalette() {
+    const modal = document.getElementById('cmd-modal');
+    const input = document.getElementById('cmd-input');
+    if (!modal) return;
+
+    if (state.lightboxOpen) closeLightbox();
+    if (state.mobileMenuOpen) closeMobileDrawerIfOpen();
+
+    state.cmdOpen = true;
+    state.cmdActiveIndex = 0;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-locked');
+    if (state.lenis) state.lenis.stop();
+
+    if (input) {
+      input.value = '';
+      renderCommandList('');
+      setTimeout(() => input.focus(), 30);
+    } else {
+      renderCommandList('');
+    }
+    updateMobileQuickDock();
+  }
+
+  function closeCommandPalette() {
+    const modal = document.getElementById('cmd-modal');
+    if (!modal || !state.cmdOpen) return;
+
+    state.cmdOpen = false;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    if (!state.lightboxOpen && !state.mobileMenuOpen) {
+      document.body.classList.remove('menu-locked');
+      if (state.lenis) state.lenis.start();
+    }
+    updateMobileQuickDock();
+  }
+
+  function initCommandPalette() {
+    const trigger = document.getElementById('cmd-trigger');
+    const closeBtn = document.getElementById('cmd-close');
+    const backdrop = document.getElementById('cmd-backdrop');
+    const input = document.getElementById('cmd-input');
+    const listEl = document.getElementById('cmd-list');
+
+    if (trigger) {
+      trigger.addEventListener('click', () => {
+        if (state.cmdOpen) closeCommandPalette();
+        else openCommandPalette();
+      });
+    }
+    if (closeBtn) closeBtn.addEventListener('click', closeCommandPalette);
+    if (backdrop) backdrop.addEventListener('click', closeCommandPalette);
+
+    if (input) {
+      input.addEventListener('input', () => {
+        state.cmdActiveIndex = 0;
+        renderCommandList(input.value);
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (state.cmdOpen) closeCommandPalette();
+        else openCommandPalette();
+        return;
+      }
+
+      if (!state.cmdOpen) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeCommandPalette();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (state.cmdFilteredItems.length > 0) {
+          state.cmdActiveIndex = (state.cmdActiveIndex + 1) % state.cmdFilteredItems.length;
+          renderCommandList(input ? input.value : '');
+          scrollActiveCmdIntoView(listEl);
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (state.cmdFilteredItems.length > 0) {
+          state.cmdActiveIndex =
+            (state.cmdActiveIndex - 1 + state.cmdFilteredItems.length) %
+            state.cmdFilteredItems.length;
+          renderCommandList(input ? input.value : '');
+          scrollActiveCmdIntoView(listEl);
+        }
+      } else if (e.key === 'Enter') {
+        const chosen = state.cmdFilteredItems[state.cmdActiveIndex];
+        if (chosen && typeof chosen.run === 'function') {
+          e.preventDefault();
+          closeCommandPalette();
+          chosen.run();
+        }
+      }
+    });
+  }
+
+  function scrollActiveCmdIntoView(listEl) {
+    if (!listEl) return;
+    const selected = listEl.querySelector('.cmd-item.is-selected');
+    if (selected && typeof selected.scrollIntoView === 'function') {
+      selected.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function scrollToSection(hash) {
+    const target = document.querySelector(hash);
+    if (!target) return;
+    if (state.lenis) {
+      state.lenis.scrollTo(target, { offset: -84, duration: 1.1 });
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   /* --------------------------------------------------------------------------
@@ -1237,6 +1943,7 @@
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('menu-locked');
     if (state.lenis) state.lenis.stop();
+    updateMobileQuickDock();
   }
 
   function closeLightbox() {
@@ -1246,10 +1953,11 @@
     state.lightboxOpen = false;
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
-    if (!state.mobileMenuOpen) {
+    if (!state.mobileMenuOpen && !state.cmdOpen) {
       document.body.classList.remove('menu-locked');
       if (state.lenis) state.lenis.start();
     }
+    updateMobileQuickDock();
   }
 
   function initLightbox() {
@@ -1282,7 +1990,12 @@
       });
 
       state.lenis = lenis;
-      lenis.on('scroll', updateScrollStatus);
+      lenis.on('scroll', (e) => {
+        if (e && typeof e.velocity === 'number') {
+          state.scrollVelocity = e.velocity;
+        }
+        updateScrollStatus();
+      });
 
       const raf = (time) => {
         lenis.raf(time);
@@ -1290,7 +2003,6 @@
       };
       requestAnimationFrame(raf);
 
-      // Smooth anchor scrolling via Lenis
       document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener('click', (e) => {
           const hash = anchor.getAttribute('href');
@@ -1346,7 +2058,7 @@
         const zoomTarget = target && target.closest('.zoomable-media, .qc-split-stage');
         const interactiveTarget =
           target &&
-          target.closest('a, button, [role="button"], .filter-btn, .lang-btn, .skill-chip');
+          target.closest('a, button, [role="button"], .filter-btn, .lang-btn, .skill-chip, .canvas-mode-btn');
 
         if (zoomTarget) {
           ring.classList.add('is-zoom');
@@ -1396,8 +2108,8 @@
         const px = (e.clientX - rect.left) / rect.width;
         const py = (e.clientY - rect.top) / rect.height;
 
-        const rotY = (px - 0.5) * 6;
-        const rotX = (0.5 - py) * 6;
+        const rotY = (px - 0.5) * 5.5;
+        const rotX = (0.5 - py) * 5.5;
 
         card.style.setProperty('--glare-x', `${(px * 100).toFixed(1)}%`);
         card.style.setProperty('--glare-y', `${(py * 100).toFixed(1)}%`);
@@ -1413,6 +2125,8 @@
   /* --------------------------------------------------------------------------
    * MOBILE NAVIGATION DRAWER
    * -------------------------------------------------------------------------- */
+  let closeMobileDrawerIfOpen = () => {};
+
   function initMobileMenu() {
     const toggleBtn = document.getElementById('mobile-menu-toggle');
     const drawer = document.getElementById('mobile-drawer');
@@ -1424,11 +2138,11 @@
       toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       drawer.classList.toggle('is-open', open);
       drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
-      document.body.classList.toggle('menu-locked', open);
+      document.body.classList.toggle('menu-locked', open || state.lightboxOpen || state.cmdOpen);
 
       if (state.lenis) {
         if (open) state.lenis.stop();
-        else state.lenis.start();
+        else if (!state.lightboxOpen && !state.cmdOpen) state.lenis.start();
       }
 
       const labelEl = document.getElementById('mobile-menu-label');
@@ -1436,6 +2150,11 @@
       if (labelEl && t) {
         labelEl.textContent = open ? t.nav.close : t.nav.menu;
       }
+      updateMobileQuickDock();
+    };
+
+    closeMobileDrawerIfOpen = () => {
+      if (state.mobileMenuOpen) setOpen(false);
     };
 
     toggleBtn.addEventListener('click', () => setOpen(!state.mobileMenuOpen));
@@ -1462,8 +2181,40 @@
   }
 
   /* --------------------------------------------------------------------------
-   * COPY EMAIL INTERACTION
+   * COPY EMAIL INTERACTION + FLOATING TOAST
    * -------------------------------------------------------------------------- */
+  async function copyEmailToClipboard() {
+    const email =
+      (window.PORTFOLIO_DATA &&
+        window.PORTFOLIO_DATA.profile &&
+        window.PORTFOLIO_DATA.profile.email) ||
+      'hans141203@gmail.com';
+    const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(email);
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = email;
+        temp.style.position = 'fixed';
+        temp.style.opacity = '0';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+
+      const toastMsg =
+        (t && t.controls && t.controls.toastCopied) || 'Email copied to clipboard';
+      showToast(`${toastMsg}: ${email}`);
+      return true;
+    } catch (err) {
+      window.location.href = `mailto:${email}`;
+      return false;
+    }
+  }
+
   function initCopyEmail() {
     const btn = document.getElementById('copy-email-btn');
     const textSpan = document.getElementById('copy-email-text');
@@ -1471,51 +2222,36 @@
 
     let resetTimer = null;
     btn.addEventListener('click', async () => {
-      const email =
-        (window.PORTFOLIO_DATA &&
-          window.PORTFOLIO_DATA.profile &&
-          window.PORTFOLIO_DATA.profile.email) ||
-        'hans141203@gmail.com';
+      const ok = await copyEmailToClipboard();
+      if (!ok) return;
+
       const t = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
-
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(email);
-        } else {
-          const temp = document.createElement('textarea');
-          temp.value = email;
-          temp.style.position = 'fixed';
-          temp.style.opacity = '0';
-          document.body.appendChild(temp);
-          temp.select();
-          document.execCommand('copy');
-          document.body.removeChild(temp);
-        }
-
-        btn.classList.add('is-copied');
-        if (t && t.contactSection) {
-          textSpan.textContent = t.contactSection.copiedEmail;
-        }
-
-        clearTimeout(resetTimer);
-        resetTimer = setTimeout(() => {
-          btn.classList.remove('is-copied');
-          const latestT = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
-          if (latestT && latestT.contactSection) {
-            textSpan.textContent = latestT.contactSection.copyEmail;
-          }
-        }, 2200);
-      } catch (err) {
-        window.location.href = `mailto:${email}`;
+      btn.classList.add('is-copied');
+      if (t && t.contactSection) {
+        textSpan.textContent = t.contactSection.copiedEmail;
       }
+
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        btn.classList.remove('is-copied');
+        const latestT = window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.i18n[state.lang];
+        if (latestT && latestT.contactSection) {
+          textSpan.textContent = latestT.contactSection.copyEmail;
+        }
+      }, 2200);
     });
   }
 
   /* --------------------------------------------------------------------------
-   * SCROLL PROGRESS, SECTION SPY & LIVE MALANG CLOCK
+   * SCROLL PROGRESS, PARALLAX WATERMARKS, MOBILE QUICK-DOCK & SECTION SPY
    * -------------------------------------------------------------------------- */
   function updateScrollStatus() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    if (!state.lenis) {
+      state.scrollVelocity = (scrollTop - state.lastScrollY) * 0.25;
+    }
+    state.lastScrollY = scrollTop;
+
     const docHeight =
       document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const ratio = docHeight > 0 ? Math.min(Math.max(scrollTop / docHeight, 0), 1) : 0;
@@ -1532,11 +2268,52 @@
     if (readout) {
       readout.textContent = `${label} ${padIndex(pct)}%`;
     }
+
+    updateSectionWatermarks();
+    updateMobileQuickDock();
+  }
+
+  function updateSectionWatermarks() {
+    if (prefersReducedMotion()) return;
+    const vh = window.innerHeight || 800;
+    const watermarks = document.querySelectorAll('.section-watermark');
+    for (let i = 0; i < watermarks.length; i++) {
+      const wm = watermarks[i];
+      const parent = wm.parentElement;
+      if (!parent) continue;
+      const rect = parent.getBoundingClientRect();
+      if (rect.bottom < -120 || rect.top > vh + 120) continue;
+      const progress = (rect.top + rect.height * 0.5 - vh * 0.5) / (vh * 0.5);
+      const shift = Math.max(Math.min(progress * -22, 26), -26);
+      wm.style.transform = `translate3d(0, ${shift.toFixed(1)}px, 0)`;
+    }
+  }
+
+  function updateMobileQuickDock() {
+    const dock = document.getElementById('mobile-quick-dock');
+    if (!dock) return;
+
+    if (window.innerWidth >= 768 || state.mobileMenuOpen || state.lightboxOpen || state.cmdOpen) {
+      dock.classList.remove('is-visible');
+      return;
+    }
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const contactEl = document.getElementById('contact');
+    let nearContact = false;
+    if (contactEl) {
+      const rect = contactEl.getBoundingClientRect();
+      nearContact = rect.top < window.innerHeight * 0.65;
+    }
+
+    const shouldShow = scrollTop > 360 && !nearContact;
+    dock.classList.toggle('is-visible', shouldShow);
   }
 
   function initScrollAndSpy() {
     updateScrollStatus();
     window.addEventListener('scroll', updateScrollStatus, { passive: true });
+    window.addEventListener('resize', updateMobileQuickDock, { passive: true });
 
     const sectionIds = ['overview', 'experience', 'projects', 'leadership', 'skills', 'contact'];
     const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
@@ -1630,25 +2407,6 @@
   }
 
   /* --------------------------------------------------------------------------
-   * SAFE LOCALSTORAGE WRAPPERS
-   * -------------------------------------------------------------------------- */
-  function safeGetStorage(key) {
-    try {
-      return window.localStorage.getItem(key);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function safeSetStorage(key, val) {
-    try {
-      window.localStorage.setItem(key, val);
-    } catch (e) {
-      // Ignore storage errors
-    }
-  }
-
-  /* --------------------------------------------------------------------------
    * BOOTSTRAP
    * -------------------------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
@@ -1656,7 +2414,11 @@
     initTheme();
     initMobileMenu();
     initLightbox();
+    initCommandPalette();
+    initCanvasSwitcher();
     initLanguage();
+    initTechMarquee();
+    initSpotlightTracking();
     initCopyEmail();
     initScrollAndSpy();
     initLenisScroll();
@@ -1666,16 +2428,7 @@
       window.PortfolioCanvas.init();
     }
 
-    // Initial cyber decode effect on Hero Name & Eyebrow
-    if (!state.initialLoadDone) {
-      state.initialLoadDone = true;
-      const firstEl = document.getElementById('hero-first-name');
-      const lastEl = document.getElementById('hero-last-name');
-      const eyebrowEl = document.getElementById('hero-eyebrow');
-      if (firstEl) scrambleElement(firstEl, firstEl.textContent, 520);
-      if (lastEl) scrambleElement(lastEl, lastEl.textContent, 640);
-      if (eyebrowEl) scrambleElement(eyebrowEl, eyebrowEl.textContent, 480);
-    }
+    initBootCurtain();
 
     updateLiveClock();
     setInterval(updateLiveClock, 15000);
