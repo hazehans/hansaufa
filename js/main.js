@@ -341,43 +341,43 @@
     if (projectId === 'student-achievement-db') {
       motif = `
         <rect x="24" y="28" width="88" height="82" rx="5" class="svg-accent-stroke" stroke-width="1.4" />
-        <line x1="24" y1="48" x2="112" y2="48" class="svg-accent-stroke" stroke-opacity="0.6" />
-        <text x="34" y="41" fill="currentColor" fill-opacity="0.7" font-family="monospace" font-size="8.5">achievements</text>
-        <rect x="34" y="57" width="56" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.8" />
-        <rect x="34" y="70" width="66" height="6" rx="2" fill="currentColor" fill-opacity="0.22" />
-        <rect x="34" y="83" width="48" height="6" rx="2" fill="currentColor" fill-opacity="0.22" />
-        <rect x="34" y="96" width="60" height="6" rx="2" fill="currentColor" fill-opacity="0.16" />
+        <line x1="24" y1="48" x2="112" y2="48" class="svg-accent-stroke" stroke-opacity="0.7" />
+        <text x="34" y="41" fill="currentColor" fill-opacity="0.85" font-family="monospace" font-size="8.5">achievements</text>
+        <rect x="34" y="57" width="56" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.85" />
+        <rect x="34" y="70" width="66" height="6" rx="2" fill="currentColor" fill-opacity="0.34" />
+        <rect x="34" y="83" width="48" height="6" rx="2" fill="currentColor" fill-opacity="0.30" />
+        <rect x="34" y="96" width="60" height="6" rx="2" fill="currentColor" fill-opacity="0.25" />
 
-        <path d="M112 68 H148" class="svg-accent-stroke" stroke-dasharray="4 3" stroke-width="1.3" />
+        <path d="M112 68 H148" class="svg-accent-stroke" stroke-dasharray="4 3" stroke-width="1.4" />
         <circle cx="148" cy="68" r="3" class="svg-accent-fill" />
 
-        <rect x="148" y="34" width="88" height="68" rx="5" stroke="currentColor" stroke-opacity="0.32" stroke-width="1.2" />
-        <line x1="148" y1="52" x2="236" y2="52" stroke="currentColor" stroke-opacity="0.22" />
-        <text x="158" y="46" fill="currentColor" fill-opacity="0.65" font-family="monospace" font-size="8.5">students_mysql</text>
-        <rect x="158" y="62" width="64" height="6" rx="2" fill="currentColor" fill-opacity="0.25" />
-        <rect x="158" y="75" width="52" height="6" rx="2" fill="currentColor" fill-opacity="0.2" />
-        <rect x="158" y="88" width="42" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.55" />
+        <rect x="148" y="34" width="88" height="68" rx="5" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.3" />
+        <line x1="148" y1="52" x2="236" y2="52" stroke="currentColor" stroke-opacity="0.32" />
+        <text x="158" y="46" fill="currentColor" fill-opacity="0.82" font-family="monospace" font-size="8.5">students_mysql</text>
+        <rect x="158" y="62" width="64" height="6" rx="2" fill="currentColor" fill-opacity="0.36" />
+        <rect x="158" y="75" width="52" height="6" rx="2" fill="currentColor" fill-opacity="0.30" />
+        <rect x="158" y="88" width="42" height="6" rx="2" class="svg-accent-fill" fill-opacity="0.65" />
       `;
     } else if (category === 'data') {
       motif = `
         <polyline points="28,98 68,78 106,86 146,52 186,60 228,34" fill="none" class="svg-accent-stroke" stroke-width="2" />
-        <circle cx="68" cy="78" r="3.5" fill="currentColor" fill-opacity="0.5" />
-        <circle cx="106" cy="86" r="3.5" fill="currentColor" fill-opacity="0.5" />
+        <circle cx="68" cy="78" r="3.5" fill="currentColor" fill-opacity="0.6" />
+        <circle cx="106" cy="86" r="3.5" fill="currentColor" fill-opacity="0.6" />
         <circle cx="146" cy="52" r="4" class="svg-accent-fill" />
-        <circle cx="186" cy="60" r="3.5" fill="currentColor" fill-opacity="0.5" />
+        <circle cx="186" cy="60" r="3.5" fill="currentColor" fill-opacity="0.6" />
         <circle cx="228" cy="34" r="4.5" class="svg-accent-fill" />
-        <line x1="26" y1="108" x2="234" y2="108" stroke="currentColor" stroke-opacity="0.2" />
-        <line x1="26" y1="30" x2="26" y2="108" stroke="currentColor" stroke-opacity="0.2" />
+        <line x1="26" y1="108" x2="234" y2="108" stroke="currentColor" stroke-opacity="0.3" />
+        <line x1="26" y1="30" x2="26" y2="108" stroke="currentColor" stroke-opacity="0.3" />
       `;
     } else {
       motif = `
-        <rect x="28" y="34" width="204" height="74" rx="5" stroke="currentColor" stroke-opacity="0.28" />
-        <line x1="28" y1="52" x2="232" y2="52" stroke="currentColor" stroke-opacity="0.2" />
+        <rect x="28" y="34" width="204" height="74" rx="5" stroke="currentColor" stroke-opacity="0.4" />
+        <line x1="28" y1="52" x2="232" y2="52" stroke="currentColor" stroke-opacity="0.28" />
         <circle cx="42" cy="43" r="2.5" class="svg-accent-fill" />
-        <circle cx="52" cy="43" r="2.5" fill="currentColor" fill-opacity="0.3" />
+        <circle cx="52" cy="43" r="2.5" fill="currentColor" fill-opacity="0.4" />
         <rect x="44" y="66" width="76" height="28" rx="3" class="svg-accent-stroke" />
-        <rect x="134" y="66" width="82" height="10" rx="2" fill="currentColor" fill-opacity="0.22" />
-        <rect x="134" y="84" width="58" height="10" rx="2" fill="currentColor" fill-opacity="0.16" />
+        <rect x="134" y="66" width="82" height="10" rx="2" fill="currentColor" fill-opacity="0.32" />
+        <rect x="134" y="84" width="58" height="10" rx="2" fill="currentColor" fill-opacity="0.25" />
       `;
     }
 
@@ -385,7 +385,7 @@
       <svg class="project-wireframe-svg" viewBox="0 0 260 144" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <pattern id="grid-${escapeHtml(projectId)}" width="16" height="16" patternUnits="userSpaceOnUse">
-            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="currentColor" stroke-opacity="0.06" stroke-width="0.75" />
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="currentColor" stroke-opacity="0.11" stroke-width="0.75" />
           </pattern>
         </defs>
         <rect width="260" height="144" fill="url(#grid-${escapeHtml(projectId)})" />

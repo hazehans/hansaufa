@@ -24,10 +24,10 @@
     style: 'dot-matrix',
     interactive: true,
     palette: {
-      dotBase: 'rgba(244, 244, 240, 0.15)',
-      dotActive: 'rgba(56, 189, 248, 0.92)',
-      lineActive: 'rgba(56, 189, 248, 0.20)',
-      gridStroke: 'rgba(244, 244, 240, 0.08)'
+      dotBase: 'rgba(206, 224, 245, 0.22)',
+      dotActive: 'rgba(56, 189, 248, 0.95)',
+      lineActive: 'rgba(56, 189, 248, 0.24)',
+      gridStroke: 'rgba(206, 224, 245, 0.11)'
     },
     pointer: {
       x: -9999,
@@ -143,18 +143,18 @@
       } else {
         if (accent === 'cobalt') {
           this.palette = {
-            dotBase: 'rgba(244, 244, 240, 0.14)',
-            dotActive: 'rgba(79, 140, 255, 0.92)',
-            lineActive: 'rgba(79, 140, 255, 0.22)',
-            gridStroke: 'rgba(244, 244, 240, 0.07)'
+            dotBase: 'rgba(206, 222, 248, 0.22)',
+            dotActive: 'rgba(79, 140, 255, 0.95)',
+            lineActive: 'rgba(79, 140, 255, 0.25)',
+            gridStroke: 'rgba(206, 222, 248, 0.11)'
           };
         } else {
           // Option A: Cyber Azure Blue (Dark Mode Default)
           this.palette = {
-            dotBase: 'rgba(244, 244, 240, 0.14)',
-            dotActive: 'rgba(56, 189, 248, 0.92)',
-            lineActive: 'rgba(56, 189, 248, 0.20)',
-            gridStroke: 'rgba(244, 244, 240, 0.07)'
+            dotBase: 'rgba(206, 224, 245, 0.22)',
+            dotActive: 'rgba(56, 189, 248, 0.95)',
+            lineActive: 'rgba(56, 189, 248, 0.24)',
+            gridStroke: 'rgba(206, 224, 245, 0.11)'
           };
         }
       }

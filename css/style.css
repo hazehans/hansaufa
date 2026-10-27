@@ -9,74 +9,96 @@
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg-primary: #0B0B0B;
-  --bg-elevated: rgba(18, 20, 24, 0.84);
-  --bg-surface: #14171C;
-  --bg-header: rgba(11, 12, 14, 0.88);
-  --bg-drawer: rgba(11, 12, 14, 0.98);
+  --bg-primary: #0B0C0F;
+  --bg-elevated: rgba(21, 26, 35, 0.90);
+  --bg-surface: #1A212D;
+  --bg-chip: rgba(56, 189, 248, 0.065);
+  --bg-header: rgba(11, 13, 17, 0.90);
+  --bg-drawer: rgba(11, 13, 17, 0.98);
 
-  --text-primary: #F4F5F7;
-  --text-secondary: #A1A6B0;
-  --text-muted: #727884;
+  --text-primary: #F5F7FA;
+  --text-tag: #DDE5F0;
+  --text-secondary: #BAC3D0;
+  --text-muted: #949FAF;
 
-  --border-color: rgba(255, 255, 255, 0.13);
-  --border-strong: rgba(255, 255, 255, 0.28);
+  --border-color: rgba(212, 226, 244, 0.19);
+  --border-strong: rgba(212, 226, 244, 0.35);
 
   /* Option A (Default): Cyber Azure Blue */
   --accent: #38BDF8;
   --accent-fg: #06131F;
-  --accent-soft: rgba(56, 189, 248, 0.12);
-  --accent-border: rgba(56, 189, 248, 0.44);
-  --glare-color: rgba(56, 189, 248, 0.08);
-  --spotlight-border: rgba(56, 189, 248, 0.55);
+  --accent-soft: rgba(56, 189, 248, 0.14);
+  --accent-border: rgba(56, 189, 248, 0.48);
+  --glare-color: rgba(56, 189, 248, 0.09);
+  --spotlight-border: rgba(56, 189, 248, 0.58);
 
-  --shadow-card: 0 20px 44px -20px rgba(0, 0, 0, 0.76);
+  /* Architectural Section Watermark (Option 1: Cyber Azure Gradient Stroke) */
+  --watermark-stroke: rgba(56, 189, 248, 0.48);
+  --watermark-fill: rgba(56, 189, 248, 0.045);
+  --watermark-glow: rgba(56, 189, 248, 0.14);
+
+  --shadow-card: 0 20px 44px -20px rgba(0, 0, 0, 0.78);
 }
 
 [data-theme="dark"][data-accent="cobalt"] {
   /* Option B: Royal Electric Cobalt */
+  --bg-chip: rgba(79, 140, 255, 0.07);
   --accent: #4F8CFF;
   --accent-fg: #FFFFFF;
-  --accent-soft: rgba(79, 140, 255, 0.13);
-  --accent-border: rgba(79, 140, 255, 0.46);
+  --accent-soft: rgba(79, 140, 255, 0.14);
+  --accent-border: rgba(79, 140, 255, 0.48);
   --glare-color: rgba(79, 140, 255, 0.09);
   --spotlight-border: rgba(79, 140, 255, 0.58);
+  --watermark-stroke: rgba(79, 140, 255, 0.48);
+  --watermark-fill: rgba(79, 140, 255, 0.045);
+  --watermark-glow: rgba(79, 140, 255, 0.14);
 }
 
 [data-theme="light"] {
   color-scheme: light;
   --bg-primary: #F5F6F8;
-  --bg-elevated: rgba(255, 255, 255, 0.88);
+  --bg-elevated: rgba(255, 255, 255, 0.90);
   --bg-surface: #EAECEF;
-  --bg-header: rgba(245, 246, 248, 0.91);
+  --bg-chip: rgba(2, 132, 199, 0.055);
+  --bg-header: rgba(245, 246, 248, 0.92);
   --bg-drawer: rgba(245, 246, 248, 0.98);
 
   --text-primary: #0F141C;
-  --text-secondary: #4B5260;
-  --text-muted: #6E7685;
+  --text-tag: #263040;
+  --text-secondary: #434B59;
+  --text-muted: #5F6878;
 
-  --border-color: rgba(15, 20, 28, 0.13);
-  --border-strong: rgba(15, 20, 28, 0.28);
+  --border-color: rgba(15, 20, 28, 0.15);
+  --border-strong: rgba(15, 20, 28, 0.30);
 
   /* Option A (Default Light): Architectural Blueprint Azure */
   --accent: #0284C7;
   --accent-fg: #FFFFFF;
   --accent-soft: rgba(2, 132, 199, 0.10);
-  --accent-border: rgba(2, 132, 199, 0.38);
+  --accent-border: rgba(2, 132, 199, 0.40);
   --glare-color: rgba(2, 132, 199, 0.06);
   --spotlight-border: rgba(2, 132, 199, 0.48);
+
+  /* Architectural Section Watermark (Light Mode Blueprint Azure) */
+  --watermark-stroke: rgba(2, 132, 199, 0.36);
+  --watermark-fill: rgba(2, 132, 199, 0.035);
+  --watermark-glow: transparent;
 
   --shadow-card: 0 18px 40px -20px rgba(15, 20, 28, 0.12);
 }
 
 [data-theme="light"][data-accent="cobalt"] {
   /* Option B (Light): Deep Royal Cobalt */
+  --bg-chip: rgba(29, 78, 216, 0.055);
   --accent: #1D4ED8;
   --accent-fg: #FFFFFF;
   --accent-soft: rgba(29, 78, 216, 0.10);
-  --accent-border: rgba(29, 78, 216, 0.38);
+  --accent-border: rgba(29, 78, 216, 0.40);
   --glare-color: rgba(29, 78, 216, 0.06);
   --spotlight-border: rgba(29, 78, 216, 0.48);
+  --watermark-stroke: rgba(29, 78, 216, 0.36);
+  --watermark-fill: rgba(29, 78, 216, 0.035);
+  --watermark-glow: transparent;
 }
 
 :root {
@@ -1039,6 +1061,12 @@ svg {
   margin-bottom: clamp(32px, 5vw, 56px);
 }
 
+.section-header > :not(.section-watermark),
+.contact-box > :not(.section-watermark) {
+  position: relative;
+  z-index: 1;
+}
+
 @media (min-width: 920px) {
   .section-header {
     flex-direction: row;
@@ -1827,10 +1855,11 @@ svg {
 .project-cat-pill {
   padding: 3px 9px;
   border: 1px solid var(--border-color);
+  background-color: var(--bg-chip);
   border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-tag);
 }
 
 .project-status-badge {
@@ -1843,7 +1872,7 @@ svg {
   background-color: var(--bg-surface);
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-tag);
   max-width: 100%;
   overflow-wrap: anywhere;
 }
@@ -1922,11 +1951,12 @@ svg {
 .tech-tag {
   padding: 4px 10px;
   border: 1px solid var(--border-color);
-  background-color: var(--bg-surface);
+  background-color: var(--bg-chip);
   border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.77rem;
-  color: var(--text-secondary);
+  font-weight: 500;
+  color: var(--text-tag);
 }
 
 .project-links {
@@ -2298,7 +2328,8 @@ svg {
 .edu-coursework-label {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--text-muted);
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .edu-coursework-tags {
@@ -3053,20 +3084,37 @@ svg {
   font-weight: 700;
   line-height: 0.85;
   letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--border-color);
-  opacity: 0.52;
+  color: var(--watermark-fill);
+  -webkit-text-stroke: 1.5px var(--watermark-stroke);
+  text-shadow: 0 0 26px var(--watermark-glow);
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 18%,
+    rgba(0, 0, 0, 0.65) 58%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 18%,
+    rgba(0, 0, 0, 0.65) 58%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  opacity: 1;
   pointer-events: none;
   user-select: none;
-  z-index: -1;
+  z-index: 0;
   will-change: transform;
+}
+
+.section-header-projects .section-watermark {
+  top: -32px;
 }
 
 .section-watermark-contact {
   right: 24px;
   top: 14px;
   z-index: 0;
-  opacity: 0.36;
+  opacity: 0.92;
 }
 
 /* --------------------------------------------------------------------------
