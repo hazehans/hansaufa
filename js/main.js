@@ -1822,6 +1822,26 @@
       });
     }
 
+    // Ensure mouse-wheel & trackpad scrolling always works inside modals even when Lenis is stopped
+    ['cmd-list', 'lightbox-stage', 'mobile-drawer'].forEach((id) => {
+      const scrollBox = document.getElementById(id);
+      if (!scrollBox) return;
+      scrollBox.addEventListener(
+        'wheel',
+        (e) => {
+          e.stopPropagation();
+        },
+        { passive: true }
+      );
+      scrollBox.addEventListener(
+        'touchmove',
+        (e) => {
+          e.stopPropagation();
+        },
+        { passive: true }
+      );
+    });
+
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();

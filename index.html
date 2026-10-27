@@ -242,7 +242,7 @@
   </header>
 
   <!-- Mobile Navigation Drawer (Inside Frame) -->
-  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true" data-lenis-prevent>
     <div class="mobile-drawer-inner">
       <nav class="mobile-nav-links" aria-label="Mobile Navigation">
         <a href="#overview" class="mobile-nav-link">
@@ -682,9 +682,9 @@
   </footer>
 
   <!-- Developer Quick Command Palette Modal (Ctrl+K / Cmd+K) -->
-  <div id="cmd-modal" class="cmd-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="cmd-input">
+  <div id="cmd-modal" class="cmd-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="cmd-input" data-lenis-prevent>
     <div class="cmd-backdrop" id="cmd-backdrop"></div>
-    <div class="cmd-dialog">
+    <div class="cmd-dialog" data-lenis-prevent>
       <div class="cmd-search-bar">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="11" cy="11" r="7"></circle>
@@ -700,7 +700,7 @@
         />
         <button type="button" id="cmd-close" class="cmd-esc-btn" aria-label="Close Command Palette">ESC</button>
       </div>
-      <div id="cmd-list" class="cmd-list" role="listbox"></div>
+      <div id="cmd-list" class="cmd-list" role="listbox" data-lenis-prevent></div>
     </div>
   </div>
 
@@ -725,7 +725,7 @@
         </button>
       </div>
       <div id="lightbox-switcher" class="lightbox-switcher" hidden></div>
-      <div class="lightbox-stage" id="lightbox-stage">
+      <div class="lightbox-stage" id="lightbox-stage" data-lenis-prevent>
         <img id="lightbox-img" src="" alt="" class="lightbox-img" />
       </div>
     </div>
