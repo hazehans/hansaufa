@@ -387,7 +387,7 @@
 
   function buildPortraitFallbackHtml(data, t) {
     const monogram = escapeHtml((data.config.branding && data.config.branding.monogram) || 'HA');
-    const coords = escapeHtml(data.profile.coordinates || "07°58'S 112°37'E");
+    const coords = escapeHtml(data.profile.coordinates || `7°55'17.6"S 112°35'46.2"E`);
     const gpa = escapeHtml(data.profile.gpa || '3.78 / 4.00');
 
     return `
@@ -2128,9 +2128,9 @@
 
     try {
       const lenis = new window.Lenis({
-        lerp: 0.092,
+        lerp: 0.115,
         smoothWheel: true,
-        wheelMultiplier: 0.96,
+        wheelMultiplier: 1.0,
         touchMultiplier: 1
       });
 
@@ -2141,7 +2141,7 @@
           state.rawScrollVelocity = e.velocity;
           startKineticVelocityLoop();
         }
-        updateScrollStatus();
+        requestScrollUpdate();
       });
 
       const raf = (time) => {
@@ -2587,14 +2587,24 @@
     dock.classList.toggle('is-visible', shouldShow);
   }
 
+  let scrollRafPending = false;
+  function requestScrollUpdate() {
+    if (scrollRafPending) return;
+    scrollRafPending = true;
+    requestAnimationFrame(() => {
+      scrollRafPending = false;
+      updateScrollStatus();
+    });
+  }
+
   function initScrollAndSpy() {
     updateScrollStatus();
-    window.addEventListener('scroll', updateScrollStatus, { passive: true });
+    window.addEventListener('scroll', requestScrollUpdate, { passive: true });
     window.addEventListener(
       'resize',
       () => {
         updateMobileQuickDock();
-        updateScrollStatus();
+        requestScrollUpdate();
       },
       { passive: true }
     );

@@ -76,7 +76,7 @@ window.PORTFOLIO_DATA = {
     fullName: 'Hans Adiyatma Putra Aufa',
     displayFirst: 'HANS ADIYATMA',
     displayLast: 'PUTRA AUFA',
-    coordinates: "07°58'S 112°37'E",
+    coordinates: `7°55'17.6"S 112°35'46.2"E`,
     timezone: 'Asia/Jakarta',
     gpa: '3.78 / 4.00',
     email: 'hans141203@gmail.com',
