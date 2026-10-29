@@ -18,6 +18,9 @@
     height: 0,
     dpr: 1,
     time: 0,
+    scrollVelocity: 0,
+    targetScrollVelocity: 0,
+    scrollPhase: 0,
     isRunning: false,
     eventsBound: false,
     reducedMotion: false,
@@ -51,7 +54,8 @@
           window.PORTFOLIO_DATA.config.background) ||
         {};
 
-      this.style = bgConfig.canvasStyle || 'dot-matrix';
+      this.style =
+        window.__INITIAL_CANVAS_STYLE__ || bgConfig.canvasStyle || 'dot-matrix';
       this.interactive = bgConfig.interactive !== false;
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -67,6 +71,11 @@
 
     getStyle() {
       return this.style;
+    },
+
+    setScrollVelocity(vel) {
+      if (typeof vel !== 'number' || Number.isNaN(vel)) return;
+      this.targetScrollVelocity = Math.max(-32, Math.min(32, vel));
     },
 
     setStyle(nextStyle) {
@@ -320,6 +329,11 @@
 
     tick() {
       this.time += 0.014;
+      this.scrollVelocity += (this.targetScrollVelocity - this.scrollVelocity) * 0.14;
+      this.targetScrollVelocity *= 0.88;
+      if (Math.abs(this.scrollVelocity) < 0.01) this.scrollVelocity = 0;
+      this.scrollPhase += this.scrollVelocity * 0.016;
+
       const ctx = this.ctx;
       ctx.clearRect(0, 0, this.width, this.height);
 
@@ -351,17 +365,21 @@
       const radiusSq = radius * radius;
       const px = this.pointer.x;
       const py = this.pointer.y;
+      const vel = this.scrollVelocity;
+      const absVel = Math.abs(vel);
+      const streakH = 1.7 + Math.min(absVel * 0.44, 9.5);
+      const driftY = Math.max(-14, Math.min(14, -vel * 0.42));
       const activeNodes = [];
 
-      ctx.fillStyle = this.palette.dotBase;
+      ctx.fillStyle = absVel > 5.5 ? this.palette.lineActive : this.palette.dotBase;
 
       for (let i = 0; i < this.dots.length; i++) {
         const d = this.dots[i];
         const waveX = Math.sin(this.time + d.oy * 0.012) * 1.6;
-        const waveY = Math.cos(this.time * 0.85 + d.ox * 0.012) * 1.6;
+        const waveY = Math.cos(this.time * 0.85 + d.ox * 0.012 + this.scrollPhase * 0.35) * 1.6;
 
         let tx = d.ox + waveX;
-        let ty = d.oy + waveY;
+        let ty = d.oy + waveY + driftY;
         let influence = 0;
 
         const dx = tx - px;
@@ -382,7 +400,7 @@
         if (influence > 0.14) {
           activeNodes.push({ x: d.x, y: d.y, influence });
         } else {
-          ctx.fillRect(d.x - 0.85, d.y - 0.85, 1.7, 1.7);
+          ctx.fillRect(d.x - 0.85, d.y - streakH * 0.5, 1.7, streakH);
         }
       }
 
@@ -408,7 +426,7 @@
         for (let i = 0; i < activeNodes.length; i++) {
           const n = activeNodes[i];
           const size = 1.8 + n.influence * 2.2;
-          ctx.fillRect(n.x - size * 0.5, n.y - size * 0.5, size, size);
+          ctx.fillRect(n.x - size * 0.5, n.y - (size + streakH * 0.35) * 0.5, size, size + streakH * 0.35);
         }
       }
     },
@@ -419,16 +437,18 @@
       const px = this.pointer.x;
       const py = this.pointer.y;
       const radius = 185;
+      const vel = this.scrollVelocity;
+      const amp = 5.2 + Math.min(Math.abs(vel) * 0.52, 13.5);
       const crestPoints = [];
 
-      ctx.strokeStyle = this.palette.gridStroke;
+      ctx.strokeStyle = Math.abs(vel) > 5 ? this.palette.lineActive : this.palette.gridStroke;
       ctx.lineWidth = 1;
 
       for (let r = 0; r < rows; r++) {
         ctx.beginPath();
         for (let c = 0; c < cols; c++) {
           const d = this.dots[r * cols + c];
-          const wave = Math.sin(this.time * 1.35 + c * 0.28 + r * 0.18) * 5.2;
+          const wave = Math.sin(this.time * 1.35 + this.scrollPhase + c * 0.28 + r * 0.18) * amp;
           let y = d.oy + wave;
           const dx = d.ox - px;
           const dy = y - py;
@@ -459,23 +479,25 @@
       const linkDistSq = 128 * 128;
       const px = this.pointer.x;
       const py = this.pointer.y;
+      const slipstreamY = -this.scrollVelocity * 0.26;
+      const fastScroll = Math.abs(this.scrollVelocity) > 5;
 
       for (let i = 0; i < this.particles.length; i++) {
         const p = this.particles[i];
         p.x += p.vx;
-        p.y += p.vy;
+        p.y += p.vy + slipstreamY;
 
         if (p.x < 0) p.x = this.width;
         if (p.x > this.width) p.x = 0;
-        if (p.y < 0) p.y = this.height;
-        if (p.y > this.height) p.y = 0;
+        if (p.y < 0) p.y += this.height;
+        if (p.y > this.height) p.y -= this.height;
 
         const dx = p.x - px;
         const dy = p.y - py;
         const dSq = dx * dx + dy * dy;
         const nearCursor = dSq < 165 * 165;
 
-        ctx.fillStyle = nearCursor ? this.palette.dotActive : this.palette.dotBase;
+        ctx.fillStyle = nearCursor || fastScroll ? this.palette.dotActive : this.palette.dotBase;
         ctx.beginPath();
         ctx.arc(p.x, p.y, nearCursor ? p.r + 1.0 : p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -485,7 +507,7 @@
           const ldx = p.x - q.x;
           const ldy = p.y - q.y;
           if (ldx * ldx + ldy * ldy < linkDistSq) {
-            ctx.strokeStyle = nearCursor ? this.palette.lineActive : this.palette.gridStroke;
+            ctx.strokeStyle = nearCursor || fastScroll ? this.palette.lineActive : this.palette.gridStroke;
             ctx.lineWidth = nearCursor ? 0.9 : 0.7;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);

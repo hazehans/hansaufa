@@ -38,6 +38,10 @@
     lenis: null,
     toastTimer: null,
     scrollVelocity: 0,
+    rawScrollVelocity: 0,
+    smoothedVelocity: 0,
+    kineticRafId: null,
+    lastScrollTime: 0,
     lastScrollY: 0
   };
 
@@ -915,10 +919,17 @@
   function initCanvasSwitcher() {
     const switcher = document.getElementById('canvas-switcher');
     const data = window.PORTFOLIO_DATA;
-    state.canvasStyle =
-      (data && data.config && data.config.background && data.config.background.canvasStyle) ||
-      'dot-matrix';
+    const bgCfg = (data && data.config && data.config.background) || {};
+    const modes = ['dot-matrix', 'wave-grid', 'particles'];
 
+    if (bgCfg.randomizeOnLoad !== false) {
+      const randIdx = pickNonRepeatingSession('hans_canvas_style_idx', modes.length);
+      state.canvasStyle = modes[randIdx] || 'dot-matrix';
+    } else {
+      state.canvasStyle = bgCfg.canvasStyle || 'dot-matrix';
+    }
+
+    window.__INITIAL_CANVAS_STYLE__ = state.canvasStyle;
     syncCanvasButtons();
 
     if (!switcher) return;
@@ -1124,7 +1135,14 @@
 
     const visibleItems = data.experience.filter((item) => item.visible !== false);
 
-    container.innerHTML = visibleItems
+    const spineHtml = `
+      <div class="exp-spine-track" aria-hidden="true">
+        <div class="exp-spine-fill" id="exp-spine-fill"></div>
+        <span class="exp-spine-head" id="exp-spine-head"></span>
+      </div>
+    `;
+
+    const rowsHtml = visibleItems
       .map((item, idx) => {
         const loc = item.i18n[lang] || item.i18n.en;
         const bulletsHtml = (loc.highlights || [])
@@ -1143,6 +1161,7 @@
 
         return `
           <article class="exp-row reveal">
+            <span class="exp-timeline-node" aria-hidden="true"></span>
             <div class="exp-meta">
               <div class="exp-index-line">
                 <span class="mono-idx">${padIndex(idx + 1)}</span>
@@ -1153,7 +1172,7 @@
               <p class="exp-location">${escapeHtml(loc.location)}</p>
             </div>
 
-            <div class="exp-body">
+            <div class="exp-body kinetic-skew">
               <h3 class="exp-role">${escapeHtml(loc.role)}</h3>
               <ul class="exp-bullets">
                 ${bulletsHtml}
@@ -1163,6 +1182,8 @@
         `;
       })
       .join('');
+
+    container.innerHTML = spineHtml + rowsHtml;
   }
 
   function renderProjectFilters(data, t) {
@@ -1210,6 +1231,7 @@
           observeReveals();
           bindMagneticButtons();
           bindTiltCards();
+          updateScrollStatus();
           if (state.lenis && typeof state.lenis.resize === 'function') {
             state.lenis.resize();
           }
@@ -1357,7 +1379,7 @@
 
         return `
           <article class="project-card spotlight-card reveal">
-            <div class="project-card-main">
+            <div class="project-card-main kinetic-skew">
               <div class="project-top-bar">
                 <span class="project-idx">${indexStr}</span>
                 <span class="project-date">${escapeHtml(loc.date)}</span>
@@ -1547,7 +1569,7 @@
       .map((org, idx) => {
         const loc = org.i18n[lang] || org.i18n.en;
         return `
-          <article class="org-item">
+          <article class="org-item kinetic-skew">
             <div class="org-item-meta">
               <span class="mono-idx">${padIndex(idx + 1)}</span>
               <span class="mono-xs">${escapeHtml(loc.period)}</span>
@@ -2116,6 +2138,8 @@
       lenis.on('scroll', (e) => {
         if (e && typeof e.velocity === 'number') {
           state.scrollVelocity = e.velocity;
+          state.rawScrollVelocity = e.velocity;
+          startKineticVelocityLoop();
         }
         updateScrollStatus();
       });
@@ -2366,14 +2390,160 @@
   }
 
   /* --------------------------------------------------------------------------
-   * SCROLL PROGRESS, PARALLAX WATERMARKS, MOBILE QUICK-DOCK & SECTION SPY
+   * KINETIC SCROLL PHYSICS, PARALLAX, LASER SPINE & REVERSIBLE REVEALS
    * -------------------------------------------------------------------------- */
+  function startKineticVelocityLoop() {
+    if (prefersReducedMotion()) return;
+    if (state.kineticRafId !== null) return;
+
+    const tick = () => {
+      state.rawScrollVelocity *= 0.86;
+      state.smoothedVelocity += (state.rawScrollVelocity - state.smoothedVelocity) * 0.22;
+
+      const isSettled =
+        Math.abs(state.smoothedVelocity) < 0.015 && Math.abs(state.rawScrollVelocity) < 0.015;
+
+      if (isSettled) {
+        state.smoothedVelocity = 0;
+        state.rawScrollVelocity = 0;
+        document.documentElement.style.setProperty('--vel-skew', '0deg');
+        if (
+          window.PortfolioCanvas &&
+          typeof window.PortfolioCanvas.setScrollVelocity === 'function'
+        ) {
+          window.PortfolioCanvas.setScrollVelocity(0);
+        }
+        state.kineticRafId = null;
+        return;
+      }
+
+      const isMobile = window.innerWidth < 768;
+      const maxSkew = isMobile ? 0.65 : 1.35;
+      const skewFactor = isMobile ? 0.045 : 0.075;
+      const skewDeg = Math.max(-maxSkew, Math.min(maxSkew, state.smoothedVelocity * skewFactor));
+      document.documentElement.style.setProperty('--vel-skew', `${skewDeg.toFixed(3)}deg`);
+
+      if (
+        window.PortfolioCanvas &&
+        typeof window.PortfolioCanvas.setScrollVelocity === 'function'
+      ) {
+        window.PortfolioCanvas.setScrollVelocity(state.smoothedVelocity);
+      }
+
+      state.kineticRafId = requestAnimationFrame(tick);
+    };
+
+    state.kineticRafId = requestAnimationFrame(tick);
+  }
+
+  function syncReversibleReveals(scrollTop) {
+    if (prefersReducedMotion()) return;
+    const vh = window.innerHeight || 800;
+    const items = document.querySelectorAll('.reveal');
+
+    for (let i = 0; i < items.length; i++) {
+      const el = items[i];
+      const rect = el.getBoundingClientRect();
+      const inHero = Boolean(el.closest('#hero'));
+
+      if (el.classList.contains('is-visible')) {
+        // Unload off-screen elements strictly below the bottom of viewport (60px hysteresis deadband)
+        if (!(inHero && scrollTop < 80) && rect.top > vh + 16) {
+          el.classList.remove('is-visible');
+        }
+      } else if (rect.top < vh - 44) {
+        // Reveal elements inside or above the viewport cleanly
+        el.classList.add('is-visible');
+      }
+    }
+  }
+
+  function updateScrollSpatialEffects(scrollTop) {
+    if (prefersReducedMotion()) return;
+    const vh = window.innerHeight || 800;
+    const isMobile = window.innerWidth < 768;
+
+    // 1. Hero Scroll-Out Depth Recede
+    const heroLayout = document.querySelector('#hero .hero-flex-layout');
+    if (heroLayout) {
+      if (scrollTop <= 4) {
+        heroLayout.style.setProperty('--hero-recede-scale', '1');
+        heroLayout.style.setProperty('--hero-recede-y', '0px');
+        heroLayout.style.setProperty('--hero-recede-opacity', '1');
+      } else if (scrollTop < vh * 1.2) {
+        const p = Math.min(scrollTop / (vh * 0.95), 1);
+        const scale = 1 - p * (isMobile ? 0.035 : 0.06);
+        const yShift = p * (isMobile ? -18 : -34);
+        const opacity = Math.max(1 - p * 0.72, 0.24);
+        heroLayout.style.setProperty('--hero-recede-scale', scale.toFixed(4));
+        heroLayout.style.setProperty('--hero-recede-y', `${yShift.toFixed(1)}px`);
+        heroLayout.style.setProperty('--hero-recede-opacity', opacity.toFixed(3));
+      }
+    }
+
+    // 2. Section 02 Real-Time Laser Timeline Spine
+    const expList = document.getElementById('experience-list');
+    if (expList) {
+      const listRect = expList.getBoundingClientRect();
+      if (listRect.height > 0 && listRect.bottom > -240 && listRect.top < vh + 240) {
+        const triggerY = vh * 0.58;
+        const rawProgress = (triggerY - listRect.top) / listRect.height;
+        const clamped = Math.min(Math.max(rawProgress, 0), 1);
+        expList.style.setProperty('--spine-progress', clamped.toFixed(4));
+        expList.style.setProperty(
+          '--spine-head-scale',
+          clamped > 0.012 && clamped < 0.992 ? '1' : '0'
+        );
+
+        const rows = expList.querySelectorAll('.exp-row');
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const rowRect = row.getBoundingClientRect();
+          row.classList.toggle('is-reached', triggerY >= rowRect.top + 42);
+        }
+      } else if (listRect.top >= vh + 240) {
+        expList.style.setProperty('--spine-progress', '0');
+        expList.style.setProperty('--spine-head-scale', '0');
+        expList.querySelectorAll('.exp-row.is-reached').forEach((r) => r.classList.remove('is-reached'));
+      } else if (listRect.bottom <= -240) {
+        expList.style.setProperty('--spine-progress', '1');
+        expList.style.setProperty('--spine-head-scale', '0');
+      }
+    }
+
+    // 3. Inner 3D Window Image Parallax
+    const parallaxImgs = document.querySelectorAll('.project-screenshot, #profile-photo-img');
+    for (let i = 0; i < parallaxImgs.length; i++) {
+      const img = parallaxImgs[i];
+      const rect = img.getBoundingClientRect();
+      if (rect.bottom < -80 || rect.top > vh + 80) continue;
+      const centerOffset = (rect.top + rect.height * 0.5 - vh * 0.5) / (vh * 0.5);
+      const clampedOffset = Math.max(-1.2, Math.min(1.2, centerOffset));
+      const isLightDiagram = Boolean(img.closest('.is-light-surface'));
+      const maxShift = isLightDiagram ? 5 : isMobile ? 8 : 13;
+      const shiftPx = clampedOffset * -maxShift;
+      img.style.setProperty('--img-parallax', `${shiftPx.toFixed(1)}px`);
+    }
+  }
+
   function updateScrollStatus() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const now = performance.now();
+
     if (!state.lenis) {
-      state.scrollVelocity = (scrollTop - state.lastScrollY) * 0.25;
+      const deltaY = scrollTop - state.lastScrollY;
+      const dt = state.lastScrollTime > 0 ? Math.max(now - state.lastScrollTime, 8) : 16.67;
+      if (state.lastScrollTime > 0 && dt < 180 && Math.abs(deltaY) > 0) {
+        const pxPerFrame = (deltaY / dt) * 16.67;
+        const vel = Math.max(-28, Math.min(28, pxPerFrame * 0.42));
+        state.scrollVelocity = vel;
+        state.rawScrollVelocity = vel;
+        startKineticVelocityLoop();
+      }
     }
+
     state.lastScrollY = scrollTop;
+    state.lastScrollTime = now;
 
     const docHeight =
       document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -2393,6 +2563,8 @@
     }
 
     updateSectionWatermarks();
+    updateScrollSpatialEffects(scrollTop);
+    syncReversibleReveals(scrollTop);
     updateMobileQuickDock();
   }
 
@@ -2436,7 +2608,14 @@
   function initScrollAndSpy() {
     updateScrollStatus();
     window.addEventListener('scroll', updateScrollStatus, { passive: true });
-    window.addEventListener('resize', updateMobileQuickDock, { passive: true });
+    window.addEventListener(
+      'resize',
+      () => {
+        updateMobileQuickDock();
+        updateScrollStatus();
+      },
+      { passive: true }
+    );
 
     const sectionIds = ['overview', 'experience', 'projects', 'leadership', 'skills', 'contact'];
     const navLinks = document.querySelectorAll('.desktop-nav .nav-link');
@@ -2484,14 +2663,31 @@
   }
 
   /* --------------------------------------------------------------------------
-   * REVEAL ANIMATIONS & MAGNETIC BUTTONS
+   * REVEAL ANIMATIONS (REVERSIBLE + STAGGERED CASCADE) & MAGNETIC BUTTONS
    * -------------------------------------------------------------------------- */
+  function assignStaggeredRevealDelays() {
+    const groups = document.querySelectorAll(
+      '#overview-pillars, #experience-list, #projects-list, #skills-grid, .dual-flex'
+    );
+    groups.forEach((group) => {
+      const cards = Array.from(group.children).filter(
+        (el) => el.classList && el.classList.contains('reveal')
+      );
+      cards.forEach((card, idx) => {
+        const delayMs = Math.min(idx % 4, 3) * 65;
+        card.style.setProperty('--reveal-delay', `${delayMs}ms`);
+      });
+    });
+  }
+
   function observeReveals() {
-    const items = document.querySelectorAll('.reveal:not(.is-visible)');
-    if (!items.length) return;
+    assignStaggeredRevealDelays();
+
+    const allItems = document.querySelectorAll('.reveal');
+    if (!allItems.length) return;
 
     if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
-      items.forEach((el) => el.classList.add('is-visible'));
+      allItems.forEach((el) => el.classList.add('is-visible'));
       return;
     }
 
@@ -2501,15 +2697,22 @@
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add('is-visible');
-              state.revealObserver.unobserve(entry.target);
             }
           });
         },
-        { threshold: 0.08, rootMargin: '0px 0px -36px 0px' }
+        { threshold: 0.06, rootMargin: '0px 0px -38px 0px' }
       );
     }
 
-    items.forEach((el) => state.revealObserver.observe(el));
+    allItems.forEach((el) => {
+      if (!el.hasAttribute('data-reveal-observed')) {
+        el.setAttribute('data-reveal-observed', 'true');
+        state.revealObserver.observe(el);
+      }
+    });
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    syncReversibleReveals(scrollTop);
   }
 
   function bindMagneticButtons() {

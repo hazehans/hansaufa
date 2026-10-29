@@ -42,7 +42,8 @@ window.PORTFOLIO_DATA = {
 
     background: {
       mode: 'canvas',           // Pilihan: 'canvas' (animasi interaktif) | 'image' (gambar statis)
-      canvasStyle: 'dot-matrix', // Pilihan: 'dot-matrix' | 'wave-grid' | 'particles'
+      canvasStyle: 'dot-matrix', // Fallback pilihan: 'dot-matrix' | 'wave-grid' | 'particles'
+      randomizeOnLoad: true,    // true = acak otomatis mode canvas (DOTS / WAVES / NODES) setiap buka halaman
       imagePath: '',            // Contoh: 'assets/images/bg/custom-bg.jpg' (dipakai saat mode: 'image')
       imageOpacity: 0.16,
       interactive: true

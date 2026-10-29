@@ -629,6 +629,19 @@ svg {
   color: var(--accent-fg);
 }
 
+@media (max-width: 390px) {
+  .header-controls {
+    gap: 4px;
+  }
+
+  .lang-btn {
+    min-width: 26px;
+    height: 28px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+  }
+}
+
 /* Theme Toggle */
 .theme-toggle {
   height: 34px;
@@ -1171,6 +1184,10 @@ svg {
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 4.5vw, 48px);
+  transform: translate3d(0, var(--hero-recede-y, 0px), 0) scale(var(--hero-recede-scale, 1));
+  opacity: var(--hero-recede-opacity, 1);
+  transform-origin: center top;
+  will-change: transform, opacity;
 }
 
 @media (min-width: 980px) {
@@ -1365,11 +1382,13 @@ svg {
   aspect-ratio: 3 / 3.7;
   object-fit: cover;
   object-position: center 14%;
-  transition: transform 0.55s var(--ease-kinetic);
+  transform: scale(var(--img-zoom, 1.055)) translate3d(0, var(--img-parallax, 0px), 0);
+  transition: transform 0.28s var(--ease-kinetic);
+  will-change: transform;
 }
 
 .portrait-photo-frame:hover .portrait-photo-img {
-  transform: scale(1.03);
+  --img-zoom: 1.085;
 }
 
 .zoom-corner-badge {
@@ -1610,15 +1629,53 @@ svg {
 }
 
 /* --------------------------------------------------------------------------
-   11. SECTION 02 — WORK EXPERIENCE TIMELINE (FLEXBOX)
+   11. SECTION 02 — WORK EXPERIENCE TIMELINE (FLEXBOX + LASER SPINE)
    -------------------------------------------------------------------------- */
 .experience-list {
+  position: relative;
   display: flex;
   flex-direction: column;
+  padding-left: 24px;
   border-top: 1px solid var(--border-color);
 }
 
+.exp-spine-track {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--border-color);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.exp-spine-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent) 0%, #7DD3FC 100%);
+  box-shadow: 0 0 12px var(--accent-border);
+  transform: scaleY(var(--spine-progress, 0));
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.exp-spine-head {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--spine-progress, 0) * 100%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent), 0 0 22px var(--accent-border);
+  transform: translate(-50%, -50%) scale(var(--spine-head-scale, 0));
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
 .exp-row {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -1626,7 +1683,45 @@ svg {
   border-bottom: 1px solid var(--border-color);
 }
 
+.exp-timeline-node {
+  position: absolute;
+  left: -23px;
+  top: clamp(31px, 4.1vw, 47px);
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1.5px solid var(--border-strong);
+  background-color: var(--bg-primary);
+  z-index: 2;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s var(--ease-kinetic);
+}
+
+.exp-row.is-reached .exp-timeline-node {
+  border-color: var(--accent);
+  background-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-border);
+  transform: scale(1.12);
+}
+
 @media (min-width: 880px) {
+  .experience-list {
+    padding-left: 36px;
+  }
+
+  .exp-spine-track {
+    left: 7px;
+  }
+
+  .exp-timeline-node {
+    left: -34px;
+    width: 12px;
+    height: 12px;
+  }
+
   .exp-row {
     flex-direction: row;
     align-items: flex-start;
@@ -2020,11 +2115,21 @@ svg {
   width: 100%;
   max-height: 290px;
   object-fit: contain;
-  transition: transform 0.45s var(--ease-kinetic);
+  transform: scale(var(--img-zoom, 1.055)) translate3d(0, var(--img-parallax, 0px), 0);
+  transition: transform 0.28s var(--ease-kinetic);
+  will-change: transform;
 }
 
 .zoomable-media:hover .project-screenshot {
-  transform: scale(1.025);
+  --img-zoom: 1.085;
+}
+
+.project-media.is-light-surface .project-screenshot {
+  --img-zoom: 1.01;
+}
+
+.project-media.is-light-surface.zoomable-media:hover .project-screenshot {
+  --img-zoom: 1.035;
 }
 
 /* Interactive Before / After QC Split Slider Card */
@@ -2036,6 +2141,7 @@ svg {
 .qc-toolbar {
   padding: 8px 10px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -2802,17 +2908,31 @@ svg {
 }
 
 /* --------------------------------------------------------------------------
-   17. SCROLL REVEAL MOTION (ACCESSIBLE & REDUCED-MOTION SAFE)
+   17. SCROLL REVEAL MOTION & KINETIC VELOCITY SKEW (REDUCED-MOTION SAFE)
    -------------------------------------------------------------------------- */
+.kinetic-skew {
+  transform: skewY(var(--vel-skew, 0deg));
+  transform-origin: left center;
+  will-change: transform;
+}
+
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.65s var(--ease-kinetic), transform 0.65s var(--ease-kinetic);
+  transform: translate3d(0, 28px, 0) scale(0.985);
+  transition: none;
+  will-change: opacity, transform;
 }
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity 0.62s var(--ease-kinetic) var(--reveal-delay, 0ms),
+    transform 0.68s var(--ease-kinetic) var(--reveal-delay, 0ms);
+}
+
+.tilt-card.is-visible:hover {
+  transition: transform 0.14s ease-out, border-color 0.25s ease;
 }
 
 /* --------------------------------------------------------------------------
@@ -3605,6 +3725,13 @@ svg {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .hero-flex-layout,
+  .kinetic-skew,
+  .project-screenshot,
+  .portrait-photo-img {
+    transform: none !important;
+    opacity: 1 !important;
   }
   .status-dot {
     animation: none !important;
