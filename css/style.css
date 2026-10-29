@@ -2816,7 +2816,7 @@ svg {
 }
 
 /* --------------------------------------------------------------------------
-   18. ARCHITECTURAL CURTAIN BOOT INTRO (~0.6s)
+   18. CINEMATIC SPLIT-SHUTTER CURTAIN INTRO (WALLPAPER + LASER SEAM + HUD)
    -------------------------------------------------------------------------- */
 .boot-curtain {
   position: fixed;
@@ -2826,7 +2826,8 @@ svg {
   align-items: center;
   justify-content: center;
   pointer-events: auto;
-  transition: visibility 0.55s ease;
+  cursor: pointer;
+  transition: visibility 0.78s ease;
 }
 
 .boot-curtain.is-done {
@@ -2838,19 +2839,67 @@ svg {
   position: absolute;
   left: 0;
   right: 0;
-  height: 50.5%;
-  background-color: var(--bg-primary);
-  transition: transform 0.56s cubic-bezier(0.76, 0, 0.24, 1);
+  height: 50%;
+  overflow: hidden;
+  background-color: #070A0F;
+  transition: transform 0.74s cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
 }
 
 .boot-panel-top {
   top: 0;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .boot-panel-bottom {
   bottom: 0;
-  border-top: 1px solid var(--border-color);
+}
+
+/* Sub-pixel synchronized full-viewport background split across top & bottom shutters */
+.boot-panel-media {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background-image: url('../assets/images/loading/loading-4.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transform: scale(1.07);
+  transform-origin: center center;
+  animation: bootKenBurns 1.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform;
+}
+
+.boot-panel-top .boot-panel-media {
+  top: 0;
+}
+
+.boot-panel-bottom .boot-panel-media {
+  bottom: 0;
+}
+
+/* Atmospheric mood grading + radial cinema vignette so any wallpaper has high contrast */
+.boot-panel-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(6, 10, 16, 0.28) 0%, rgba(5, 8, 13, 0.82) 100%),
+    linear-gradient(180deg, rgba(10, 18, 30, 0.36) 0%, rgba(6, 9, 14, 0.56) 100%);
+  pointer-events: none;
+}
+
+@keyframes bootKenBurns {
+  0% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1.01);
+  }
+}
+
+.boot-curtain.is-replaying .boot-panel-media {
+  animation: none;
 }
 
 .boot-curtain.is-done .boot-panel-top {
@@ -2861,93 +2910,195 @@ svg {
   transform: translateY(102%);
 }
 
+/* Charging Cyber Azure Laser Horizon Seam across the exact split line */
+.boot-horizon-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background-color: rgba(212, 226, 244, 0.16);
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.boot-horizon-beam {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.85) 20%,
+    #38BDF8 50%,
+    rgba(56, 189, 248, 0.85) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.78), 0 0 4px rgba(255, 255, 255, 0.65);
+  transform: scaleX(0);
+  transform-origin: center center;
+}
+
+.boot-curtain.is-done .boot-horizon-line {
+  opacity: 0;
+}
+
+/* Frosted Cinema Glass Editorial HUD (Theme-Independent High Contrast Over Photo) */
 .boot-hud {
   position: relative;
   z-index: 2;
-  width: min(440px, 88vw);
-  padding: 22px 24px;
-  border: 1px solid var(--accent-border);
+  width: min(490px, 90vw);
+  padding: clamp(22px, 3.2vw, 28px) clamp(22px, 3.6vw, 30px);
+  border: 1px solid rgba(56, 189, 248, 0.42);
   border-radius: var(--radius-md);
-  background-color: var(--bg-surface);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  background: rgba(9, 13, 20, 0.74);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow:
+    0 28px 72px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  transition: opacity 0.28s ease, transform 0.32s var(--ease-kinetic);
+  gap: 18px;
+  transition: opacity 0.3s ease, transform 0.36s var(--ease-kinetic);
 }
 
 .boot-curtain.is-done .boot-hud {
   opacity: 0;
-  transform: scale(0.95);
+  transform: scale(0.95) translateY(-4px);
+}
+
+.boot-hud-corner {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.boot-corner-tl {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #38BDF8;
+  border-left: 2px solid #38BDF8;
+}
+
+.boot-corner-tr {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid #38BDF8;
+  border-right: 2px solid #38BDF8;
+}
+
+.boot-corner-bl {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid #38BDF8;
+  border-left: 2px solid #38BDF8;
+}
+
+.boot-corner-br {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid #38BDF8;
+  border-right: 2px solid #38BDF8;
 }
 
 .boot-brand-row {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
 }
 
 .boot-logo-box {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 7px;
   overflow: hidden;
-  border: 1px solid var(--accent-border);
-  background-color: var(--bg-primary);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background-color: #070A0F;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--accent);
+  color: #38BDF8;
   flex-shrink: 0;
+}
+
+.boot-brand-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .boot-title {
   font-family: var(--font-display);
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.2;
+  color: #F5F7FA;
+}
+
+.boot-scene-tag {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
   letter-spacing: 0.08em;
-  color: var(--text-primary);
+  color: rgba(186, 195, 208, 0.82);
 }
 
 .boot-counter {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 0.76rem;
+  font-size: 0.84rem;
   font-weight: 600;
-  color: var(--accent);
+  color: #38BDF8;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
 }
 
 .boot-quote-wrap {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-left: 12px;
-  border-left: 2px solid var(--accent);
+  gap: 8px;
+  padding: 2px 0 2px 14px;
+  border-left: 2px solid #38BDF8;
 }
 
 .boot-quote-text {
   font-family: var(--font-display);
-  font-size: clamp(0.98rem, 2.2vw, 1.08rem);
+  font-size: clamp(1.04rem, 2.3vw, 1.18rem);
   font-weight: 500;
   line-height: 1.45;
-  color: var(--text-primary);
+  color: #F8FAFC;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+.boot-quote-text.is-short-quote {
+  font-size: clamp(1.28rem, 3vw, 1.56rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .boot-quote-author {
   font-style: normal;
   font-family: var(--font-mono);
-  font-size: 0.74rem;
-  letter-spacing: 0.03em;
-  color: var(--text-secondary);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  color: #BAC3D0;
+}
+
+.boot-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .boot-bar-track {
-  width: 100%;
+  flex: 1 1 auto;
   height: 3px;
-  background-color: var(--border-color);
+  background-color: rgba(212, 226, 244, 0.18);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -2955,9 +3106,18 @@ svg {
 .boot-bar-fill {
   width: 100%;
   height: 100%;
-  background-color: var(--accent);
+  background-color: #38BDF8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
   transform: scaleX(0);
   transform-origin: left center;
+}
+
+.boot-skip-hint {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(148, 159, 175, 0.8);
+  flex-shrink: 0;
 }
 
 /* --------------------------------------------------------------------------

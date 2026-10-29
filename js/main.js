@@ -172,14 +172,142 @@
   }
 
   /* --------------------------------------------------------------------------
-   * ARCHITECTURAL CURTAIN BOOT INTRO (ROTATING QUOTES)
+   * CINEMATIC SPLIT-SHUTTER CURTAIN INTRO (WALLPAPER + LASER SEAM + QUOTES)
    * -------------------------------------------------------------------------- */
-  function initBootCurtain() {
-    const curtain = document.getElementById('boot-curtain');
-    const barFill = document.getElementById('boot-bar-fill');
-    const counter = document.getElementById('boot-counter');
+  let bootRafId = null;
+  let bootHoldTimer = null;
+
+  function pickNonRepeatingSession(storageKey, total) {
+    if (total <= 1) return 0;
+    try {
+      const last = parseInt(sessionStorage.getItem(storageKey), 10);
+      const next = Number.isNaN(last)
+        ? Math.floor(Math.random() * total)
+        : (last + 1 + Math.floor(Math.random() * (total - 1))) % total;
+      sessionStorage.setItem(storageKey, String(next));
+      return next;
+    } catch (e) {
+      return Math.floor(Math.random() * total);
+    }
+  }
+
+  function applyBootSceneAndQuote(forceNewRandom) {
+    const data = window.PORTFOLIO_DATA;
+    const cfg = (data && data.config) || {};
+    const quotes = Array.isArray(cfg.bootQuotes) && cfg.bootQuotes.length > 0 ? cfg.bootQuotes : [];
+    const bgs = Array.isArray(cfg.bootBackgrounds) && cfg.bootBackgrounds.length > 0 ? cfg.bootBackgrounds : [];
+
     const quoteTextEl = document.getElementById('boot-quote-text');
     const quoteAuthorEl = document.getElementById('boot-quote-author');
+    const sceneTagEl = document.getElementById('boot-scene-tag');
+    const mediaTopEl = document.getElementById('boot-media-top');
+    const mediaBotEl = document.getElementById('boot-media-bottom');
+
+    if (quotes.length > 0 && quoteTextEl) {
+      const qIdx =
+        !forceNewRandom && typeof window.__BOOT_QUOTE_IDX__ === 'number'
+          ? window.__BOOT_QUOTE_IDX__ % quotes.length
+          : pickNonRepeatingSession('hans_boot_quote_idx', quotes.length);
+      window.__BOOT_QUOTE_IDX__ = qIdx;
+      const chosen = quotes[qIdx];
+      if (chosen && chosen.text) {
+        quoteTextEl.textContent = `“${chosen.text}”`;
+        quoteTextEl.classList.toggle('is-short-quote', chosen.text.length <= 16);
+        if (quoteAuthorEl) {
+          quoteAuthorEl.textContent = chosen.author ? `— ${chosen.author}` : '';
+        }
+      }
+    }
+
+    if (bgs.length > 0) {
+      const bgIdx =
+        !forceNewRandom && typeof window.__BOOT_BG_IDX__ === 'number'
+          ? window.__BOOT_BG_IDX__ % bgs.length
+          : pickNonRepeatingSession('hans_boot_bg_idx', bgs.length);
+      window.__BOOT_BG_IDX__ = bgIdx;
+      const rawPath = bgs[bgIdx];
+      if (rawPath) {
+        let resolvedUrl = rawPath;
+        try {
+          resolvedUrl = new URL(rawPath, document.baseURI).href;
+        } catch (err) {}
+        const cssBg = `url("${resolvedUrl}")`;
+        if (mediaTopEl) mediaTopEl.style.backgroundImage = cssBg;
+        if (mediaBotEl) mediaBotEl.style.backgroundImage = cssBg;
+      }
+      if (sceneTagEl) {
+        sceneTagEl.textContent = `SCENE // ${padIndex(bgIdx + 1)}`;
+      }
+    }
+  }
+
+  function runBootCurtainSequence(durationMs) {
+    const curtain = document.getElementById('boot-curtain');
+    const barFill = document.getElementById('boot-bar-fill');
+    const horizonBeam = document.getElementById('boot-horizon-beam');
+    const counter = document.getElementById('boot-counter');
+    if (!curtain) return;
+
+    if (bootRafId) cancelAnimationFrame(bootRafId);
+    if (bootHoldTimer) clearTimeout(bootHoldTimer);
+
+    const start = performance.now();
+    const finishNow = () => {
+      if (bootRafId) cancelAnimationFrame(bootRafId);
+      if (bootHoldTimer) clearTimeout(bootHoldTimer);
+      bootRafId = null;
+      bootHoldTimer = null;
+      if (!curtain.classList.contains('is-done')) {
+        curtain.classList.add('is-done');
+        triggerHeroBootDecode();
+      }
+    };
+
+    curtain.onclick = finishNow;
+
+    const tick = (now) => {
+      const t = Math.min((now - start) / durationMs, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const pct = Math.round(eased * 100);
+
+      if (barFill) barFill.style.transform = `scaleX(${eased.toFixed(3)})`;
+      if (horizonBeam) horizonBeam.style.transform = `scaleX(${eased.toFixed(3)})`;
+      if (counter) counter.textContent = `${padIndex(pct)}%`;
+
+      if (t < 1) {
+        bootRafId = requestAnimationFrame(tick);
+      } else {
+        bootRafId = null;
+        bootHoldTimer = setTimeout(finishNow, 160);
+      }
+    };
+
+    bootRafId = requestAnimationFrame(tick);
+  }
+
+  function replayBootCurtain() {
+    const curtain = document.getElementById('boot-curtain');
+    const barFill = document.getElementById('boot-bar-fill');
+    const horizonBeam = document.getElementById('boot-horizon-beam');
+    const counter = document.getElementById('boot-counter');
+    if (!curtain) return;
+
+    applyBootSceneAndQuote(true);
+    if (barFill) barFill.style.transform = 'scaleX(0)';
+    if (horizonBeam) horizonBeam.style.transform = 'scaleX(0)';
+    if (counter) counter.textContent = '00%';
+
+    // Restart Ken Burns CSS animation cleanly
+    curtain.classList.add('is-replaying');
+    curtain.classList.remove('is-done');
+    void curtain.offsetWidth;
+    curtain.classList.remove('is-replaying');
+
+    runBootCurtainSequence(1360);
+  }
+
+  function initBootCurtain() {
+    const curtain = document.getElementById('boot-curtain');
     const data = window.PORTFOLIO_DATA;
     const enableIntro = !(data && data.config && data.config.enableBootIntro === false);
 
@@ -188,27 +316,7 @@
       return;
     }
 
-    // Sync custom bootQuotes from data.js if user customized the array
-    if (
-      data &&
-      data.config &&
-      Array.isArray(data.config.bootQuotes) &&
-      data.config.bootQuotes.length > 0 &&
-      quoteTextEl
-    ) {
-      const quotes = data.config.bootQuotes;
-      const idx =
-        typeof window.__BOOT_QUOTE_IDX__ === 'number'
-          ? window.__BOOT_QUOTE_IDX__ % quotes.length
-          : Math.floor(Math.random() * quotes.length);
-      const chosen = quotes[idx];
-      if (chosen && chosen.text) {
-        quoteTextEl.textContent = `“${chosen.text}”`;
-        if (quoteAuthorEl) {
-          quoteAuthorEl.textContent = chosen.author ? `— ${chosen.author}` : '';
-        }
-      }
-    }
+    applyBootSceneAndQuote(false);
 
     if (!enableIntro || prefersReducedMotion()) {
       curtain.classList.add('is-done');
@@ -216,26 +324,7 @@
       return;
     }
 
-    const duration = 900;
-    const start = performance.now();
-
-    const tick = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const pct = Math.round(eased * 100);
-
-      if (barFill) barFill.style.transform = `scaleX(${eased.toFixed(3)})`;
-      if (counter) counter.textContent = `${padIndex(pct)}%`;
-
-      if (t < 1) {
-        requestAnimationFrame(tick);
-      } else {
-        curtain.classList.add('is-done');
-        triggerHeroBootDecode();
-      }
-    };
-
-    requestAnimationFrame(tick);
+    runBootCurtainSequence(1360);
   }
 
   function triggerHeroBootDecode() {
@@ -1636,6 +1725,13 @@
         label: cp.switchTheme || 'Toggle Theme',
         hint: state.theme === 'dark' ? 'Dark → Light' : 'Light → Dark',
         run: () => applyTheme(state.theme === 'dark' ? 'light' : 'dark', true)
+      },
+      {
+        group: cp.groupSystem || 'Interface & Canvas',
+        code: 'FX',
+        label: cp.replayIntro || 'Replay Cinematic Intro Screen',
+        hint: 'SCENE 01–04',
+        run: () => replayBootCurtain()
       },
       {
         group: cp.groupSystem || 'Interface & Canvas',

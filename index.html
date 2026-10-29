@@ -66,48 +66,106 @@
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Architectural Curtain Boot Intro (Rotating Non-Repeating Quotes on Every Refresh) -->
+  <!-- Cinematic Split-Shutter Curtain Intro (Randomized Wallpaper + Non-Repeating Quotes) -->
   <div id="boot-curtain" class="boot-curtain" aria-hidden="true">
-    <div class="boot-panel boot-panel-top"></div>
-    <div class="boot-panel boot-panel-bottom"></div>
+    <div class="boot-panel boot-panel-top">
+      <div class="boot-panel-media" id="boot-media-top"></div>
+    </div>
+    <div class="boot-panel boot-panel-bottom">
+      <div class="boot-panel-media" id="boot-media-bottom"></div>
+    </div>
+
+    <div class="boot-horizon-line" aria-hidden="true">
+      <div class="boot-horizon-beam" id="boot-horizon-beam"></div>
+    </div>
+
     <div class="boot-hud">
+      <span class="boot-hud-corner boot-corner-tl"></span>
+      <span class="boot-hud-corner boot-corner-tr"></span>
+      <span class="boot-hud-corner boot-corner-bl"></span>
+      <span class="boot-hud-corner boot-corner-br"></span>
+
       <div class="boot-brand-row">
         <span class="boot-logo-box" id="boot-logo-slot">
           <img src="assets/icons/logo.webp" alt="" class="brand-logo-img" />
         </span>
-        <span class="boot-title">HANS AUFA</span>
+        <div class="boot-brand-meta">
+          <span class="boot-title">HANS AUFA</span>
+          <span class="boot-scene-tag" id="boot-scene-tag">SCENE // 01</span>
+        </div>
         <span id="boot-counter" class="boot-counter">00%</span>
       </div>
+
       <blockquote class="boot-quote-wrap">
-        <p class="boot-quote-text" id="boot-quote-text">“Simplicity is prerequisite for reliability.”</p>
-        <cite class="boot-quote-author" id="boot-quote-author">— Edsger W. Dijkstra</cite>
+        <p class="boot-quote-text" id="boot-quote-text">“Less is more.”</p>
+        <cite class="boot-quote-author" id="boot-quote-author">— Ludwig Mies van der Rohe</cite>
       </blockquote>
-      <div class="boot-bar-track">
-        <div class="boot-bar-fill" id="boot-bar-fill"></div>
+
+      <div class="boot-footer-row">
+        <div class="boot-bar-track">
+          <div class="boot-bar-fill" id="boot-bar-fill"></div>
+        </div>
+        <span class="boot-skip-hint">CLICK TO ENTER</span>
       </div>
     </div>
   </div>
   <script>
     (function () {
       var defaultQuotes = [
-        { text: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
-        { text: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
-        { text: 'Good design is as little design as possible.', author: 'Dieter Rams' },
-        { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
-        { text: 'Make it work, make it right, make it fast.', author: 'Kent Beck' },
-        { text: 'Details are not the details. They make the design.', author: 'Charles Eames' }
+        { text: 'A day without sunshine is like, you know, night.', author: 'Steve Martin' },
+        { text: 'What?', author: 'Joe Biden' },
+        { text: 'Less is more.', author: 'Ludwig Mies van der Rohe' },
+        { text: 'Simplicity is the ultimate sophistication.', author: 'Lao Tzu' }
       ];
+      var defaultBgs = [
+        'assets/images/loading/loading-1.jpg',
+        'assets/images/loading/loading-2.jpg',
+        'assets/images/loading/loading-3.jpg',
+        'assets/images/loading/loading-4.jpg'
+      ];
+
+      function pickNonRepeating(storageKey, total) {
+        if (total <= 1) return 0;
+        var last = parseInt(sessionStorage.getItem(storageKey), 10);
+        var next = isNaN(last)
+          ? Math.floor(Math.random() * total)
+          : (last + 1 + Math.floor(Math.random() * (total - 1))) % total;
+        sessionStorage.setItem(storageKey, String(next));
+        return next;
+      }
+
       try {
-        var lastIdx = parseInt(sessionStorage.getItem('hans_boot_quote_idx'), 10);
-        var nextIdx = isNaN(lastIdx)
-          ? Math.floor(Math.random() * defaultQuotes.length)
-          : (lastIdx + 1 + Math.floor(Math.random() * (defaultQuotes.length - 1))) % defaultQuotes.length;
-        sessionStorage.setItem('hans_boot_quote_idx', String(nextIdx));
-        window.__BOOT_QUOTE_IDX__ = nextIdx;
-        var q = defaultQuotes[nextIdx];
+        var qIdx = pickNonRepeating('hans_boot_quote_idx', defaultQuotes.length);
+        var bgIdx = pickNonRepeating('hans_boot_bg_idx', defaultBgs.length);
+        window.__BOOT_QUOTE_IDX__ = qIdx;
+        window.__BOOT_BG_IDX__ = bgIdx;
+
+        var bgPath = defaultBgs[bgIdx];
+        if (bgPath) {
+          var resolvedBg = bgPath;
+          try {
+            resolvedBg = new URL(bgPath, document.baseURI).href;
+          } catch (err) {}
+          var bgCss = 'url("' + resolvedBg + '")';
+          var mTop = document.getElementById('boot-media-top');
+          var mBot = document.getElementById('boot-media-bottom');
+          if (mTop) mTop.style.backgroundImage = bgCss;
+          if (mBot) mBot.style.backgroundImage = bgCss;
+        }
+
+        var sceneTag = document.getElementById('boot-scene-tag');
+        if (sceneTag) {
+          var sceneNum = bgIdx + 1 < 10 ? '0' + (bgIdx + 1) : String(bgIdx + 1);
+          sceneTag.textContent = 'SCENE // ' + sceneNum;
+        }
+
+        var q = defaultQuotes[qIdx];
         var qt = document.getElementById('boot-quote-text');
         var qa = document.getElementById('boot-quote-author');
-        if (qt && q) qt.textContent = '“' + q.text + '”';
+        if (qt && q) {
+          qt.textContent = '“' + q.text + '”';
+          qt.classList.toggle('is-short-quote', q.text.length <= 16);
+        }
         if (qa && q) qa.textContent = '— ' + q.author;
       } catch (e) {}
 
@@ -117,7 +175,7 @@
         if (c && !c.classList.contains('is-done')) {
           c.classList.add('is-done');
         }
-      }, 1650);
+      }, 2500);
     })();
   </script>
 

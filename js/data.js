@@ -18,13 +18,18 @@ window.PORTFOLIO_DATA = {
     accentPreset: 'azure',      // Pilihan: 'azure' (Opsi A Cyber Azure) | 'cobalt' (Opsi B Royal Cobalt)
     enableBootIntro: true,      // true = tampilkan Architectural Curtain Intro dengan quote bergantian
 
+    bootBackgrounds: [
+      'assets/images/loading/loading-1.jpg',
+      'assets/images/loading/loading-2.jpg',
+      'assets/images/loading/loading-3.jpg',
+      'assets/images/loading/loading-4.jpg'
+    ],
+
     bootQuotes: [
-      { text: 'Simplicity is prerequisite for reliability.', author: 'Edsger W. Dijkstra' },
-      { text: 'First, solve the problem. Then, write the code.', author: 'John Johnson' },
-      { text: 'Good design is as little design as possible.', author: 'Dieter Rams' },
-      { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
-      { text: 'Make it work, make it right, make it fast.', author: 'Kent Beck' },
-      { text: 'Details are not the details. They make the design.', author: 'Charles Eames' }
+      { text: 'A day without sunshine is like, you know, night.', author: 'Steve Martin' },
+      { text: 'What?', author: 'Joe Biden' },
+      { text: 'Less is more.', author: 'Ludwig Mies van der Rohe' },
+      { text: 'Simplicity is the ultimate sophistication.', author: 'Lao Tzu' }
     ],
 
     branding: {
@@ -47,6 +52,7 @@ window.PORTFOLIO_DATA = {
       'LARAVEL 12',
       'NEXT.JS',
       'EXPLAINABLE AI (XAI)',
+      'AUDIO AI ALIGNMENT (RLHF)',
       'TABULARBERT + PCA',
       'HIKVISION ISAPI BIOMETRICS',
       'ENTERPRISE MINI ERP',
@@ -129,6 +135,7 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Open GitHub Profile (@hazehans)',
         openLinkedin: 'Open LinkedIn Profile',
         switchTheme: 'Toggle Dark / Light Theme',
+        replayIntro: 'Replay Cinematic Intro Screen',
         canvasDots: 'Canvas: Architectural Dot Matrix',
         canvasWaves: 'Canvas: Kinetic Wave Grid',
         canvasNodes: 'Canvas: Neural Particle Network',
@@ -283,6 +290,7 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Buka Profil GitHub (@hazehans)',
         openLinkedin: 'Buka Profil LinkedIn',
         switchTheme: 'Ganti Tema Gelap / Terang',
+        replayIntro: 'Putar Ulang Layar Intro Sinematik',
         canvasDots: 'Kanvas: Matriks Titik Arsitektural',
         canvasWaves: 'Kanvas: Jaring Gelombang Kinetik',
         canvasNodes: 'Kanvas: Jaringan Partikel Neural',
@@ -437,6 +445,7 @@ window.PORTFOLIO_DATA = {
         openGithub: 'Ouvrir le profil GitHub (@hazehans)',
         openLinkedin: 'Ouvrir le profil LinkedIn',
         switchTheme: 'Basculer le thème Sombre / Clair',
+        replayIntro: 'Rejouer l’écran d’introduction cinématique',
         canvasDots: 'Canevas : Matrice de Points',
         canvasWaves: 'Canevas : Grille d’Ondes Cinétiques',
         canvasNodes: 'Canevas : Réseau de Particules',
@@ -624,6 +633,71 @@ window.PORTFOLIO_DATA = {
             {
               lead: 'Documentation Technique',
               text: 'Rédaction et mise à jour des documentations d’architecture, flux fonctionnels et guides d’implémentation pour assurer la pérennité des systèmes.'
+            }
+          ]
+        }
+      }
+    },
+    {
+      id: 'alignerr-audio-alignment',
+      visible: true,
+      company: 'Alignerr · Pulsar World Alignment',
+      isCurrent: true,
+      i18n: {
+        en: {
+          role: 'Data Labeling Audio Specialist (Freelance)',
+          location: 'Remote (Global AI Platform)',
+          period: 'Aug 2026 – Present',
+          highlights: [
+            {
+              lead: 'Multimodal Audio AI Alignment',
+              text: 'Executed 52+ hours of high-precision audio evaluation, transcription verification, and acoustic-semantic alignment for the Pulsar World Alignment initiative supporting frontier AI model training.'
+            },
+            {
+              lead: 'Complex Long-Horizon Task Execution',
+              text: 'Completed deep multi-criteria audio annotation workflows averaging ~70 minutes per submission while maintaining a 0% task skip rate across rigorous technical rubrics.'
+            },
+            {
+              lead: 'Multi-Stage QA & Rubric Calibration',
+              text: 'Collaborated through 26+ structured peer-review cycles and iterative quality calibrations to ensure strict compliance with acoustic fidelity, speaker nuance, and world-model alignment standards.'
+            }
+          ]
+        },
+        id: {
+          role: 'Data Labeling Audio Specialist (Freelance)',
+          location: 'Remote (Platform AI Global)',
+          period: 'Agu 2026 – Sekarang',
+          highlights: [
+            {
+              lead: 'Penyelarasan Data Audio AI Multimodal',
+              text: 'Menyelesaikan 52+ jam evaluasi audio presisi tinggi, verifikasi transkripsi, dan penyelarasan akustik-semantik pada proyek Pulsar World Alignment untuk pelatihan model AI tingkat lanjut.'
+            },
+            {
+              lead: 'Eksekusi Tugas Kompleks Tanpa Skip',
+              text: 'Menuntaskan alur anotasi audio mendalam berdurasi rata-rata ~70 menit per tugas dengan 0% tingkat pelewatan tugas (0% skip rate) sesuai rubrik teknis yang ketat.'
+            },
+            {
+              lead: 'Kalibrasi Rubrik & Multi-Stage QA',
+              text: 'Melewati 26+ siklus peninjauan sejawat (peer-review) terstruktur dan penyempurnaan kualitas iteratif guna menjamin kepatuhan penuh terhadap standar akurasi akustik serta penyelarasan model.'
+            }
+          ]
+        },
+        fr: {
+          role: 'Spécialiste Annotation Audio IA (Freelance)',
+          location: 'À distance (Plateforme IA Mondiale)',
+          period: 'Août 2026 – Présent',
+          highlights: [
+            {
+              lead: 'Alignement Audio IA Multimodal',
+              text: 'Réalisation de plus de 52 heures d’évaluation audio de haute précision, vérification de transcriptions et alignement acoustique-sémantique pour le projet Pulsar World Alignment.'
+            },
+            {
+              lead: 'Exécution de Tâches Complexes (0 % d’Abandon)',
+              text: 'Traitement de séquences d’annotation approfondies (~70 minutes par soumission en moyenne) avec un taux d’abandon de 0 % face à des grilles d’évaluation exigeantes.'
+            },
+            {
+              lead: 'Assurance Qualité Multi-Niveaux',
+              text: 'Participation à plus de 26 cycles de revue par les pairs et d’étalonnage qualité itératif garantissant une conformité stricte aux standards d’alignement de modèles IA.'
             }
           ]
         }
@@ -1394,7 +1468,14 @@ window.PORTFOLIO_DATA = {
       {
         id: 'tools-ai',
         code: '04',
-        items: ['Git', 'GitHub', 'Postman', 'VSCode', 'AI Prompting (ChatGPT, Gemini, Claude)'],
+        items: [
+          'Git',
+          'GitHub',
+          'Postman',
+          'VSCode',
+          'Multimodal AI Data Alignment (RLHF)',
+          'AI Prompting (ChatGPT, Gemini, Claude)'
+        ],
         i18n: {
           en: 'Developer Tools & AI',
           id: 'Perangkat Pengembang & AI',
