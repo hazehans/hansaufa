@@ -1184,10 +1184,6 @@ svg {
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 4.5vw, 48px);
-  transform: translate3d(0, var(--hero-recede-y, 0px), 0) scale(var(--hero-recede-scale, 1));
-  opacity: var(--hero-recede-opacity, 1);
-  transform-origin: center top;
-  will-change: transform, opacity;
 }
 
 @media (min-width: 980px) {
@@ -3726,7 +3722,6 @@ svg {
     transform: none !important;
     transition: none !important;
   }
-  .hero-flex-layout,
   .kinetic-skew,
   .project-screenshot,
   .portrait-photo-img {

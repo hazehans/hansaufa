@@ -2448,7 +2448,7 @@
 
       if (el.classList.contains('is-visible')) {
         // Unload off-screen elements strictly below the bottom of viewport (60px hysteresis deadband)
-        if (!(inHero && scrollTop < 80) && rect.top > vh + 16) {
+        if (!inHero && rect.top > vh + 16) {
           el.classList.remove('is-visible');
         }
       } else if (rect.top < vh - 44) {
@@ -2458,30 +2458,12 @@
     }
   }
 
-  function updateScrollSpatialEffects(scrollTop) {
+  function updateScrollSpatialEffects() {
     if (prefersReducedMotion()) return;
     const vh = window.innerHeight || 800;
     const isMobile = window.innerWidth < 768;
 
-    // 1. Hero Scroll-Out Depth Recede
-    const heroLayout = document.querySelector('#hero .hero-flex-layout');
-    if (heroLayout) {
-      if (scrollTop <= 4) {
-        heroLayout.style.setProperty('--hero-recede-scale', '1');
-        heroLayout.style.setProperty('--hero-recede-y', '0px');
-        heroLayout.style.setProperty('--hero-recede-opacity', '1');
-      } else if (scrollTop < vh * 1.2) {
-        const p = Math.min(scrollTop / (vh * 0.95), 1);
-        const scale = 1 - p * (isMobile ? 0.035 : 0.06);
-        const yShift = p * (isMobile ? -18 : -34);
-        const opacity = Math.max(1 - p * 0.72, 0.24);
-        heroLayout.style.setProperty('--hero-recede-scale', scale.toFixed(4));
-        heroLayout.style.setProperty('--hero-recede-y', `${yShift.toFixed(1)}px`);
-        heroLayout.style.setProperty('--hero-recede-opacity', opacity.toFixed(3));
-      }
-    }
-
-    // 2. Section 02 Real-Time Laser Timeline Spine
+    // 1. Section 02 Real-Time Laser Timeline Spine
     const expList = document.getElementById('experience-list');
     if (expList) {
       const listRect = expList.getBoundingClientRect();
@@ -2511,7 +2493,7 @@
       }
     }
 
-    // 3. Inner 3D Window Image Parallax
+    // 2. Inner 3D Window Image Parallax
     const parallaxImgs = document.querySelectorAll('.project-screenshot, #profile-photo-img');
     for (let i = 0; i < parallaxImgs.length; i++) {
       const img = parallaxImgs[i];

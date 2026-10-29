@@ -158,7 +158,7 @@ window.PORTFOLIO_DATA = {
         portraitDegree: 'S.Kom (Informatics) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'Cumulative GPA' },
-          { value: '08', suffix: 'Systems', label: 'Production & AI Builds' },
+          { value: '09', suffix: 'Systems', label: 'Production & AI Builds' },
           { value: '100%', suffix: 'Integrity', label: 'Data QA Standard' },
           { value: '03', suffix: 'Languages', label: 'ID · EN · FR' }
         ]
@@ -313,7 +313,7 @@ window.PORTFOLIO_DATA = {
         portraitDegree: 'S.Kom (S1 Informatika) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'IPK Kumulatif' },
-          { value: '08', suffix: 'Sistem', label: 'Sistem Produksi & AI' },
+          { value: '09', suffix: 'Sistem', label: 'Sistem Produksi & AI' },
           { value: '100%', suffix: 'Integritas', label: 'Standar Data QA' },
           { value: '03', suffix: 'Bahasa', label: 'ID · EN · FR' }
         ]
@@ -468,7 +468,7 @@ window.PORTFOLIO_DATA = {
         portraitDegree: 'S.Kom (Informatique) — UMM',
         metrics: [
           { value: '3.78', suffix: '/ 4.00', label: 'GPA Cumulatif' },
-          { value: '08', suffix: 'Systèmes', label: 'Plateformes & Modèles IA' },
+          { value: '09', suffix: 'Systèmes', label: 'Plateformes & Modèles IA' },
           { value: '100%', suffix: 'Intégrité', label: 'Standard Qualité Data' },
           { value: '03', suffix: 'Langues', label: 'ID · EN · FR' }
         ]
@@ -913,6 +913,62 @@ window.PORTFOLIO_DATA = {
             'Intégration de terminaux biométriques physiques Hikvision via les endpoints ISAPI pour synchroniser automatiquement les pointages en temps réel.',
             'Développement d’environ 80 % des interfaces frontend (centre de commande superuser, suivi des employés, administration) connectées aux API REST backend.',
             'Implémentation de schémas de base de données sécurisés garantissant l’intégrité transactionnelle des profils, journaux d’audit et permissions.'
+          ]
+        }
+      }
+    },
+    {
+      id: 'alignerr-pulsar-telemetry',
+      visible: true,
+      category: 'data',
+      image: 'assets/images/projects/alignerr-pulsar-telemetry.svg',
+      imageSurface: 'dark',
+      liveUrl: '',
+      repoUrl: '',
+      paperUrl: '',
+      isLive: true,
+      tech: [
+        'Multimodal Audio AI',
+        'World-Model Alignment',
+        'Acoustic & Semantic QA',
+        '52.3h Verified Telemetry',
+        '0% Skip Rate'
+      ],
+      i18n: {
+        en: {
+          title: 'Pulsar World Alignment — Multimodal Audio AI Labeling & QA Telemetry',
+          date: 'Aug 2026 – Present',
+          role: 'Data Labeling Audio Specialist · Alignerr',
+          categoryLabel: 'Data, AI & QA',
+          statusBadge: 'Active Project — 52.3h Verified Telemetry',
+          highlights: [
+            'Logged 52.3+ hours (188,253s) of high-precision multimodal audio evaluation, transcription verification, and acoustic-semantic alignment for the Pulsar World Alignment frontier AI initiative.',
+            'Completed 28 complex long-horizon audio submissions averaging 70.0 minutes (4,202s) per task with a strict 0.0% task skip rate across demanding multi-criteria rubrics.',
+            'Collaborated across 26 structured peer-review cycles (37.4h review audit log) and 19.6 hours of iterative QA calibration to guarantee production-grade acoustic and contextual fidelity.'
+          ]
+        },
+        id: {
+          title: 'Pulsar World Alignment — Pelaporan Telemetri Audio AI & Multi-Stage QA',
+          date: 'Agustus 2026 – Sekarang',
+          role: 'Data Labeling Audio Specialist · Alignerr',
+          categoryLabel: 'Data, AI & QA',
+          statusBadge: 'Proyek Aktif — Telemetri Terverifikasi 52.3 Jam',
+          highlights: [
+            'Mencatatkan 52,3+ jam (188.253 detik) evaluasi audio multimodal presisi tinggi, verifikasi transkripsi, serta penyelarasan akustik-semantik pada inisiatif AI Pulsar World Alignment.',
+            'Menyelesaikan 28 tugas anotasi audio mendalam berdurasi rata-rata 70,0 menit (4.202 detik) per pengumpulan dengan disiplin penyelesaian 100% (0,0% skip rate).',
+            'Melewati 26 siklus audit peer-review terstruktur (total 37,4 jam log peninjauan) serta 19,6 jam kalibrasi QA iteratif untuk menjamin akurasi akustik dan konteks berstandar produksi.'
+          ]
+        },
+        fr: {
+          title: 'Pulsar World Alignment — Télémétrie d’Alignement Audio IA & Assurance Qualité',
+          date: 'Août 2026 – Présent',
+          role: 'Spécialiste Annotation Audio IA · Alignerr',
+          categoryLabel: 'Données, IA & QA',
+          statusBadge: 'Projet Actif — 52,3h de Télémétrie Vérifiée',
+          highlights: [
+            'Enregistrement de plus de 52,3 heures (188 253 s) d’évaluation audio multimodale de haute précision, vérification de transcriptions et alignement acoustique-sémantique pour Pulsar World Alignment.',
+            'Réalisation de 28 soumissions audio approfondies d’une durée moyenne de 70,0 minutes (4 202 s) par tâche avec un taux d’abandon strict de 0,0 %.',
+            'Participation à 26 cycles d’audit par les pairs (37,4 h de revue) et 19,6 heures d’étalonnage qualité itératif assurant une fidélité acoustique et contextuelle de niveau production.'
           ]
         }
       }

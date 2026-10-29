@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1280" y2="780" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#070B11" />
+      <stop offset="100%" stop-color="#0B121C" />
+    </linearGradient>
+    <linearGradient id="azureBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+    <linearGradient id="cyanBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0EA5E9" />
+      <stop offset="100%" stop-color="#7DD3FC" />
+    </linearGradient>
+    <linearGradient id="waveGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.34" />
+      <stop offset="100%" stop-color="#38BDF8" stop-opacity="0.0" />
+    </linearGradient>
+    <pattern id="gridPat" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#DCEBFF" stroke-opacity="0.045" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <!-- Outer Frame -->
+  <rect width="1280" height="780" rx="14" fill="url(#bgGrad)" />
+  <rect width="1280" height="780" rx="14" fill="url(#gridPat)" />
+  <rect x="1" y="1" width="1278" height="778" rx="13" stroke="#38BDF8" stroke-opacity="0.28" stroke-width="2" />
+
+  <!-- Top Telemetry Header -->
+  <rect x="32" y="28" width="1216" height="68" rx="10" fill="#0F1724" stroke="#DCEBFF" stroke-opacity="0.14" />
+  <circle cx="62" cy="62" r="6" fill="#38BDF8" />
+  <circle cx="62" cy="62" r="12" stroke="#38BDF8" stroke-opacity="0.35" stroke-width="1.5" />
+  <text x="86" y="57" fill="#F4F6FA" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="19" font-weight="700" letter-spacing="0.6">ALIGNERR · PULSAR WORLD ALIGNMENT</text>
+  <text x="86" y="78" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5" letter-spacing="0.8">MULTIMODAL AUDIO SPECIALIST — PERFORMANCE TELEMETRY REPORT</text>
+
+  <!-- Active Status Pill -->
+  <rect x="974" y="44" width="250" height="36" rx="18" fill="#082438" stroke="#38BDF8" stroke-opacity="0.55" />
+  <circle cx="998" cy="62" r="4.5" fill="#34D399" />
+  <text x="1012" y="67" fill="#E0F2FE" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5" font-weight="600" letter-spacing="0.6">AUG 2026 – PRESENT · ACTIVE</text>
+
+  <!-- 4 KPI Cards Row -->
+  <!-- Card 1: Total Logged Hours -->
+  <g transform="translate(32, 118)">
+    <rect width="286" height="142" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <line x1="0" y1="3" x2="286" y2="3" stroke="#38BDF8" stroke-width="3" stroke-opacity="0.85" />
+    <text x="22" y="34" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" letter-spacing="0.8">01 // TOTAL ALIGNMENT TIME</text>
+    <text x="22" y="86" fill="#F8FAFC" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="44" font-weight="700">52.3 <tspan font-size="22" fill="#38BDF8">HRS</tspan></text>
+    <text x="22" y="118" fill="#BAC3D0" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5">188,253s Verified Platform Log</text>
+  </g>
+
+  <!-- Card 2: Deep Audio Tasks & 0% Skip -->
+  <g transform="translate(342, 118)">
+    <rect width="286" height="142" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <line x1="0" y1="3" x2="286" y2="3" stroke="#34D399" stroke-width="3" stroke-opacity="0.85" />
+    <text x="22" y="34" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" letter-spacing="0.8">02 // COMPLETION DISCIPLINE</text>
+    <text x="22" y="86" fill="#F8FAFC" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="44" font-weight="700">0.0% <tspan font-size="22" fill="#34D399">SKIP</tspan></text>
+    <text x="22" y="118" fill="#BAC3D0" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5">28 Complex Tasks · 0 Skipped</text>
+  </g>
+
+  <!-- Card 3: Avg Depth Per Label -->
+  <g transform="translate(652, 118)">
+    <rect width="286" height="142" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <line x1="0" y1="3" x2="286" y2="3" stroke="#38BDF8" stroke-width="3" stroke-opacity="0.85" />
+    <text x="22" y="34" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" letter-spacing="0.8">03 // AVG TASK COMPLEXITY</text>
+    <text x="22" y="86" fill="#F8FAFC" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="44" font-weight="700">70.0 <tspan font-size="22" fill="#38BDF8">MIN</tspan></text>
+    <text x="22" y="118" fill="#BAC3D0" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5">4,201.6s Avg / Audio Submission</text>
+  </g>
+
+  <!-- Card 4: Peer Review Cycles -->
+  <g transform="translate(962, 118)">
+    <rect width="286" height="142" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <line x1="0" y1="3" x2="286" y2="3" stroke="#7DD3FC" stroke-width="3" stroke-opacity="0.85" />
+    <text x="22" y="34" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" letter-spacing="0.8">04 // PEER-REVIEW QA AUDITS</text>
+    <text x="22" y="86" fill="#F8FAFC" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="44" font-weight="700">26 <tspan font-size="22" fill="#7DD3FC">CYCLES</tspan></text>
+    <text x="22" y="118" fill="#BAC3D0" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5">134,690s (37.4h) Review Audit</text>
+  </g>
+
+  <!-- Left Panel: Acoustic-Semantic Waveform & Alignment Track -->
+  <g transform="translate(32, 284)">
+    <rect width="664" height="418" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <text x="26" y="38" fill="#F4F6FA" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="17" font-weight="700">ACOUSTIC-SEMANTIC ALIGNMENT SPECTRUM</text>
+    <text x="26" y="60" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12">LONG-HORIZON AUDIO SEGMENTATION · TRANSCRIPTION &amp; PROSODY RUBRIC</text>
+    <line x1="26" y1="76" x2="638" y2="76" stroke="#DCEBFF" stroke-opacity="0.12" />
+
+    <!-- Waveform Stage -->
+    <rect x="26" y="94" width="612" height="196" rx="8" fill="#080D15" stroke="#38BDF8" stroke-opacity="0.22" />
+    <line x1="26" y1="192" x2="638" y2="192" stroke="#38BDF8" stroke-opacity="0.25" stroke-dasharray="4 4" />
+
+    <!-- Vertical Timestamp Alignment Guides -->
+    <line x1="158" y1="94" x2="158" y2="290" stroke="#38BDF8" stroke-opacity="0.45" stroke-dasharray="3 3" />
+    <line x1="336" y1="94" x2="336" y2="290" stroke="#34D399" stroke-opacity="0.55" stroke-dasharray="3 3" />
+    <line x1="504" y1="94" x2="504" y2="290" stroke="#38BDF8" stroke-opacity="0.45" stroke-dasharray="3 3" />
+
+    <!-- Stylized Audio Spectrum Bars -->
+    <g fill="#38BDF8">
+      <rect x="48" y="172" width="6" height="40" rx="3" fill-opacity="0.55" />
+      <rect x="62" y="156" width="6" height="72" rx="3" fill-opacity="0.75" />
+      <rect x="76" y="138" width="6" height="108" rx="3" />
+      <rect x="90" y="150" width="6" height="84" rx="3" fill-opacity="0.8" />
+      <rect x="104" y="166" width="6" height="52" rx="3" fill-opacity="0.6" />
+      <rect x="118" y="128" width="6" height="128" rx="3" />
+      <rect x="132" y="144" width="6" height="96" rx="3" fill-opacity="0.85" />
+      <rect x="146" y="162" width="6" height="60" rx="3" fill-opacity="0.65" />
+      <rect x="168" y="140" width="6" height="104" rx="3" fill-opacity="0.9" />
+      <rect x="182" y="118" width="6" height="148" rx="3" />
+      <rect x="196" y="132" width="6" height="120" rx="3" fill-opacity="0.9" />
+      <rect x="210" y="154" width="6" height="76" rx="3" fill-opacity="0.7" />
+      <rect x="224" y="168" width="6" height="48" rx="3" fill-opacity="0.5" />
+      <rect x="238" y="146" width="6" height="92" rx="3" fill-opacity="0.8" />
+      <rect x="252" y="124" width="6" height="136" rx="3" />
+      <rect x="266" y="138" width="6" height="108" rx="3" fill-opacity="0.85" />
+      <rect x="280" y="160" width="6" height="64" rx="3" fill-opacity="0.65" />
+      <rect x="294" y="150" width="6" height="84" rx="3" fill-opacity="0.75" />
+      <rect x="308" y="122" width="6" height="140" rx="3" fill="#34D399" />
+      <rect x="322" y="112" width="6" height="160" rx="3" fill="#34D399" />
+      <rect x="344" y="130" width="6" height="124" rx="3" fill="#34D399" fill-opacity="0.9" />
+      <rect x="358" y="152" width="6" height="80" rx="3" fill-opacity="0.75" />
+      <rect x="372" y="166" width="6" height="52" rx="3" fill-opacity="0.55" />
+      <rect x="386" y="140" width="6" height="104" rx="3" fill-opacity="0.85" />
+      <rect x="400" y="120" width="6" height="144" rx="3" />
+      <rect x="414" y="134" width="6" height="116" rx="3" fill-opacity="0.9" />
+      <rect x="428" y="156" width="6" height="72" rx="3" fill-opacity="0.7" />
+      <rect x="442" y="146" width="6" height="92" rx="3" fill-opacity="0.8" />
+      <rect x="456" y="126" width="6" height="132" rx="3" />
+      <rect x="470" y="142" width="6" height="100" rx="3" fill-opacity="0.85" />
+      <rect x="484" y="164" width="6" height="56" rx="3" fill-opacity="0.6" />
+      <rect x="512" y="134" width="6" height="116" rx="3" fill-opacity="0.9" />
+      <rect x="526" y="118" width="6" height="148" rx="3" />
+      <rect x="540" y="136" width="6" height="112" rx="3" fill-opacity="0.85" />
+      <rect x="554" y="154" width="6" height="76" rx="3" fill-opacity="0.7" />
+      <rect x="568" y="168" width="6" height="48" rx="3" fill-opacity="0.55" />
+      <rect x="582" y="144" width="6" height="96" rx="3" fill-opacity="0.8" />
+      <rect x="596" y="158" width="6" height="68" rx="3" fill-opacity="0.65" />
+      <rect x="610" y="172" width="6" height="40" rx="3" fill-opacity="0.5" />
+    </g>
+
+    <!-- Timestamp Tags -->
+    <rect x="116" y="102" width="84" height="22" rx="4" fill="#0F2942" stroke="#38BDF8" stroke-opacity="0.6" />
+    <text x="158" y="117" text-anchor="middle" fill="#7DD3FC" font-family="'JetBrains Mono', Consolas, monospace" font-size="10.5">SEG // 14:20</text>
+
+    <rect x="290" y="102" width="92" height="22" rx="4" fill="#092E26" stroke="#34D399" stroke-opacity="0.6" />
+    <text x="336" y="117" text-anchor="middle" fill="#6EE7B7" font-family="'JetBrains Mono', Consolas, monospace" font-size="10.5">QA PASS // 38:05</text>
+
+    <rect x="462" y="102" width="84" height="22" rx="4" fill="#0F2942" stroke="#38BDF8" stroke-opacity="0.6" />
+    <text x="504" y="117" text-anchor="middle" fill="#7DD3FC" font-family="'JetBrains Mono', Consolas, monospace" font-size="10.5">SYNC // 69:58</text>
+
+    <!-- Workflow Pipeline Steps -->
+    <g transform="translate(26, 310)">
+      <rect width="192" height="82" rx="8" fill="#0A101A" stroke="#DCEBFF" stroke-opacity="0.14" />
+      <text x="16" y="28" fill="#38BDF8" font-family="'JetBrains Mono', Consolas, monospace" font-size="11.5" font-weight="600">STEP 01 · ACOUSTIC PARSE</text>
+      <text x="16" y="50" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">Speaker diarization, tone</text>
+      <text x="16" y="68" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">&amp; semantic boundary audit</text>
+    </g>
+    <g transform="translate(236, 310)">
+      <rect width="192" height="82" rx="8" fill="#0A101A" stroke="#DCEBFF" stroke-opacity="0.14" />
+      <text x="16" y="28" fill="#38BDF8" font-family="'JetBrains Mono', Consolas, monospace" font-size="11.5" font-weight="600">STEP 02 · WORLD RUBRIC</text>
+      <text x="16" y="50" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">Multi-criteria factual &amp;</text>
+      <text x="16" y="68" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">contextual alignment</text>
+    </g>
+    <g transform="translate(446, 310)">
+      <rect width="192" height="82" rx="8" fill="#0A101A" stroke="#DCEBFF" stroke-opacity="0.14" />
+      <text x="16" y="28" fill="#34D399" font-family="'JetBrains Mono', Consolas, monospace" font-size="11.5" font-weight="600">STEP 03 · PEER CALIBRATION</text>
+      <text x="16" y="50" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">Iterative QA refinement</text>
+      <text x="16" y="68" fill="#BAC3D0" font-family="'Segoe UI', sans-serif" font-size="12.5">to production gold standard</text>
+    </g>
+  </g>
+
+  <!-- Right Panel: Verified CSV Time & QA Breakdown -->
+  <g transform="translate(720, 284)">
+    <rect width="528" height="418" rx="10" fill="#0E1623" stroke="#DCEBFF" stroke-opacity="0.15" />
+    <text x="28" y="38" fill="#F4F6FA" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="17" font-weight="700">VERIFIED TELEMETRY BREAKDOWN</text>
+    <text x="28" y="60" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12">EXTRACTED FROM ALIGNERR PERFORMANCE LOGS</text>
+    <line x1="28" y1="76" x2="500" y2="76" stroke="#DCEBFF" stroke-opacity="0.12" />
+
+    <!-- Bar 1: Primary Labeling Time -->
+    <text x="28" y="112" fill="#F4F6FA" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="600">Primary Audio Labeling Submitted</text>
+    <text x="500" y="112" text-anchor="end" fill="#38BDF8" font-family="'JetBrains Mono', Consolas, monospace" font-size="13.5" font-weight="700">32.7h (117,644s · 62.5%)</text>
+    <rect x="28" y="124" width="472" height="14" rx="7" fill="#080D15" stroke="#DCEBFF" stroke-opacity="0.1" />
+    <rect x="28" y="124" width="295" height="14" rx="7" fill="url(#azureBar)" />
+
+    <!-- Bar 2: QA Calibration & Refinement -->
+    <text x="28" y="176" fill="#F4F6FA" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="600">Iterative QA Calibration &amp; Refinement</text>
+    <text x="500" y="176" text-anchor="end" fill="#7DD3FC" font-family="'JetBrains Mono', Consolas, monospace" font-size="13.5" font-weight="700">19.6h (70,609s · 37.5%)</text>
+    <rect x="28" y="188" width="472" height="14" rx="7" fill="#080D15" stroke="#DCEBFF" stroke-opacity="0.1" />
+    <rect x="28" y="188" width="177" height="14" rx="7" fill="url(#cyanBar)" />
+
+    <!-- Bar 3: Task Completion Ratio -->
+    <text x="28" y="240" fill="#F4F6FA" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="600">Submission Reliability (Zero Skipped Tasks)</text>
+    <text x="500" y="240" text-anchor="end" fill="#34D399" font-family="'JetBrains Mono', Consolas, monospace" font-size="13.5" font-weight="700">100% (28 / 28 Completed)</text>
+    <rect x="28" y="252" width="472" height="14" rx="7" fill="#080D15" stroke="#DCEBFF" stroke-opacity="0.1" />
+    <rect x="28" y="252" width="472" height="14" rx="7" fill="#10B981" />
+
+    <!-- Summary Telemetry Table -->
+    <rect x="28" y="290" width="472" height="102" rx="8" fill="#080D15" stroke="#DCEBFF" stroke-opacity="0.14" />
+    <text x="46" y="318" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12">AVG REVIEW AUDIT / TASK</text>
+    <text x="482" y="318" text-anchor="end" fill="#F4F6FA" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5" font-weight="600">80.2 MIN (4,810.4s)</text>
+    <line x1="46" y1="331" x2="482" y2="331" stroke="#DCEBFF" stroke-opacity="0.08" />
+
+    <text x="46" y="352" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12">AVG CALIBRATION CYCLE</text>
+    <text x="482" y="352" text-anchor="end" fill="#F4F6FA" font-family="'JetBrains Mono', Consolas, monospace" font-size="12.5" font-weight="600">61.9 MIN (3,716.3s)</text>
+    <line x1="46" y1="365" x2="482" y2="365" stroke="#DCEBFF" stroke-opacity="0.08" />
+
+    <text x="46" y="383" fill="#94A3B8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12">CONTRIBUTOR RECORD</text>
+    <text x="482" y="383" text-anchor="end" fill="#38BDF8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" font-weight="600">VERIFIED // NDA-ANONYMIZED</text>
+  </g>
+
+  <!-- Bottom Footer Bar -->
+  <text x="36" y="742" fill="#64748B" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" letter-spacing="0.6">DATA SOURCE: ALIGNERR ANNOTATION PERFORMANCE EXPORT (LABELING_MEMBER_DATA &amp; REVIEWING_MEMBER_DATA)</text>
+  <text x="1244" y="742" text-anchor="end" fill="#38BDF8" font-family="'JetBrains Mono', Consolas, monospace" font-size="12" font-weight="600">PULSAR WORLD ALIGNMENT // AUDIO AI</text>
+</svg>
+
