@@ -65,7 +65,7 @@ window.PORTFOLIO_DATA = {
     assets: {
       // Kosongkan "" untuk menampilkan kartu arsitektural monogram "HA" otomatis
       profileImage: 'assets/images/profile/hans-profile.jpg',
-      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf'
+      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf?v=20261101'
     }
   },
 
