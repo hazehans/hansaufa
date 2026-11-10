@@ -2,9 +2,16 @@
 *.docx
 new_necessary_files/
 
+# Local redesign handoff log (never pushed)
+PROGRESS-REVISI.md
+
+# Node / Vite
+node_modules/
+dist/
+*.local
+
 # OS & Editor metadata
 .DS_Store
 Thumbs.db
 Desktop.ini
 .vscode/
-

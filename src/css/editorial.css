@@ -1,0 +1,1025 @@
+/* ==========================================================================
+   EDITORIAL BRUTALIST-MINIMAL LAYER — v3 Redesign (Nov 2026)
+   Loaded AFTER style.css. Overrides tokens + component skins only;
+   all behaviour-related CSS (lightbox, cmd palette, QC slider, boot curtain
+   mechanics, reveal/kinetic variables) stays in style.css.
+
+   Principles:
+   1. Type is the hero — giant tight display + italic serif accents.
+   2. Hairline rules & a 12-column grid instead of cards/shadows.
+   3. Zero radius, zero glass, zero glow. Accent used sparingly.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  --font-display: 'Inter Tight', 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --rule: 1px solid var(--border-color);
+  --rule-strong: 1px solid var(--text-primary);
+  --ease-editorial: cubic-bezier(0.7, 0, 0.2, 1);
+  --container-max: 1360px;
+}
+
+:root,
+[data-theme='dark'] {
+  --bg-primary: #0A0A0A;
+  --bg-elevated: #0A0A0A;
+  --bg-surface: #141414;
+  --bg-chip: transparent;
+  --bg-header: rgba(10, 10, 10, 0.86);
+  --bg-drawer: #0A0A0A;
+
+  --text-primary: #EDEDE8;
+  --text-tag: #D4D4CE;
+  --text-secondary: #A3A39C;
+  --text-muted: #7A7A74;
+
+  --border-color: rgba(237, 237, 232, 0.14);
+  --border-strong: rgba(237, 237, 232, 0.42);
+  --grid-line: rgba(237, 237, 232, 0.035);
+
+  --shadow-card: none;
+  --glare-color: transparent;
+}
+
+[data-theme='light'] {
+  --bg-primary: #F1F0EA;
+  --bg-elevated: #F1F0EA;
+  --bg-surface: #E6E5DE;
+  --bg-chip: transparent;
+  --bg-header: rgba(241, 240, 234, 0.88);
+  --bg-drawer: #F1F0EA;
+
+  --text-primary: #0A0A0A;
+  --text-tag: #1F1F1C;
+  --text-secondary: #4A4A45;
+  --text-muted: #6E6E68;
+
+  --border-color: rgba(10, 10, 10, 0.14);
+  --border-strong: rgba(10, 10, 10, 0.5);
+  --grid-line: rgba(10, 10, 10, 0.045);
+
+  --shadow-card: none;
+  --glare-color: transparent;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL — 12-COLUMN GRID OVERLAY, CALMER CANVAS, ZERO RADIUS
+   -------------------------------------------------------------------------- */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: min(var(--container-max), calc(100% - 2 * var(--frame-pad)));
+  transform: translateX(-50%);
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--grid-line) 0 1px,
+    transparent 1px calc(100% / 12)
+  );
+  border-right: 1px solid var(--grid-line);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  body::after {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--grid-line) 0 1px,
+      transparent 1px calc(100% / 4)
+    );
+  }
+}
+
+.bg-canvas {
+  opacity: 0.55;
+}
+
+.btn,
+.project-card,
+.pillar-card,
+.skill-card,
+.edu-card,
+.contact-card,
+.contact-box,
+.metric-cell,
+.portrait-card,
+.project-media,
+.project-wireframe,
+.tech-tag,
+.skill-chip,
+.filter-btn,
+.status-pill,
+.project-status-badge,
+.project-cat-pill,
+.live-badge,
+.lang-switcher,
+.lang-btn,
+.theme-toggle,
+.cmd-trigger,
+.cmd-kbd,
+.mobile-menu-toggle,
+.cmd-dialog,
+.cmd-item,
+.cmd-item-code,
+.cmd-esc-btn,
+.lightbox-dialog,
+.lightbox-close,
+.dock-pill,
+.mobile-quick-dock,
+.canvas-switcher,
+.canvas-mode-btn,
+.qc-tab,
+.qc-expand-btn,
+.social-pill,
+.toast-banner,
+.brand-mark,
+.zoom-corner-badge,
+.boot-hud,
+.boot-logo-box {
+  border-radius: 0 !important;
+}
+
+.project-card,
+.pillar-card,
+.skill-card,
+.edu-card,
+.contact-card,
+.contact-box,
+.metric-cell,
+.portrait-card {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Spotlight glow & specular glare are replaced by crisp rules */
+.spotlight-card::before,
+.tilt-card::after {
+  display: none !important;
+}
+
+.section {
+  padding: clamp(72px, 11vw, 168px) 0;
+  border-bottom: none;
+}
+
+.container {
+  max-width: var(--container-max);
+  padding: 0 clamp(16px, 3.2vw, 48px);
+}
+
+/* --------------------------------------------------------------------------
+   3. FRAME & HEADER — FLAT, RULED, QUIET
+   -------------------------------------------------------------------------- */
+.frame-corner {
+  display: none;
+}
+
+.frame-header {
+  border: none;
+  border-bottom: var(--rule);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+.brand-mark {
+  border-color: var(--text-primary);
+}
+
+.brand-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-size: 0.98rem;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav-link::after {
+  height: 1px;
+}
+
+.lang-switcher,
+.theme-toggle,
+.cmd-trigger,
+.mobile-menu-toggle {
+  background-color: transparent;
+  border-color: var(--border-strong);
+}
+
+.lang-btn.is-active {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.frame-statusbar {
+  border: none;
+  border-top: var(--rule);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+}
+
+.canvas-switcher {
+  background: transparent;
+  border-color: var(--border-strong);
+}
+
+.canvas-mode-btn.is-active {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.scroll-progress-bar {
+  height: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   4. BUTTONS — SQUARE, MONO, INK-FILL SWEEP
+   -------------------------------------------------------------------------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 52px;
+  padding: 14px 24px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--text-primary);
+  transition: color 0.35s var(--ease-editorial), border-color 0.35s var(--ease-editorial),
+    transform 0.22s var(--ease-kinetic);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--accent);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform 0.38s var(--ease-editorial);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.btn-outline,
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-primary);
+}
+
+.btn-ghost {
+  border-color: var(--border-strong);
+}
+
+.btn-sm {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 0.72rem;
+}
+
+.btn-xs {
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 0.68rem;
+}
+
+.btn.is-copied {
+  background-color: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   5. SECTION HEADERS — GIANT INDEX + RULED EDITORIAL TITLE
+   -------------------------------------------------------------------------- */
+.section-watermark {
+  display: none !important;
+}
+
+.section-header {
+  padding-top: clamp(18px, 2.4vw, 28px);
+  border-top: var(--rule-strong);
+  margin-bottom: clamp(48px, 7vw, 104px);
+}
+
+.section-index-wrap {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.section-index {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, 8vw, 7.4rem);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent);
+}
+
+.section-kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 6vw, 5.6rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.section-subtitle {
+  margin-top: clamp(16px, 2vw, 26px);
+  max-width: 52ch;
+  font-size: clamp(1rem, 1.3vw, 1.14rem);
+  line-height: 1.6;
+}
+
+@media (min-width: 920px) {
+  .section-header {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 0 clamp(24px, 3vw, 48px);
+    align-items: start;
+  }
+
+  .section-header > .section-index-wrap {
+    flex: none;
+  }
+
+  .section-header.section-header-projects {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. HERO — FULL-BLEED NAME, ITALIC SERIF ACCENT
+   -------------------------------------------------------------------------- */
+.hero-section {
+  min-height: calc(100svh - var(--header-h) - var(--frame-pad));
+  display: flex;
+  align-items: stretch;
+  padding-top: clamp(28px, 4vw, 56px);
+  padding-bottom: clamp(48px, 6vw, 88px);
+  overflow-x: clip;
+}
+
+.hero-section > .container {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-top-meta {
+  border-bottom: var(--rule);
+  font-family: var(--font-mono);
+}
+
+.status-pill {
+  border-color: var(--border-strong);
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+}
+
+.hero-title {
+  margin: clamp(20px, 3.6vw, 48px) 0 clamp(24px, 3.6vw, 48px);
+  font-family: var(--font-display);
+  font-size: clamp(2.35rem, 9.2vw, 7.8rem);
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  gap: 0.04em;
+  word-break: normal;
+}
+
+.hero-title-solid {
+  display: block;
+}
+
+.hero-title-accent {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  padding-left: 0.6em;
+  color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-title:hover .hero-title-solid {
+    transform: translateX(-0.08em);
+  }
+  .hero-title:hover .hero-title-accent {
+    transform: translateX(0.12em);
+  }
+}
+
+.hero-flex-layout {
+  border-top: var(--rule);
+  padding-top: clamp(24px, 3vw, 40px);
+}
+
+.hero-role {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.hero-summary {
+  max-width: 60ch;
+  font-size: clamp(1rem, 1.2vw, 1.08rem);
+}
+
+.social-pill {
+  background: transparent;
+  border: none;
+  border-bottom: var(--rule);
+  padding: 8px 2px;
+}
+
+.social-pill:hover {
+  border-bottom-color: var(--accent);
+  transform: none;
+}
+
+.portrait-card {
+  background: transparent;
+  border: var(--rule-strong);
+}
+
+.portrait-photo-img {
+  filter: grayscale(1) contrast(1.06);
+  transition: filter 0.6s var(--ease-editorial), transform 0.28s var(--ease-kinetic);
+}
+
+.portrait-photo-frame:hover .portrait-photo-img {
+  filter: grayscale(0) contrast(1);
+}
+
+.portrait-photo-caption {
+  border-top: var(--rule-strong);
+  text-transform: uppercase;
+}
+
+/* Metrics — ruled spec sheet */
+.metrics-flex {
+  border-top: var(--rule-strong);
+  border-left: none;
+}
+
+.metric-cell {
+  background: transparent !important;
+  border-right: var(--rule);
+  border-bottom: var(--rule);
+}
+
+.metric-cell:last-child {
+  border-right: none;
+}
+
+.metric-value {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.4vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.metric-cell:hover {
+  background: transparent;
+}
+
+.metric-cell:hover .metric-value {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   7. MARQUEE — OVERSIZED OUTLINE TICKER
+   -------------------------------------------------------------------------- */
+.tech-marquee-wrap {
+  padding: clamp(14px, 2vw, 24px) 0;
+  border-top: var(--rule-strong);
+  border-bottom: var(--rule-strong);
+  background: var(--bg-primary);
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.marquee-item {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4.6vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-primary);
+}
+
+.marquee-item:nth-child(even) {
+  color: var(--text-primary);
+  -webkit-text-stroke: 0;
+}
+
+.tech-marquee-wrap:hover .marquee-item {
+  color: transparent;
+  -webkit-text-stroke-color: var(--accent);
+}
+
+.tech-marquee-wrap:hover .marquee-item:nth-child(even) {
+  color: var(--accent);
+}
+
+.marquee-star {
+  font-size: 0.5em;
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. OVERVIEW PILLARS — RULED COLUMNS
+   -------------------------------------------------------------------------- */
+.pillar-card {
+  background: transparent;
+  border: none;
+  border-top: var(--rule-strong);
+  padding: clamp(20px, 2.4vw, 28px) 0 0;
+  transition: border-color 0.3s ease;
+}
+
+.pillar-card:hover {
+  border-color: var(--accent);
+  transform: none !important;
+}
+
+.pillar-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.pillar-line {
+  background-color: var(--border-color);
+}
+
+.pillar-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 1.8vw, 1.55rem);
+  letter-spacing: -0.025em;
+}
+
+/* --------------------------------------------------------------------------
+   9. EXPERIENCE — EDITORIAL LEDGER
+   -------------------------------------------------------------------------- */
+.experience-list {
+  border-top: none;
+}
+
+.exp-row {
+  border-bottom: var(--rule);
+}
+
+.exp-row:first-of-type {
+  border-top: var(--rule);
+}
+
+.exp-company {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.exp-role {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 2.8vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+.exp-period,
+.exp-location {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.live-badge {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.live-badge .status-dot {
+  background-color: var(--accent-fg);
+  box-shadow: none;
+}
+
+.exp-timeline-node {
+  border-radius: 0;
+}
+
+/* --------------------------------------------------------------------------
+   10. PROJECTS — NUMBERED INDEX ROWS
+   -------------------------------------------------------------------------- */
+.filter-bar {
+  gap: 0;
+}
+
+.filter-btn {
+  background: transparent;
+  border: var(--rule);
+  margin-left: -1px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+}
+
+.filter-btn.is-active {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.filter-btn.is-active .filter-count {
+  color: inherit;
+}
+
+.projects-list {
+  gap: 0;
+  border-top: var(--rule-strong);
+}
+
+.project-card {
+  background: transparent;
+  border: none;
+  border-bottom: var(--rule);
+  padding: clamp(28px, 4vw, 56px) 0;
+  transition: background-color 0.4s var(--ease-editorial);
+}
+
+.project-card:hover {
+  border-color: var(--border-color);
+}
+
+.project-idx {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.project-cat-pill,
+.project-status-badge {
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.66rem;
+}
+
+.project-status-badge.is-live {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.project-title {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .project-title {
+    transform: none;
+    color: var(--accent);
+  }
+}
+
+.project-role {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  letter-spacing: 0;
+}
+
+.tech-tag {
+  background: transparent;
+  border: var(--rule);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.66rem;
+}
+
+.project-media {
+  border: var(--rule-strong);
+}
+
+.project-card:hover .project-media {
+  border-color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   11. EDUCATION, ORGANIZATIONS, SKILLS
+   -------------------------------------------------------------------------- */
+.sub-column-heading {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  padding-bottom: 12px;
+  border-bottom: var(--rule-strong);
+}
+
+.edu-card {
+  background: transparent;
+  border: none;
+  border-bottom: var(--rule);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.edu-card:hover {
+  transform: none !important;
+}
+
+.org-role {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.skills-flex-grid {
+  gap: 0;
+  border-top: var(--rule-strong);
+  border-left: var(--rule);
+}
+
+.skill-card {
+  background: transparent;
+  border: none;
+  border-right: var(--rule);
+  border-bottom: var(--rule);
+  transition: background-color 0.35s var(--ease-editorial);
+}
+
+.skill-card:hover {
+  transform: none !important;
+  background-color: var(--bg-surface);
+}
+
+.skill-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  letter-spacing: -0.025em;
+}
+
+.skill-chip {
+  background: transparent;
+  border: var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.skill-chip:hover {
+  background-color: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.spoken-bar-track {
+  border-radius: 0;
+  height: 2px;
+}
+
+.spoken-bar-fill {
+  border-radius: 0;
+}
+
+/* --------------------------------------------------------------------------
+   12. CONTACT — POSTER HEADLINE
+   -------------------------------------------------------------------------- */
+.contact-box {
+  background: transparent;
+  border: none;
+  border-top: var(--rule-strong);
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.contact-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 8.4vw, 8.2rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.contact-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.3;
+  max-width: 44ch;
+}
+
+.contact-cards-flex {
+  gap: 0;
+  border-top: var(--rule);
+  border-left: var(--rule);
+}
+
+.contact-card {
+  background: transparent;
+  border: none;
+  border-right: var(--rule);
+  border-bottom: var(--rule);
+}
+
+.contact-card-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kinetic-social-link {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  border-bottom: var(--rule);
+}
+
+/* --------------------------------------------------------------------------
+   13. FOOTER — FULL-WIDTH WORDMARK
+   -------------------------------------------------------------------------- */
+.site-footer {
+  border-top: var(--rule-strong);
+  overflow: hidden;
+}
+
+.footer-wordmark {
+  display: block;
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 3.2vw, 48px) 0;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 17.5vw, 15rem);
+  font-weight: 800;
+  line-height: 0.78;
+  letter-spacing: -0.065em;
+  white-space: nowrap;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.footer-wordmark em {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   14. OVERLAYS — COMMAND PALETTE, LIGHTBOX, DOCK, TOAST
+   -------------------------------------------------------------------------- */
+.cmd-dialog,
+.lightbox-dialog {
+  border: var(--rule-strong);
+  box-shadow: none;
+}
+
+.cmd-item.is-selected {
+  background-color: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.cmd-item.is-selected .cmd-item-hint,
+.cmd-item.is-selected .cmd-item-label {
+  color: inherit;
+}
+
+.toast-banner {
+  border: var(--rule-strong);
+  box-shadow: none;
+}
+
+.mobile-quick-dock {
+  border: var(--rule-strong);
+  box-shadow: none;
+}
+
+.mobile-nav-link {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 9vw, 3rem);
+}
+
+/* Boot HUD — square, ink-ruled */
+.boot-hud {
+  border-color: rgba(237, 237, 232, 0.4);
+}
+
+.boot-quote-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* --------------------------------------------------------------------------
+   15. RESPONSIVE REFINEMENTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: auto;
+  }
+
+  .hero-title-accent {
+    padding-left: 0.3em;
+  }
+
+  .section-header {
+    gap: 18px;
+  }
+
+  .metric-cell:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .btn {
+    padding: 12px 16px;
+    letter-spacing: 0.05em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn::before {
+    transition: none;
+  }
+}

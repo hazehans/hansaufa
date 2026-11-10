@@ -672,7 +672,7 @@
 
     const metaTheme = document.getElementById('meta-theme-color');
     if (metaTheme) {
-      metaTheme.setAttribute('content', theme === 'light' ? '#F5F5F3' : '#0B0B0B');
+      metaTheme.setAttribute('content', theme === 'light' ? '#F1F0EA' : '#0A0A0A');
     }
 
     if (persist) {
@@ -2246,7 +2246,7 @@
   function bindTiltCards() {
     if (!isFinePointer() || prefersReducedMotion()) return;
 
-    document.querySelectorAll('.tilt-card:not([data-tilt-bound])').forEach((card) => {
+    document.querySelectorAll('.portrait-card.tilt-card:not([data-tilt-bound]), .project-media.tilt-card:not([data-tilt-bound])').forEach((card) => {
       card.setAttribute('data-tilt-bound', 'true');
 
       card.addEventListener('pointermove', (e) => {

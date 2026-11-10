@@ -30,11 +30,11 @@
   <!-- Favicon (dynamically upgraded to cropped logo or monogram fallback in main.js) -->
   <link rel="icon" id="site-favicon" type="image/svg+xml" href="assets/icons/favicon.svg" />
 
-  <!-- Google Fonts: Space Grotesk (Kinetic Display), Inter (Editorial UI), JetBrains Mono (Indices & Specs) -->
+  <!-- Google Fonts: Inter Tight (Editorial Display), Instrument Serif (Italic Accents), Inter (UI), JetBrains Mono (Indices & Specs) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet"
   />
 
@@ -61,7 +61,7 @@
     })();
   </script>
 
-  <link rel="stylesheet" href="css/style.css?v=20261110" />
+  <!-- Styles are bundled by Vite via src/main.js -->
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -399,13 +399,13 @@
           </span>
         </div>
 
+        <h1 class="hero-title reveal">
+          <span class="hero-title-solid" id="hero-first-name">HANS ADIYATMA</span>
+          <span class="hero-title-accent" id="hero-last-name">PUTRA AUFA</span>
+        </h1>
+
         <div class="hero-flex-layout">
           <div class="hero-primary">
-            <h1 class="hero-title reveal">
-              <span class="hero-title-solid" id="hero-first-name">HANS ADIYATMA</span>
-              <span class="hero-title-accent" id="hero-last-name">PUTRA AUFA</span>
-            </h1>
-
             <div class="hero-role-bar reveal">
               <p class="hero-role" id="hero-role-tagline" data-i18n="hero.roleTagline">
                 Full-Stack Developer &amp; Data / AI Engineer
@@ -727,6 +727,7 @@
 
   <!-- Minimalist Architectural Footer -->
   <footer class="site-footer">
+    <div class="footer-wordmark" aria-hidden="true">HANS <em>Aufa</em></div>
     <div class="container footer-inner">
       <div class="footer-copy">
         <span>&copy; <span id="footer-year">2026</span> Hans Adiyatma Putra Aufa.</span>
@@ -789,12 +790,7 @@
     </div>
   </div>
 
-  <!-- Lenis Butter-Smooth Scroll Library (Gracefully falls back if offline) -->
-  <script defer src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
-
-  <!-- Modular Vanilla JS -->
-  <script defer src="js/data.js?v=20261110"></script>
-  <script defer src="js/canvas.js?v=20261110"></script>
-  <script defer src="js/main.js?v=20261110"></script>
+  <!-- Vite entry: bundles CSS, Lenis (npm), data.js, canvas.js, main.js -->
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
