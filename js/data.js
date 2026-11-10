@@ -65,7 +65,7 @@ window.PORTFOLIO_DATA = {
     assets: {
       // Kosongkan "" untuk menampilkan kartu arsitektural monogram "HA" otomatis
       profileImage: 'assets/images/profile/hans-profile.jpg',
-      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf?v=20261101'
+      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf?v=20261110'
     }
   },
 
@@ -563,15 +563,80 @@ window.PORTFOLIO_DATA = {
    * -------------------------------------------------------------------------- */
   experience: [
     {
+      id: 'alignerr-audio-alignment',
+      visible: true,
+      company: 'Alignerr · Pulsar World Alignment',
+      isCurrent: true,
+      i18n: {
+        en: {
+          role: 'Data Labeling Audio Specialist (Freelance)',
+          location: 'Remote (California, USA)',
+          period: 'Aug 2026 – Present',
+          highlights: [
+            {
+              lead: 'Multimodal Audio AI Alignment',
+              text: 'Executed 52+ hours of high-precision audio evaluation, transcription verification, and acoustic-semantic alignment supporting frontier multimodal AI model training.'
+            },
+            {
+              lead: 'Complex Long-Horizon Task Execution',
+              text: 'Completed deep multi-criteria audio annotation workflows averaging ~70 minutes per submission while maintaining a 0% task skip rate across strict technical rubrics.'
+            },
+            {
+              lead: 'Multi-Stage QA & Rubric Calibration',
+              text: 'Collaborated through 26+ structured multi-stage QA review cycles and iterative rubric calibrations to uphold acoustic fidelity and model alignment standards.'
+            }
+          ]
+        },
+        id: {
+          role: 'Data Labeling Audio Specialist (Freelance)',
+          location: 'Remote (California, USA)',
+          period: 'Agu 2026 – Sekarang',
+          highlights: [
+            {
+              lead: 'Penyelarasan Data Audio AI Multimodal',
+              text: 'Menyelesaikan 52+ jam evaluasi audio presisi tinggi, verifikasi transkripsi, dan penyelarasan akustik-semantik pada inisiatif pelatihan model AI multimodal mutakhir.'
+            },
+            {
+              lead: 'Eksekusi Tugas Kompleks Tanpa Skip',
+              text: 'Menuntaskan alur anotasi audio mendalam berdurasi rata-rata ~70 menit per tugas dengan 0% tingkat pelewatan tugas (0% skip rate) sesuai rubrik teknis yang ketat.'
+            },
+            {
+              lead: 'Kalibrasi Rubrik & Multi-Stage QA',
+              text: 'Melewati 26+ siklus peninjauan multi-tahap terstruktur dan kalibrasi rubrik iteratif guna menjamin kepatuhan penuh terhadap standar fidelitas akustik dan penyelarasan model.'
+            }
+          ]
+        },
+        fr: {
+          role: 'Spécialiste Annotation Audio IA (Freelance)',
+          location: 'À distance (Californie, USA)',
+          period: 'Août 2026 – Présent',
+          highlights: [
+            {
+              lead: 'Alignement Audio IA Multimodal',
+              text: 'Réalisation de plus de 52 heures d’évaluation audio de haute précision, vérification de transcriptions et alignement acoustique-sémantique pour l’entraînement de modèles IA frontières.'
+            },
+            {
+              lead: 'Exécution de Tâches Complexes (0 % d’Abandon)',
+              text: 'Traitement de séquences d’annotation approfondies (~70 minutes par soumission en moyenne) avec un taux d’abandon de 0 % face à des grilles d’évaluation exigeantes.'
+            },
+            {
+              lead: 'Assurance Qualité Multi-Niveaux',
+              text: 'Collaboration à travers plus de 26 cycles de revue qualité multi-niveaux et d’étalonnage de grilles garantissant le respect des standards de fidélité acoustique et d’alignement.'
+            }
+          ]
+        }
+      }
+    },
+    {
       id: 'han-media-dev',
       visible: true,
       company: 'CV Han Media Tekindo',
-      isCurrent: true,
+      isCurrent: false,
       i18n: {
         en: {
           role: 'IT Developer',
           location: 'Malang, Indonesia',
-          period: 'Sept 2026 – Present',
+          period: 'Sept 2026 – Nov 2026',
           highlights: [
             {
               lead: 'Internal System Development',
@@ -594,7 +659,7 @@ window.PORTFOLIO_DATA = {
         id: {
           role: 'IT Developer',
           location: 'Malang, Indonesia',
-          period: 'Sept 2026 – Sekarang',
+          period: 'Sept 2026 – Nov 2026',
           highlights: [
             {
               lead: 'Pengembangan Sistem Internal',
@@ -617,7 +682,7 @@ window.PORTFOLIO_DATA = {
         fr: {
           role: 'Développeur IT',
           location: 'Malang, Indonésie',
-          period: 'Sept 2026 – Présent',
+          period: 'Sept 2026 – Nov 2026',
           highlights: [
             {
               lead: 'Développement de Systèmes Internes',
@@ -634,71 +699,6 @@ window.PORTFOLIO_DATA = {
             {
               lead: 'Documentation Technique',
               text: 'Rédaction et mise à jour des documentations d’architecture, flux fonctionnels et guides d’implémentation pour assurer la pérennité des systèmes.'
-            }
-          ]
-        }
-      }
-    },
-    {
-      id: 'alignerr-audio-alignment',
-      visible: true,
-      company: 'Alignerr · Pulsar World Alignment',
-      isCurrent: true,
-      i18n: {
-        en: {
-          role: 'Data Labeling Audio Specialist (Freelance)',
-          location: 'Remote (Global AI Platform)',
-          period: 'Aug 2026 – Present',
-          highlights: [
-            {
-              lead: 'Multimodal Audio AI Alignment',
-              text: 'Executed 52+ hours of high-precision audio evaluation, transcription verification, and acoustic-semantic alignment for the Pulsar World Alignment initiative supporting frontier AI model training.'
-            },
-            {
-              lead: 'Complex Long-Horizon Task Execution',
-              text: 'Completed deep multi-criteria audio annotation workflows averaging ~70 minutes per submission while maintaining a 0% task skip rate across rigorous technical rubrics.'
-            },
-            {
-              lead: 'Multi-Stage QA & Rubric Calibration',
-              text: 'Collaborated through 26+ structured peer-review cycles and iterative quality calibrations to ensure strict compliance with acoustic fidelity, speaker nuance, and world-model alignment standards.'
-            }
-          ]
-        },
-        id: {
-          role: 'Data Labeling Audio Specialist (Freelance)',
-          location: 'Remote (Platform AI Global)',
-          period: 'Agu 2026 – Sekarang',
-          highlights: [
-            {
-              lead: 'Penyelarasan Data Audio AI Multimodal',
-              text: 'Menyelesaikan 52+ jam evaluasi audio presisi tinggi, verifikasi transkripsi, dan penyelarasan akustik-semantik pada proyek Pulsar World Alignment untuk pelatihan model AI tingkat lanjut.'
-            },
-            {
-              lead: 'Eksekusi Tugas Kompleks Tanpa Skip',
-              text: 'Menuntaskan alur anotasi audio mendalam berdurasi rata-rata ~70 menit per tugas dengan 0% tingkat pelewatan tugas (0% skip rate) sesuai rubrik teknis yang ketat.'
-            },
-            {
-              lead: 'Kalibrasi Rubrik & Multi-Stage QA',
-              text: 'Melewati 26+ siklus peninjauan sejawat (peer-review) terstruktur dan penyempurnaan kualitas iteratif guna menjamin kepatuhan penuh terhadap standar akurasi akustik serta penyelarasan model.'
-            }
-          ]
-        },
-        fr: {
-          role: 'Spécialiste Annotation Audio IA (Freelance)',
-          location: 'À distance (Plateforme IA Mondiale)',
-          period: 'Août 2026 – Présent',
-          highlights: [
-            {
-              lead: 'Alignement Audio IA Multimodal',
-              text: 'Réalisation de plus de 52 heures d’évaluation audio de haute précision, vérification de transcriptions et alignement acoustique-sémantique pour le projet Pulsar World Alignment.'
-            },
-            {
-              lead: 'Exécution de Tâches Complexes (0 % d’Abandon)',
-              text: 'Traitement de séquences d’annotation approfondies (~70 minutes par soumission en moyenne) avec un taux d’abandon de 0 % face à des grilles d’évaluation exigeantes.'
-            },
-            {
-              lead: 'Assurance Qualité Multi-Niveaux',
-              text: 'Participation à plus de 26 cycles de revue par les pairs et d’étalonnage qualité itératif garantissant une conformité stricte aux standards d’alignement de modèles IA.'
             }
           ]
         }
