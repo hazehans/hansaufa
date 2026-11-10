@@ -930,6 +930,7 @@
     }
 
     window.__INITIAL_CANVAS_STYLE__ = state.canvasStyle;
+    document.documentElement.setAttribute('data-canvas-style', state.canvasStyle);
     syncCanvasButtons();
 
     if (!switcher) return;
@@ -946,6 +947,7 @@
   function switchCanvasMode(style, notify) {
     if (!['dot-matrix', 'wave-grid', 'particles'].includes(style)) return;
     state.canvasStyle = style;
+    document.documentElement.setAttribute('data-canvas-style', style);
     syncCanvasButtons();
 
     if (window.PortfolioCanvas && typeof window.PortfolioCanvas.setStyle === 'function') {
@@ -2167,7 +2169,7 @@
   }
 
   /* --------------------------------------------------------------------------
-   * CUSTOM MAGNETIC DUAL CURSOR (DESKTOP ONLY)
+   * CUSTOM MAGNETIC DUAL CURSOR (DESKTOP ONLY — CANVAS & CONTEXT ADAPTIVE)
    * -------------------------------------------------------------------------- */
   function initCustomCursor() {
     if (!isFinePointer() || prefersReducedMotion()) return;
@@ -2178,6 +2180,7 @@
     if (!dot || !ring) return;
 
     document.documentElement.classList.add('has-custom-cursor');
+    document.documentElement.setAttribute('data-canvas-style', state.canvasStyle || 'dot-matrix');
 
     let mouseX = -100;
     let mouseY = -100;
@@ -2185,10 +2188,23 @@
     let ringY = -100;
     let visible = false;
 
+    const clearRingStates = () => {
+      ring.classList.remove('is-hover', 'is-zoom', 'is-drag', 'is-lens');
+      dot.classList.remove('is-hover', 'is-zoom', 'is-drag', 'is-lens');
+    };
+
     window.addEventListener(
       'pointermove',
       (e) => {
+        if (e.pointerType === 'touch') {
+          visible = false;
+          document.documentElement.classList.remove('cursor-active');
+          dot.classList.remove('is-visible');
+          ring.classList.remove('is-visible');
+          return;
+        }
         if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+
         mouseX = e.clientX;
         mouseY = e.clientY;
         dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
@@ -2197,43 +2213,104 @@
           visible = true;
           ringX = mouseX;
           ringY = mouseY;
+          document.documentElement.classList.add('cursor-active');
           dot.classList.add('is-visible');
           ring.classList.add('is-visible');
         }
 
         const target = e.target;
-        const zoomTarget = target && target.closest('.zoomable-media, .qc-split-stage');
-        const interactiveTarget =
-          target &&
-          target.closest('a, button, [role="button"], .filter-btn, .lang-btn, .skill-chip, .canvas-mode-btn');
+        if (!target || typeof target.closest !== 'function') return;
 
-        if (zoomTarget) {
+        const dragTarget = target.closest('.qc-split-stage');
+        const zoomTarget = !dragTarget && target.closest('.zoomable-media');
+        const interactiveTarget =
+          !dragTarget &&
+          !zoomTarget &&
+          target.closest('a, button, [role="button"], .filter-btn, .lang-btn, .skill-chip, .canvas-mode-btn');
+        const lensTarget =
+          !dragTarget &&
+          !zoomTarget &&
+          !interactiveTarget &&
+          target.closest('.hero-title, .section-title, .contact-headline, .footer-wordmark');
+
+        clearRingStates();
+
+        if (dragTarget) {
+          ring.classList.add('is-drag');
+          dot.classList.add('is-drag');
+          if (label) label.textContent = '◄►';
+        } else if (zoomTarget) {
           ring.classList.add('is-zoom');
-          ring.classList.remove('is-hover');
-          if (label) {
-            label.textContent = zoomTarget.classList.contains('qc-split-stage') ? '⇄' : '+';
-          }
+          dot.classList.add('is-zoom');
+          if (label) label.textContent = 'VIEW';
         } else if (interactiveTarget) {
           ring.classList.add('is-hover');
-          ring.classList.remove('is-zoom');
+          dot.classList.add('is-hover');
+          if (label) {
+            const canvasBtn = interactiveTarget.closest('.canvas-mode-btn');
+            const href = interactiveTarget.getAttribute('href') || '';
+            const isExternal =
+              interactiveTarget.getAttribute('target') === '_blank' || href.startsWith('mailto:');
+            const isPdf = href.includes('.pdf');
+
+            if (canvasBtn) {
+              const mode = canvasBtn.getAttribute('data-canvas-style');
+              label.textContent = mode === 'wave-grid' ? '≈' : mode === 'particles' ? '◈' : '⁘';
+            } else if (isPdf) {
+              label.textContent = '↓';
+            } else if (isExternal) {
+              label.textContent = '↗';
+            } else if (interactiveTarget.id === 'copy-email-btn') {
+              label.textContent = '⎘';
+            } else {
+              label.textContent = '';
+            }
+          }
+        } else if (lensTarget) {
+          ring.classList.add('is-lens');
+          dot.classList.add('is-lens');
           if (label) label.textContent = '';
         } else {
-          ring.classList.remove('is-hover', 'is-zoom');
           if (label) label.textContent = '';
         }
       },
       { passive: true }
     );
 
+    window.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (e.pointerType === 'touch') return;
+        dot.classList.add('is-down');
+        ring.classList.add('is-down');
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      'pointerup',
+      () => {
+        dot.classList.remove('is-down');
+        ring.classList.remove('is-down');
+      },
+      { passive: true }
+    );
+
     document.addEventListener('pointerleave', () => {
       visible = false;
-      dot.classList.remove('is-visible');
-      ring.classList.remove('is-visible');
+      document.documentElement.classList.remove('cursor-active');
+      dot.classList.remove('is-visible', 'is-down');
+      ring.classList.remove('is-visible', 'is-down');
     });
 
     const animateRing = () => {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
+      ringX += dx * 0.2;
+      ringY += dy * 0.2;
+
+      const speed = Math.min(Math.hypot(dx, dy) / 42, 1);
+      ring.style.setProperty('--cursor-vel', speed.toFixed(3));
       ring.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0)`;
       requestAnimationFrame(animateRing);
     };

@@ -1023,3 +1023,368 @@ body::after {
     transition: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   16. CANVAS- & CONTEXT-ADAPTIVE ARCHITECTURAL CUSTOM CURSOR
+   Adapts shape to active <canvas> mode (DOTS | WAVES | NODES) + hover target
+   -------------------------------------------------------------------------- */
+@keyframes cursorOrbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cursorWavePulse {
+  0%,
+  100% {
+    transform: rotate(45deg) scale(1);
+  }
+  50% {
+    transform: rotate(45deg) scale(1.08);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Hide default OS arrow only when mouse/pen is actively inside viewport */
+  html.has-custom-cursor.cursor-active,
+  html.has-custom-cursor.cursor-active *,
+  html.has-custom-cursor.cursor-active a,
+  html.has-custom-cursor.cursor-active button,
+  html.has-custom-cursor.cursor-active [role='button'] {
+    cursor: none !important;
+  }
+
+  html.has-custom-cursor.cursor-active input,
+  html.has-custom-cursor.cursor-active textarea {
+    cursor: text !important;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    z-index: 999;
+    will-change: transform, width, height;
+  }
+
+  /* ========================================================================
+     A. PRIMARY POINTER (#cursor-dot) — MORPHS BY <canvas> EFFECT MODE
+     ======================================================================== */
+  .cursor-dot {
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    margin-top: -6px;
+    border-radius: 0;
+    background: transparent;
+    transition: opacity 0.2s ease;
+  }
+
+  .cursor-dot::before,
+  .cursor-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: var(--accent);
+    transition: transform 0.22s var(--ease-editorial), width 0.22s var(--ease-editorial),
+      height 0.22s var(--ease-editorial), border-radius 0.22s ease, background-color 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  /* 1. DOTS Mode (dot-matrix): Precision Architectural Crosshair (+) */
+  html[data-canvas-style='dot-matrix'] .cursor-dot::before,
+  html:not([data-canvas-style]) .cursor-dot::before {
+    width: 12px;
+    height: 1.5px;
+    transform: translate(-50%, -50%);
+  }
+
+  html[data-canvas-style='dot-matrix'] .cursor-dot::after,
+  html:not([data-canvas-style]) .cursor-dot::after {
+    width: 1.5px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* 2. WAVES Mode (wave-grid): Kinetic Diamond Core + Horizontal Wave Crest */
+  html[data-canvas-style='wave-grid'] .cursor-dot::before {
+    width: 7px;
+    height: 7px;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  html[data-canvas-style='wave-grid'] .cursor-dot::after {
+    width: 16px;
+    height: 1px;
+    transform: translate(-50%, -50%);
+    opacity: 0.75;
+  }
+
+  /* 3. NODES Mode (particles): Constellation Core Node + Concentric Halo */
+  html[data-canvas-style='particles'] .cursor-dot::before {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  html[data-canvas-style='particles'] .cursor-dot::after {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--accent);
+    transform: translate(-50%, -50%);
+    opacity: 0.75;
+  }
+
+  /* Pointer reactions on click / badge states */
+  .cursor-dot.is-down::before,
+  .cursor-dot.is-down::after {
+    background-color: var(--text-primary);
+    transform: translate(-50%, -50%) scale(0.75);
+  }
+
+  .cursor-dot.is-zoom,
+  .cursor-dot.is-drag,
+  .cursor-dot.is-lens {
+    opacity: 0.15;
+  }
+
+  /* ========================================================================
+     B. FOLLOWER RETICLE (#cursor-ring) — MORPHS BY <canvas> & HOVER CONTEXT
+     ======================================================================== */
+  .cursor-ring {
+    --cursor-vel: 0;
+    width: 36px;
+    height: 36px;
+    margin-left: -18px;
+    margin-top: -18px;
+    border-radius: 0;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    transition: width 0.28s var(--ease-editorial), height 0.28s var(--ease-editorial),
+      margin 0.28s var(--ease-editorial), border-radius 0.28s var(--ease-editorial),
+      background-color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+  }
+
+  .cursor-orbit,
+  .cursor-corners {
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    transition: inset 0.25s var(--ease-editorial), transform 0.28s var(--ease-editorial),
+      opacity 0.25s ease, border-color 0.25s ease;
+  }
+
+  /* --- IDLE / MOVING GEOMETRY PER <canvas> MODE --- */
+
+  /* 1. DOTS Mode (dot-matrix): Square Frame + 4 Corner Matrix Pixels */
+  html[data-canvas-style='dot-matrix'] .cursor-ring,
+  html:not([data-canvas-style]) .cursor-ring {
+    border-radius: 0;
+    border: 1px solid var(--border-color);
+  }
+
+  html[data-canvas-style='dot-matrix'] .cursor-corners,
+  html:not([data-canvas-style]) .cursor-corners {
+    inset: calc(-2px - var(--cursor-vel, 0) * 5px);
+    background-image:
+      linear-gradient(var(--accent), var(--accent)),
+      linear-gradient(var(--accent), var(--accent)),
+      linear-gradient(var(--accent), var(--accent)),
+      linear-gradient(var(--accent), var(--accent));
+    background-size: 4px 4px;
+    background-position: top left, top right, bottom left, bottom right;
+    background-repeat: no-repeat;
+  }
+
+  html[data-canvas-style='dot-matrix'] .cursor-orbit,
+  html:not([data-canvas-style]) .cursor-orbit {
+    opacity: 0;
+  }
+
+  /* 2. WAVES Mode (wave-grid): Rotated Wave Rhombus + Side Ripple Ticks */
+  html[data-canvas-style='wave-grid'] .cursor-ring {
+    border-color: transparent;
+  }
+
+  html[data-canvas-style='wave-grid'] .cursor-corners {
+    inset: calc(2px - var(--cursor-vel, 0) * 4px);
+    border: 1px solid var(--accent);
+    animation: cursorWavePulse 3.2s ease-in-out infinite;
+  }
+
+  html[data-canvas-style='wave-grid'] .cursor-orbit::before,
+  html[data-canvas-style='wave-grid'] .cursor-orbit::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 6px;
+    height: 1px;
+    background-color: var(--accent);
+    transform: translateY(-50%);
+  }
+
+  html[data-canvas-style='wave-grid'] .cursor-orbit::before {
+    left: -7px;
+  }
+
+  html[data-canvas-style='wave-grid'] .cursor-orbit::after {
+    right: -7px;
+  }
+
+  /* 3. NODES Mode (particles): Orbital Constellation Ring + 2 Satellite Nodes */
+  html[data-canvas-style='particles'] .cursor-ring {
+    width: 40px;
+    height: 40px;
+    margin-left: -20px;
+    margin-top: -20px;
+    border-radius: 50%;
+    border: 1px dashed var(--border-strong);
+  }
+
+  html[data-canvas-style='particles'] .cursor-orbit {
+    inset: -3px;
+    border-radius: 50%;
+    animation: cursorOrbitSpin 5.5s linear infinite;
+  }
+
+  html[data-canvas-style='particles'] .cursor-orbit::before,
+  html[data-canvas-style='particles'] .cursor-orbit::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--accent);
+  }
+
+  html[data-canvas-style='particles'] .cursor-orbit::before {
+    top: -2.5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  html[data-canvas-style='particles'] .cursor-orbit::after {
+    bottom: -2.5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--text-primary);
+  }
+
+  /* ========================================================================
+     C. CONTEXT-AWARE HOVER MORPHS (BUTTONS, TYPOGRAPHY LENS, ZOOM, QC DRAG)
+     ======================================================================== */
+
+  /* 1. Interactive Target Lock (.is-hover): Brutalist Corner-Bracket Box */
+  .cursor-ring.is-hover {
+    width: 48px !important;
+    height: 48px !important;
+    margin-left: -24px !important;
+    margin-top: -24px !important;
+    border-radius: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    background-color: var(--accent-soft) !important;
+  }
+
+  .cursor-ring.is-hover .cursor-orbit {
+    opacity: 0 !important;
+  }
+
+  .cursor-ring.is-hover .cursor-corners {
+    inset: -1px !important;
+    border: none !important;
+    animation: none !important;
+    transform: none !important;
+    background-image:
+      linear-gradient(to right, var(--accent) 2px, transparent 2px),
+      linear-gradient(to bottom, var(--accent) 2px, transparent 2px),
+      linear-gradient(to left, var(--accent) 2px, transparent 2px),
+      linear-gradient(to bottom, var(--accent) 2px, transparent 2px),
+      linear-gradient(to right, var(--accent) 2px, transparent 2px),
+      linear-gradient(to top, var(--accent) 2px, transparent 2px),
+      linear-gradient(to left, var(--accent) 2px, transparent 2px),
+      linear-gradient(to top, var(--accent) 2px, transparent 2px) !important;
+    background-size: 9px 9px !important;
+    background-position:
+      top left, top left,
+      top right, top right,
+      bottom left, bottom left,
+      bottom right, bottom right !important;
+    background-repeat: no-repeat !important;
+  }
+
+  /* 2. Giant Typography Difference Lens (.is-lens): Inverts Hero/Section Display Text */
+  .cursor-ring.is-lens {
+    width: 78px !important;
+    height: 78px !important;
+    margin-left: -39px !important;
+    margin-top: -39px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background-color: #FFFFFF !important;
+    mix-blend-mode: difference;
+  }
+
+  .cursor-ring.is-lens .cursor-orbit,
+  .cursor-ring.is-lens .cursor-corners {
+    opacity: 0 !important;
+  }
+
+  /* 3. Media Viewfinder Badge (.is-zoom): High-Contrast Rectangular Tag */
+  .cursor-ring.is-zoom {
+    width: 62px !important;
+    height: 28px !important;
+    margin-left: -31px !important;
+    margin-top: -14px !important;
+    border-radius: 0 !important;
+    background-color: var(--accent) !important;
+    border: 1px solid var(--text-primary) !important;
+    color: var(--accent-fg) !important;
+  }
+
+  .cursor-ring.is-zoom .cursor-orbit,
+  .cursor-ring.is-zoom .cursor-corners {
+    opacity: 0 !important;
+  }
+
+  /* 4. Before/After Split Caliper (.is-drag): Horizontal Drag Tag */
+  .cursor-ring.is-drag {
+    width: 56px !important;
+    height: 28px !important;
+    margin-left: -28px !important;
+    margin-top: -14px !important;
+    border-radius: 0 !important;
+    background-color: var(--text-primary) !important;
+    border: 1px solid var(--accent) !important;
+    color: var(--bg-primary) !important;
+  }
+
+  .cursor-ring.is-drag .cursor-orbit,
+  .cursor-ring.is-drag .cursor-corners {
+    opacity: 0 !important;
+  }
+
+  /* 5. Click Compression (.is-down) */
+  .cursor-ring.is-down .cursor-corners {
+    inset: 4px !important;
+  }
+
+  .cursor-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: inherit;
+    user-select: none;
+  }
+
+  .cursor-ring.is-hover .cursor-label {
+    font-size: 0.82rem;
+    color: var(--accent);
+  }
+}
