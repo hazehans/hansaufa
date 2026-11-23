@@ -38,6 +38,10 @@
     rel="stylesheet"
   />
 
+  <!-- Core Architectural & Editorial Brutalist Stylesheets (Compatible with both Vite dev/build & direct GitHub Pages branch deploy) -->
+  <link rel="stylesheet" href="src/css/style.css" />
+  <link rel="stylesheet" href="src/css/editorial.css" />
+
   <!-- Prevent Theme Flash (FOUC) & Guarantee English Default Landing -->
   <script>
     (function () {
@@ -798,7 +802,7 @@
     </div>
   </div>
 
-  <!-- Vite entry: bundles CSS, Lenis (npm), data.js, canvas.js, main.js -->
-  <script type="module" src="/src/main.js"></script>
+  <!-- Dual-mode entry: works seamlessly in Vite (npm run dev / build) AND direct GitHub Pages branch deployment -->
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
