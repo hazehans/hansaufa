@@ -59,13 +59,14 @@ window.PORTFOLIO_DATA = {
       'ENTERPRISE MINI ERP',
       'RELATIONAL DATA QA',
       'PUBLISHED DOI RESEARCH',
+      'CERTIFIED ENGLISH C1 (EF SET & TAEP™)',
       'MYSQL & POSTGRESQL'
     ],
 
     assets: {
       // Kosongkan "" untuk menampilkan kartu arsitektural monogram "HA" otomatis
       profileImage: 'assets/images/profile/hans-profile.jpg',
-      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf?v=20261110'
+      cvPdf: 'assets/docs/CV-Hans-Aufa.pdf?v=20261123'
     }
   },
 
@@ -132,6 +133,8 @@ window.PORTFOLIO_DATA = {
         copyEmail: 'Copy Direct Email Address',
         downloadCv: 'Download Curriculum Vitae (PDF)',
         openPaper: 'Read Published XAI Paper (DOI)',
+        openEfset: 'Verify EF SET C1 English Certificate (62/100)',
+        previewTaep: 'Preview UMM TAEP™ C1 English Certificate (410/500)',
         openHris: 'Open Live HRIS Platform',
         openGithub: 'Open GitHub Profile (@hazehans)',
         openLinkedin: 'Open LinkedIn Profile',
@@ -215,9 +218,12 @@ window.PORTFOLIO_DATA = {
         index: '04',
         kicker: 'ACADEMIC & COMMUNITY',
         title: 'Education & Leadership',
-        subtitle: 'Academic excellence paired with executive leadership in technical student organizations.',
+        subtitle: 'Academic excellence and verified C1 English certifications paired with executive leadership in technical student organizations.',
         educationHeading: 'Academic Foundation',
         courseworkLabel: 'Key Coursework',
+        certHeading: 'Verified Certifications',
+        previewCert: 'Preview Certificate',
+        verifyCert: 'Verify Credential',
         orgHeading: 'Organizational Leadership'
       },
       skillsSection: {
@@ -287,6 +293,8 @@ window.PORTFOLIO_DATA = {
         copyEmail: 'Salin Alamat Email Langsung',
         downloadCv: 'Unduh Curriculum Vitae (PDF)',
         openPaper: 'Buka Jurnal Publikasi XAI (DOI)',
+        openEfset: 'Verifikasi Sertifikat Bahasa Inggris EF SET C1 (62/100)',
+        previewTaep: 'Lihat Sertifikat Bahasa Inggris TAEP™ UMM C1 (410/500)',
         openHris: 'Buka Sistem Live HRIS',
         openGithub: 'Buka Profil GitHub (@hazehans)',
         openLinkedin: 'Buka Profil LinkedIn',
@@ -370,9 +378,12 @@ window.PORTFOLIO_DATA = {
         index: '04',
         kicker: 'AKADEMIK & KOMUNITAS',
         title: 'Pendidikan & Kepemimpinan',
-        subtitle: 'Fondasi akademik yang kuat dipadukan dengan pengalaman kepemimpinan strategis di komunitas teknologi mahasiswa.',
+        subtitle: 'Fondasi akademik dan sertifikasi resmi Bahasa Inggris C1 yang dipadukan dengan pengalaman kepemimpinan strategis di komunitas teknologi mahasiswa.',
         educationHeading: 'Pendidikan Akademik',
         courseworkLabel: 'Mata Kuliah Utama',
+        certHeading: 'Sertifikasi Terverifikasi',
+        previewCert: 'Lihat Sertifikat',
+        verifyCert: 'Verifikasi Kredensial',
         orgHeading: 'Pengalaman Organisasi'
       },
       skillsSection: {
@@ -442,6 +453,8 @@ window.PORTFOLIO_DATA = {
         copyEmail: 'Copier l’adresse email directe',
         downloadCv: 'Télécharger le Curriculum Vitae (PDF)',
         openPaper: 'Lire l’article publié XAI (DOI)',
+        openEfset: 'Vérifier le Certificat d’Anglais EF SET C1 (62/100)',
+        previewTaep: 'Aperçu du Certificat d’Anglais TAEP™ UMM C1 (410/500)',
         openHris: 'Ouvrir le système SIRH/HRIS en ligne',
         openGithub: 'Ouvrir le profil GitHub (@hazehans)',
         openLinkedin: 'Ouvrir le profil LinkedIn',
@@ -525,9 +538,12 @@ window.PORTFOLIO_DATA = {
         index: '04',
         kicker: 'PARCOURS ACADÉMIQUE & ASSOCIATIF',
         title: 'Formation & Leadership',
-        subtitle: 'Excellence universitaire combinée à des responsabilités exécutives au sein de communautés technologiques étudiantes.',
+        subtitle: 'Excellence universitaire et certifications d’anglais C1 vérifiées combinées à des responsabilités exécutives au sein de communautés technologiques étudiantes.',
         educationHeading: 'Formation Académique',
         courseworkLabel: 'Cours Clés',
+        certHeading: 'Certifications Vérifiées',
+        previewCert: 'Voir le Certificat',
+        verifyCert: 'Vérifier le Certificat',
         orgHeading: 'Expérience Associative'
       },
       skillsSection: {
@@ -1388,6 +1404,111 @@ window.PORTFOLIO_DATA = {
     }
   ],
 
+  certifications: [
+    {
+      id: 'efset-c1-advanced',
+      visible: true,
+      code: 'CERT // 01',
+      badge: 'CEFR C1 ADVANCED · 62/100',
+      image: 'assets/images/certifications/efset-c1-certificate.jpg',
+      imageSurface: 'light',
+      verifyUrl: 'https://cert.efset.org/hQZ4Su',
+      verifyDisplay: 'cert.efset.org/hQZ4Su',
+      i18n: {
+        en: {
+          title: 'EF SET English Certificate — C1 Advanced (4-Skill Assessment)',
+          issuer: 'EF Standard English Test (EF SET)',
+          date: 'Awarded Nov 15, 2026',
+          summary:
+            'Comprehensive 4-skill CEFR evaluation achieving C1 Advanced overall (62/100), highlighted by C2 Proficient in Reading (72/100) and C1 Advanced in Listening (67/100).',
+          metrics: [
+            'Reading: 72 (C2 Proficient)',
+            'Listening: 67 (C1 Advanced)',
+            'Speaking: 56 (B2 Upper Intermediate)',
+            'Writing: 52 (B2 Upper Intermediate)'
+          ]
+        },
+        id: {
+          title: 'Sertifikat Bahasa Inggris EF SET — C1 Advanced (Ujian 4 Kemampuan)',
+          issuer: 'EF Standard English Test (EF SET)',
+          date: 'Diterbitkan 15 Nov 2026',
+          summary:
+            'Evaluasi 4 kemampuan bahasa berbasis CEFR dengan capaian C1 Advanced (62/100), menonjol pada Reading level C2 Proficient (72/100) dan Listening level C1 Advanced (67/100).',
+          metrics: [
+            'Reading: 72 (C2 Proficient)',
+            'Listening: 67 (C1 Advanced)',
+            'Speaking: 56 (B2 Upper Intermediate)',
+            'Writing: 52 (B2 Upper Intermediate)'
+          ]
+        },
+        fr: {
+          title: 'Certificat d’Anglais EF SET — C1 Avancé (Évaluation 4 Compétences)',
+          issuer: 'EF Standard English Test (EF SET)',
+          date: 'Délivré le 15 Nov 2026',
+          summary:
+            'Évaluation complète des 4 compétences CECRL atteignant le niveau C1 Avancé (62/100), avec un score C2 Maîtrise en Compréhension Écrite (72/100) et C1 Avancé en Écoute (67/100).',
+          metrics: [
+            'Reading : 72 (C2 Maîtrise)',
+            'Listening : 67 (C1 Avancé)',
+            'Speaking : 56 (B2 Avancé)',
+            'Writing : 52 (B2 Avancé)'
+          ]
+        }
+      }
+    },
+    {
+      id: 'taep-umm-c1',
+      visible: true,
+      code: 'CERT // 02',
+      badge: 'CEFR C1 ADVANCED · 410/500',
+      image: 'assets/images/certifications/taep-umm-c1-certificate.jpg',
+      imageSurface: 'light',
+      verifyUrl: 'https://taep.umm.ac.id/certification/verify/',
+      verifyDisplay: 'ID: gUfdm-F4QyrAc',
+      i18n: {
+        en: {
+          title: 'Test of Academic English Proficiency (TAEP™) — C1 Advanced',
+          issuer: 'Language Center — University of Muhammadiyah Malang (LTC UMM)',
+          date: 'Mar 6, 2026 — Valid until Mar 6, 2028',
+          summary:
+            'Certified Advanced Command of English (CEFR C1, 368–434 scale) with a Total Converted Score of 410/500 across academic listening, structure/grammar, and reading comprehension.',
+          metrics: [
+            'Reading: 35',
+            'Grammar: 33',
+            'Listening: 29',
+            'Converted Score: 410 / 500 (C1)'
+          ]
+        },
+        id: {
+          title: 'Test of Academic English Proficiency (TAEP™) — C1 Advanced',
+          issuer: 'Language Center — Universitas Muhammadiyah Malang (LTC UMM)',
+          date: '6 Mar 2026 — Berlaku s/d 6 Mar 2028',
+          summary:
+            'Tersertifikasi Advanced Command of English (CEFR C1, skala 368–434) dengan Total Skor Konversi 410/500 meliputi ujian Listening, Grammar, dan Reading akademik.',
+          metrics: [
+            'Reading: 35',
+            'Grammar: 33',
+            'Listening: 29',
+            'Total Skor: 410 / 500 (C1)'
+          ]
+        },
+        fr: {
+          title: 'Test of Academic English Proficiency (TAEP™) — C1 Avancé',
+          issuer: 'Centre de Langues — Université Muhammadiyah de Malang (LTC UMM)',
+          date: '6 Mars 2026 — Valide jusqu’au 6 Mars 2028',
+          summary:
+            'Certifié Advanced Command of English (CECRL C1, échelle 368–434) avec un score converti de 410/500 en compréhension orale, grammaire et compréhension écrite académiques.',
+          metrics: [
+            'Reading : 35',
+            'Grammar : 33',
+            'Listening : 29',
+            'Score Total : 410 / 500 (C1)'
+          ]
+        }
+      }
+    }
+  ],
+
   organizations: [
     {
       id: 'dsc-vp',
@@ -1553,12 +1674,35 @@ window.PORTFOLIO_DATA = {
       },
       {
         code: 'EN',
-        levelPercent: 88,
+        levelPercent: 90,
         i18n: {
-          en: { name: 'English', level: 'C1 / Professional' },
-          id: { name: 'Bahasa Inggris', level: 'C1 / Profesional' },
-          fr: { name: 'Anglais', level: 'C1 / Professionnel' }
-        }
+          en: {
+            name: 'English',
+            level: 'Certified C1 Advanced (EF SET 62/100 · TAEP™ 410/500)'
+          },
+          id: {
+            name: 'Bahasa Inggris',
+            level: 'Tersertifikasi C1 Advanced (EF SET 62/100 · TAEP™ 410/500)'
+          },
+          fr: {
+            name: 'Anglais',
+            level: 'Certifié C1 Avancé (EF SET 62/100 · TAEP™ 410/500)'
+          }
+        },
+        credentials: [
+          {
+            label: 'EF SET C1 (62/100 · Reading C2)',
+            image: 'assets/images/certifications/efset-c1-certificate.jpg',
+            badge: 'CEFR C1 ADVANCED · 62/100',
+            url: 'https://cert.efset.org/hQZ4Su'
+          },
+          {
+            label: 'TAEP™ UMM C1 (410/500)',
+            image: 'assets/images/certifications/taep-umm-c1-certificate.jpg',
+            badge: 'CEFR C1 ADVANCED · 410/500',
+            url: 'https://taep.umm.ac.id/certification/verify/'
+          }
+        ]
       },
       {
         code: 'FR',

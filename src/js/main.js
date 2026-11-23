@@ -1030,6 +1030,7 @@
     renderProjectFilters(data, t);
     renderProjects(data, t, state.lang);
     renderEducation(data, t, state.lang);
+    renderCertifications(data, t, state.lang);
     renderOrganizations(data, state.lang);
     renderSkills(data, state.lang);
 
@@ -1561,6 +1562,113 @@
       .join('');
   }
 
+  function renderCertifications(data, t, lang) {
+    const container = document.getElementById('certifications-list');
+    if (!container || !Array.isArray(data.certifications)) return;
+
+    const visibleCerts = data.certifications.filter((c) => c.visible !== false);
+    const previewLabel =
+      (t && t.leadershipSection && t.leadershipSection.previewCert) || 'Preview Certificate';
+    const verifyLabel =
+      (t && t.leadershipSection && t.leadershipSection.verifyCert) || 'Verify Credential';
+
+    container.innerHTML = visibleCerts
+      .map((cert) => {
+        const loc = (cert.i18n && (cert.i18n[lang] || cert.i18n.en)) || {};
+        const metricsHtml =
+          Array.isArray(loc.metrics) && loc.metrics.length > 0
+            ? `
+              <div class="cert-metrics-wrap">
+                ${loc.metrics.map((m) => `<span class="tech-tag">${escapeHtml(m)}</span>`).join('')}
+              </div>
+            `
+            : '';
+
+        const hasImage = Boolean(cert.image && cert.image.trim());
+        const thumbHtml = hasImage
+          ? `
+            <div
+              class="cert-thumb-frame zoomable-media"
+              role="button"
+              tabindex="0"
+              aria-label="${escapeHtml(previewLabel)}: ${escapeHtml(loc.title)}"
+              data-zoom-src="${escapeHtml(cert.image.trim())}"
+              data-zoom-title="${escapeHtml(loc.title)}"
+              data-zoom-badge="${escapeHtml(cert.badge || cert.code || 'CERTIFICATE')}"
+              data-zoom-light="${cert.imageSurface === 'light' ? 'true' : 'false'}"
+            >
+              <img
+                src="${escapeHtml(cert.image.trim())}"
+                alt="${escapeHtml(loc.title)}"
+                class="cert-thumb-img"
+                loading="lazy"
+              />
+              <span class="zoom-corner-badge" aria-hidden="true">↗</span>
+            </div>
+          `
+          : '';
+
+        const previewBtnHtml = hasImage
+          ? `
+            <button
+              type="button"
+              class="btn btn-outline btn-sm magnetic-btn zoomable-media"
+              data-zoom-src="${escapeHtml(cert.image.trim())}"
+              data-zoom-title="${escapeHtml(loc.title)}"
+              data-zoom-badge="${escapeHtml(cert.badge || cert.code || 'CERTIFICATE')}"
+              data-zoom-light="${cert.imageSurface === 'light' ? 'true' : 'false'}"
+            >
+              <span>${escapeHtml(previewLabel)}</span>
+              <span aria-hidden="true">+</span>
+            </button>
+          `
+          : '';
+
+        const verifyBtnHtml =
+          cert.verifyUrl && cert.verifyUrl.trim()
+            ? `
+              <a
+                href="${escapeHtml(cert.verifyUrl.trim())}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-ghost btn-sm magnetic-btn"
+              >
+                <span>${escapeHtml(verifyLabel)}</span>
+                <span class="mono-xs">(${escapeHtml(cert.verifyDisplay || 'URL')})</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            `
+            : '';
+
+        return `
+          <article class="edu-card cert-card spotlight-card">
+            <div class="edu-card-top">
+              <span class="mono-xs">${escapeHtml(cert.code || 'CERT')} · ${escapeHtml(loc.date || '')}</span>
+              ${cert.badge ? `<span class="gpa-pill cert-badge-pill">${escapeHtml(cert.badge)}</span>` : ''}
+            </div>
+            <div class="cert-card-body">
+              ${thumbHtml}
+              <div class="cert-card-content">
+                <h4 class="edu-degree cert-title">${escapeHtml(loc.title)}</h4>
+                <p class="edu-inst cert-issuer">${escapeHtml(loc.issuer)}</p>
+                ${loc.summary ? `<p class="cert-summary">${escapeHtml(loc.summary)}</p>` : ''}
+                ${metricsHtml}
+                <div class="cert-actions">
+                  ${previewBtnHtml}
+                  ${verifyBtnHtml}
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
+
+    container.querySelectorAll('.zoomable-media').forEach((trigger) => {
+      bindZoomTrigger(trigger);
+    });
+  }
+
   function renderOrganizations(data, lang) {
     const container = document.getElementById('organization-list');
     if (!container || !Array.isArray(data.organizations)) return;
@@ -1615,6 +1723,40 @@
     const spokenRows = (data.skills.spokenLanguages || [])
       .map((sp) => {
         const loc = sp.i18n[lang] || sp.i18n.en;
+        const credsHtml =
+          Array.isArray(sp.credentials) && sp.credentials.length > 0
+            ? `
+              <div class="spoken-creds">
+                ${sp.credentials
+                  .map(
+                    (c) => `
+                    <button
+                      type="button"
+                      class="spoken-cred-pill zoomable-media"
+                      data-zoom-src="${escapeHtml(c.image || '')}"
+                      data-zoom-title="${escapeHtml(c.label || '')}"
+                      data-zoom-badge="${escapeHtml(c.badge || 'CERTIFIED C1')}"
+                      data-zoom-light="true"
+                    >
+                      <span class="mono-prefix">✓</span>
+                      <span>${escapeHtml(c.label)}</span>
+                    </button>
+                  `
+                  )
+                  .join('')}
+                <a
+                  href="https://cert.efset.org/hQZ4Su"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="spoken-cred-link"
+                >
+                  <span>cert.efset.org/hQZ4Su</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            `
+            : '';
+
         return `
           <div class="spoken-row">
             <div class="spoken-row-top">
@@ -1627,6 +1769,7 @@
             <div class="spoken-bar-track" aria-hidden="true">
               <div class="spoken-bar-fill" style="width: ${Number(sp.levelPercent) || 50}%"></div>
             </div>
+            ${credsHtml}
           </div>
         `;
       })
@@ -1645,6 +1788,9 @@
     `;
 
     container.innerHTML = groupsHtml + spokenCardHtml;
+    container.querySelectorAll('.zoomable-media').forEach((trigger) => {
+      bindZoomTrigger(trigger);
+    });
   }
 
   /* --------------------------------------------------------------------------
@@ -1721,6 +1867,26 @@
         label: cp.openPaper || 'Published XAI Paper',
         hint: '10.33364/algoritma',
         run: () => window.open('https://doi.org/10.33364/algoritma/v.22-2.2925', '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'C1',
+        label: cp.openEfset || 'Verify EF SET C1 English Certificate (62/100)',
+        hint: 'cert.efset.org/hQZ4Su',
+        run: () => window.open('https://cert.efset.org/hQZ4Su', '_blank', 'noopener,noreferrer')
+      },
+      {
+        group: cp.groupLinks || 'Links & Assets',
+        code: 'C1',
+        label: cp.previewTaep || 'Preview UMM TAEP™ C1 English Certificate (410/500)',
+        hint: 'ID: gUfdm-F4QyrAc',
+        run: () =>
+          openLightbox({
+            src: 'assets/images/certifications/taep-umm-c1-certificate.jpg',
+            title: 'Test of Academic English Proficiency (TAEP™) — C1 Advanced (410/500)',
+            badge: 'CEFR C1 ADVANCED · 410/500',
+            lightSurface: true
+          })
       },
       {
         group: cp.groupLinks || 'Links & Assets',
